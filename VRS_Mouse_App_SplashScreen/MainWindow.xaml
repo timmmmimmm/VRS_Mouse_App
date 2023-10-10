@@ -3,18 +3,41 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
+        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen" xmlns:SpinnerController="clr-namespace:SpinnerController;assembly=SpinnerController"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" ResizeMode="CanMinimize" RenderTransformOrigin="0.5,0.5">
-    <Window.RenderTransform>
-        <TransformGroup>
-            <ScaleTransform/>
-            <SkewTransform/>
-            <RotateTransform Angle="0"/>
-            <TranslateTransform/>
-        </TransformGroup>
-    </Window.RenderTransform>
+        Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
+        SnapsToDevicePixels="True">
+
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <MediaElement Name="Video" 
+                      Grid.Column="0" Grid.Row="0"
+                      Height="450" Width="800"
+                      Visibility="Visible"
+                      LoadedBehavior="Play" 
+                      UnloadedBehavior="Stop"
+                      Source="Media/spashScreen.mp4"/>
+
+        <Button Name="ExitButton" Content="X" 
+                HorizontalAlignment="Right" VerticalAlignment="Top" 
+                Width="50" Height="50" 
+                Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
+                FontSize="24" Style="{StaticResource latoFontButton}" Click="ExitButton_Click"/>
+        <SpinnerController:LoadingSpinner Name="LoadingSpinner"
+                                          HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,266,0,0"
+                                          Thickness="4" Diameter="60"
+                                          IsLoading="True"/>
+
 
     </Grid>
+
 </Window>

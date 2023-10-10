@@ -5,6 +5,8 @@ VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VRS_Mouse_App_SplashScreen", "VRS_Mouse_App_SplashScreen\VRS_Mouse_App_SplashScreen.csproj", "{8D2114F6-F8F1-4B68-B01E-4590B41E53E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpinnerController", "SpinnerController\SpinnerController.csproj", "{4AC4168F-03C2-4764-B8D1-55DE4150DB83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{8D2114F6-F8F1-4B68-B01E-4590B41E53E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D2114F6-F8F1-4B68-B01E-4590B41E53E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D2114F6-F8F1-4B68-B01E-4590B41E53E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AC4168F-03C2-4764-B8D1-55DE4150DB83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AC4168F-03C2-4764-B8D1-55DE4150DB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AC4168F-03C2-4764-B8D1-55DE4150DB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AC4168F-03C2-4764-B8D1-55DE4150DB83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
