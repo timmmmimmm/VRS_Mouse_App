@@ -1,0 +1,20 @@
+﻿<Window x:Class="VRS_Mouse_App_SplashScreen.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800" ResizeMode="CanMinimize" RenderTransformOrigin="0.5,0.5">
+    <Window.RenderTransform>
+        <TransformGroup>
+            <ScaleTransform/>
+            <SkewTransform/>
+            <RotateTransform Angle="0"/>
+            <TranslateTransform/>
+        </TransformGroup>
+    </Window.RenderTransform>
+    <Grid>
+
+    </Grid>
+</Window>
