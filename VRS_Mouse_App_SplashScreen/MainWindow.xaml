@@ -3,11 +3,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen" xmlns:SpinnerController="clr-namespace:SpinnerController;assembly=SpinnerController"
+        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen" xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController"
         mc:Ignorable="d"
         Height="450" Width="800"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
-        SnapsToDevicePixels="True">
+        SnapsToDevicePixels="True" Loaded="Window_Loaded">
 
 
     <Grid>
@@ -32,10 +32,33 @@
                 Width="50" Height="50" 
                 Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
                 FontSize="24" Style="{StaticResource latoFontButton}" Click="ExitButton_Click"/>
-        <SpinnerController:LoadingSpinner Name="LoadingSpinner"
-                                          HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,266,0,0"
+        <spinnercontroller:LoadingSpinner Name="LoadingSpinner"
+                                          HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,265,0,0"
                                           Thickness="4" Diameter="60"
                                           IsLoading="True"/>
+        
+        <TextBlock Name="InfoTextBlock" 
+                   HorizontalAlignment="Center" Margin="0,377,0,0" VerticalAlignment="Top" 
+                   Height="27" Width="704"
+                   Text="Looking for devices" Foreground="White" TextAlignment="Center" FontSize="18" Style="{StaticResource latoFontTextBlock}"
+                   Visibility="Visible"/>
+        
+        <Image Name="RetryButton" 
+               Height="60" Width="60" 
+               Margin="370,265,370,125"
+               Source="Media/retryArrow.png"
+               Visibility="Visible" RenderTransformOrigin="0.5,0.5">
+            <Image.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform Angle="-358"/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Image.RenderTransform>
+        </Image>
+
+
 
 
     </Grid>

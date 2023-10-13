@@ -63,6 +63,16 @@ namespace VRS_Mouse_App_SplashScreen.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] retryArrow {
+            get {
+                object obj = ResourceManager.GetObject("retryArrow", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] spashScreen {
             get {
                 object obj = ResourceManager.GetObject("spashScreen", resourceCulture);
