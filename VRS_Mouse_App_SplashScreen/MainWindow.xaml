@@ -9,7 +9,44 @@
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
         SnapsToDevicePixels="True" Loaded="Window_Loaded">
 
+    <Window.Resources>
+        <Style x:Key="latoFontTextBlock" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Fonts/Lato-Regular.ttf #latoR"/>
+        </Style>
 
+        <Style x:Key="latoFontButton" TargetType="Button">
+            <Setter Property="FontFamily" Value="Fonts/Lato-Regular.ttf #latoR"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding="4,2" 
+                BorderBrush="{TemplateBinding BorderBrush}"  
+                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="black" />
+                                <Setter TargetName="border" Property="Background" Value="black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        
+    </Window.Resources>
+
+    
+    
+    
+    
+    
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -32,33 +69,26 @@
                 Width="50" Height="50" 
                 Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
                 FontSize="24" Style="{StaticResource latoFontButton}" Click="ExitButton_Click"/>
+       
         <spinnercontroller:LoadingSpinner Name="LoadingSpinner"
                                           HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,265,0,0"
                                           Thickness="4" Diameter="60"
-                                          IsLoading="True"/>
+                                          IsLoading="False"/>
         
         <TextBlock Name="InfoTextBlock" 
                    HorizontalAlignment="Center" Margin="0,377,0,0" VerticalAlignment="Top" 
                    Height="27" Width="704"
                    Text="Looking for devices" Foreground="White" TextAlignment="Center" FontSize="18" Style="{StaticResource latoFontTextBlock}"
                    Visibility="Visible"/>
-        
+
         <Image Name="RetryButton" 
                Height="60" Width="60" 
                Margin="370,265,370,125"
                Source="Media/retryArrow.png"
-               Visibility="Visible" RenderTransformOrigin="0.5,0.5">
-            <Image.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform/>
-                    <RotateTransform Angle="-358"/>
-                    <TranslateTransform/>
-                </TransformGroup>
-            </Image.RenderTransform>
+               Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
         </Image>
 
-
+        
 
 
     </Grid>

@@ -24,11 +24,31 @@ namespace VRS_Mouse_App_SplashScreen
     {
         private bool _animationFinished = false;
         private  SerialPort? mousePort { get; set; }
+        private Storyboard retryStoryboard;
+        private DoubleAnimation retryAnimation;
 
         public MainWindow()
         {
             InitializeComponent();
-        
+            retryStoryboard = new Storyboard
+            {
+                Duration = new Duration(TimeSpan.FromMilliseconds(300))
+            };
+
+            retryAnimation = new DoubleAnimation()
+            {
+                From = 0,
+                To = 360,
+                Duration = new Duration(TimeSpan.FromMilliseconds(100)),
+                RepeatBehavior = new RepeatBehavior(3)
+            };
+
+            Storyboard.SetTarget(retryAnimation, RetryButton);
+            Storyboard.SetTargetProperty(retryAnimation, new PropertyPath("(UIElement.RenderTransform).(RotateTransform.Angle)"));
+
+            retryStoryboard.Children.Add(retryAnimation);
+
+            Resources.Add("RetryStoryboard", retryStoryboard);
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -37,46 +57,22 @@ namespace VRS_Mouse_App_SplashScreen
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            ThreadPool.QueueUserWorkItem(_ =>
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    animateTextBlock(InfoTextBlock);
-                    _animationFinished = true;
-                }));
-            });
-
-            ThreadPool.QueueUserWorkItem(_ =>
-            {
-                Dispatcher.BeginInvoke(() =>
-                {
-                    while (!_animationFinished) { }
-                    animateErrorState("sdadas");
-                });
-            });
+        {  
+           new Thread(smthn).Start();
         }
 
-        private void animateTextBlock(TextBlock textBlock)
+        private void smthn()
         {
-            textBlock.Opacity = 0;
-            textBlock.Text = "Looking for devices";
-            textBlock.Visibility = Visibility.Visible;
-
-            DoubleAnimation animation = new(1, TimeSpan.FromMilliseconds(200))
+            Thread.Sleep(2000);
+            
+            this.Dispatcher.Invoke(new Action(() => 
             {
-                BeginTime = TimeSpan.FromMilliseconds(100)
-            };
-            textBlock.BeginAnimation(TextBlock.OpacityProperty, animation);
-        }
+                RetryButton.Visibility = Visibility.Visible;   
+            }));
 
-        private void animateErrorState(string prompt)
-        {
-            InfoTextBlock.Text = prompt;
-            LoadingSpinner.Visibility = Visibility.Collapsed;
-            
-
-            
+            this.Dispatcher.Invoke(new Action(() => {
+                ((Storyboard)Resources["RetryStoryboard"]).Begin(); 
+            }));
         }
 
         private void findPort()
