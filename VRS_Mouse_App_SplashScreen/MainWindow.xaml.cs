@@ -23,6 +23,7 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainWindow : Window 
     {
+        private const string DEVICE_VERIFIER = "FFFF", APP_VERIFIER = "GGGG", DEVICE_ACK = "NNNN";
         private SerialPort? MousePort { get; set; }
         private readonly DispatcherTimer timer;
         private readonly EventHandler timerHandler;
@@ -47,12 +48,8 @@ namespace VRS_Mouse_App_SplashScreen
 
         private void OnRetryClick(object sender, RoutedEventArgs e)
         {
-            RetryButton.Visibility = Visibility.Collapsed;
-            LoadingSpinner.Opacity = 0;
-            LoadingSpinner.Visibility = Visibility.Visible;
-            StartStoryboard("SpinnerFadeStoryboard");
-            InfoTextBlock.Text = (this.FindResource("DefaultInfoTextPrompt") as string);
-            timer.Start();
+            AnimateLoadingSpinner();
+            new Thread(FindPort).Start();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -61,77 +58,97 @@ namespace VRS_Mouse_App_SplashScreen
             new Thread(FindPort).Start();
         }
 
-        private void LookForPort()
-        {
-            
-
-            //Thread.Sleep(2000);
-            
-            //this.Dispatcher.Invoke(new Action(() => 
-            //{
-            //    LoadingSpinner.Opacity = 0;
-            //}));
-
-            //this.Dispatcher.Invoke(new Action(() => {
-            //    ((Storyboard)Resources["SpinnerFadeStoryboard"]).Begin(); 
-            //}));
-        }
 
         private void FindPort()
         {
-            Thread.Sleep(3000);
-            this.Dispatcher.Invoke(new Action(() => { AnimateRetryButton(); }));
             Thread.Sleep(1000);
-            //var portNames = SerialPort.GetPortNames();
-            //bool portFound = false;
+            var portNames = SerialPort.GetPortNames();
+            bool portFound = false;
 
-            //if(portNames.Length == 0)
-            //{
-            //    AnimateRetryButton();
-            //    return;
-            //}
+            if (portNames.Length == 0)
+            {
+                this.Dispatcher.Invoke(new Action(() => { 
+                    AnimateRetryButton("InfoTextPromptNoDevices"); }));
+                return;
+            }
 
-            //while(!portFound)
-            //{
-            //    if (countdown == 0)
-            //        return;
+            while (!portFound)
+            {
+                if (countdown == 0)
+                    return;
 
-            //    foreach(var port in portNames)
-            //    {
-            //        try
-            //        {
-            //            MousePort = new(port)
-            //            {
-            //                ReadTimeout = 100
-            //            };
-            //            MousePort.Open();
+                foreach (var port in portNames)
+                {
+                    if (countdown == 0)
+                        return;
 
-            //            string verificator = MousePort.ReadLine();
-            //            if (verificator.Equals(""))
-            //            {
-            //                    //TODO: Poslať Erika dopiče
-            //                portFound = true;
-            //                break;
-            //            }
 
-            //            MousePort.Close();
-            //        }
-            //        catch (IOException)
-            //        {
-            //            continue;
-            //        }
-            //        catch(UnauthorizedAccessException)
-            //        {
-            //            continue;
-            //        }
-            //        catch (ArgumentOutOfRangeException)
-            //        {
-            //            continue;
-            //        }
-            //    }
-            //}
+                    if (port.Equals("COM3") || port.Equals("COM4"))
+                        continue;
+                    try
+                    {
+                        MousePort = new(port)
+                        {
+                            ReadTimeout = 100,
+                            BaudRate = 115200
 
-            this.Dispatcher.Invoke(new Action(() =>
+                        };
+                        MousePort.Open();
+
+                        string verificator = MousePort.ReadLine();
+                        if (verificator.Equals(DEVICE_VERIFIER))
+                        {
+                            //TODO: Poslať Erika dopiče
+                            portFound = true;
+
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                timer.Stop();
+                                InfoTextBlock.Text = FindResource("InfoTextDeviceFound") as string;
+                            }));
+
+                            MousePort.ReadTimeout = -1;
+
+                            for (short j = 0; j < 20; j++)
+                            {
+                                MousePort.WriteLine(APP_VERIFIER);
+                            }
+
+                            verificator = MousePort.ReadLine();
+
+                            if (!verificator.Equals(DEVICE_ACK))
+                            {
+                                Dispatcher.Invoke(new Action(() => {
+                                    AnimateRetryButton("InfoTextDeviceIsNotResponding");
+                                }));
+                                return;
+                            }
+
+                            break;
+                        }
+
+                        MousePort.Close();
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        continue;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        continue;
+                    }
+                    catch (TimeoutException)
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            Dispatcher.Invoke(new Action(() =>
             {
                 var nextWindow = new MainMainWindow();
                 App.Current.MainWindow = nextWindow;
@@ -161,7 +178,7 @@ namespace VRS_Mouse_App_SplashScreen
                 }
                 else if (countdown == 0 )
                 {
-                    AnimateRetryButton();
+                    AnimateRetryButton("InfoTextPromptDeviceNotFound");
                 }
             }
 
@@ -209,15 +226,25 @@ namespace VRS_Mouse_App_SplashScreen
             Resources.Add("SpinnerFadeStoryboard", spinnerFadeStoryboard);
         }
 
-        private void AnimateRetryButton()
+        private void AnimateRetryButton(string resourceName)
         {
             LoadingSpinner.Visibility = Visibility.Collapsed;
             RetryButton.Visibility = Visibility.Visible;
             StartStoryboard("RetryStoryboard");
-            InfoTextBlock.Text = (this.FindResource("InfoTextPromptDeviceNotFound") as string);
+            InfoTextBlock.Text = (this.FindResource(resourceName) as string);
             timer.Stop();
             countdown = 5;
             ticks = 0;
+        }
+
+        private void AnimateLoadingSpinner()
+        {
+            RetryButton.Visibility = Visibility.Collapsed;
+            LoadingSpinner.Opacity = 0;
+            LoadingSpinner.Visibility = Visibility.Visible;
+            StartStoryboard("SpinnerFadeStoryboard");
+            InfoTextBlock.Text = (this.FindResource("DefaultInfoTextPrompt") as string);
+            timer.Start();
         }
 
         private void StartStoryboard(string storyboardName)

@@ -50,6 +50,12 @@
             The mouse was not foud.
             Is it connected?
         </clr:String>
+        <clr:String x:Key="InfoTextDeviceFound">
+            The mouse has been found. Gathering information. 
+        </clr:String>
+        <clr:String x:Key="InfoTextDeviceIsNotResponding">
+            The mouse is not responding. Please try again.
+        </clr:String>
     </Window.Resources>
 
 

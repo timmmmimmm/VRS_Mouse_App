@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,9 +20,16 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainMainWindow : Window
     {
+        private readonly SerialPort ?MousePort;
+
         public MainMainWindow()
         {
             InitializeComponent();
+        }
+
+        public MainMainWindow(SerialPort port) : this()
+        {
+            MousePort = port;
         }
     }
 }
