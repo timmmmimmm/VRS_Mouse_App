@@ -3,7 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController"
+        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
+        xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController" xmlns:clr="clr-namespace:System;assembly=netstandard"
         mc:Ignorable="d"
         Height="450" Width="800"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
@@ -38,7 +39,17 @@
             </Setter>
         </Style>
 
-
+        <clr:String x:Key="DefaultInfoTextPrompt">
+            Looking for devices
+        </clr:String>
+        <clr:String x:Key="InfoTextPromptNoDevices">
+            No devices are connected to your computer.
+            Make sure to connect the mouse.
+        </clr:String>
+        <clr:String x:Key="InfoTextPromptDeviceNotFound">
+            The mouse was not foud.
+            Is it connected?
+        </clr:String>
     </Window.Resources>
 
 
@@ -77,8 +88,8 @@
 
         <TextBlock Name="InfoTextBlock" 
                    HorizontalAlignment="Center" Margin="0,377,0,0" VerticalAlignment="Top" 
-                   Height="27" Width="704"
-                   Text="Looking for devices" Foreground="White" TextAlignment="Center" FontSize="18" Style="{StaticResource latoFontTextBlock}"
+                   Height="63" Width="704"
+                   Text="{StaticResource DefaultInfoTextPrompt}" Foreground="White" TextAlignment="Center" FontSize="18" Style="{StaticResource latoFontTextBlock}"
                    Visibility="Visible"/>
 
         <Button  x:Name="RetryButton" 
