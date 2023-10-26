@@ -9,11 +9,12 @@ cad_mouse_vrs/.vscode/
 cad_mouse_vrs/build/
 cad_mouse_vrs/cmake/
 cad_mouse_vrs/Debug/
-cad_mouse_vrs/cad_mouse_vrs-launch
+cad_mouse_vrs/cad_mouse_vrs.launch
 cad_mouse_vrs/CMakeLists.txt
 cad_mouse_vrs/CMakePresets.json
 cad_mouse_vrs/language.settings.xml
 cad_mouse_vrs/stm32cubeide.project.prefs
+cad_mouse_vrs/vcpkg-configuration.json
 
 # User-specific files
 *.rsuser
