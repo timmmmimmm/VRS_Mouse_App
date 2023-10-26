@@ -80,7 +80,7 @@ private:
 	int16_t concat_results(uint8_t upperByte, uint8_t lowerByte, bool upperFull);
 };
 
-tlv493::tlv493(/* args */)
+tlv493::tlv493()
 {
 }
 
