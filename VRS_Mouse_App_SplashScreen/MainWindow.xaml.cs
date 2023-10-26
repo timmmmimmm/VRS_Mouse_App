@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,6 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainWindow : Window 
     {
-        private bool _animationFinished = false;
         private SerialPort? MousePort { get; set; }
         private readonly DispatcherTimer timer;
         private readonly EventHandler timerHandler;
@@ -57,35 +57,88 @@ namespace VRS_Mouse_App_SplashScreen
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {  
-           //new Thread(smthn).Start();
             InitializeTimer();
+            new Thread(FindPort).Start();
         }
 
-        private void smthn()
+        private void LookForPort()
         {
-            Thread.Sleep(2000);
             
-            this.Dispatcher.Invoke(new Action(() => 
-            {
-                LoadingSpinner.Opacity = 0;
-            }));
 
-            this.Dispatcher.Invoke(new Action(() => {
-                ((Storyboard)Resources["SpinnerFadeStoryboard"]).Begin(); 
-            }));
+            //Thread.Sleep(2000);
+            
+            //this.Dispatcher.Invoke(new Action(() => 
+            //{
+            //    LoadingSpinner.Opacity = 0;
+            //}));
+
+            //this.Dispatcher.Invoke(new Action(() => {
+            //    ((Storyboard)Resources["SpinnerFadeStoryboard"]).Begin(); 
+            //}));
         }
 
         private void FindPort()
         {
-           var portNames = SerialPort.GetPortNames();
-            
-            if(portNames.Length == 0)
+            Thread.Sleep(3000);
+            this.Dispatcher.Invoke(new Action(() => { AnimateRetryButton(); }));
+            Thread.Sleep(1000);
+            //var portNames = SerialPort.GetPortNames();
+            //bool portFound = false;
+
+            //if(portNames.Length == 0)
+            //{
+            //    AnimateRetryButton();
+            //    return;
+            //}
+
+            //while(!portFound)
+            //{
+            //    if (countdown == 0)
+            //        return;
+
+            //    foreach(var port in portNames)
+            //    {
+            //        try
+            //        {
+            //            MousePort = new(port)
+            //            {
+            //                ReadTimeout = 100
+            //            };
+            //            MousePort.Open();
+
+            //            string verificator = MousePort.ReadLine();
+            //            if (verificator.Equals(""))
+            //            {
+            //                    //TODO: Poslať Erika dopiče
+            //                portFound = true;
+            //                break;
+            //            }
+
+            //            MousePort.Close();
+            //        }
+            //        catch (IOException)
+            //        {
+            //            continue;
+            //        }
+            //        catch(UnauthorizedAccessException)
+            //        {
+            //            continue;
+            //        }
+            //        catch (ArgumentOutOfRangeException)
+            //        {
+            //            continue;
+            //        }
+            //    }
+            //}
+
+            this.Dispatcher.Invoke(new Action(() =>
             {
-                AnimateRetryButton();
-                return;
-            }
-
-
+                var nextWindow = new MainMainWindow();
+                App.Current.MainWindow = nextWindow;
+                nextWindow.Show();
+                this.Close();
+            }));
+            
         }
 
         private void InitializeTimer()

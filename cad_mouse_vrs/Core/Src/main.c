@@ -98,11 +98,13 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
+  char s[] = "SSADA";
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-
+    USART2_PutBuffer(s,strlen(s));
+    LL_mDelay(500);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

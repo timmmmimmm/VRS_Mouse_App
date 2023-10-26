@@ -58,6 +58,14 @@ void MX_USART2_UART_Init(void)
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_USART2);
 
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
+
+  LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_DMA1);
+
+  NVIC_SetPriority(DMA1_Channel6_IRQn, 0);
+  	  NVIC_EnableIRQ(DMA1_Channel6_IRQn);
+    /* DMA1_Channel7_IRQn interrupt configuration */
+    NVIC_SetPriority(DMA1_Channel7_IRQn, 0);
+    NVIC_EnableIRQ(DMA1_Channel7_IRQn);
   /**USART2 GPIO Configuration
   PA2   ------> USART2_TX
   PA15   ------> USART2_RX
@@ -124,7 +132,6 @@ void MX_USART2_UART_Init(void)
   LL_USART_Init(USART2, &USART_InitStruct);
   LL_USART_DisableIT_CTS(USART2);
   LL_USART_ConfigAsyncMode(USART2);
-  LL_USART_Enable(USART2);
   /* USER CODE BEGIN USART2_Init 2 */
   LL_USART_EnableIT_IDLE(USART2);
   LL_USART_Enable(USART2);
