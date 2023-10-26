@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen" xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController"
+        xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController"
         mc:Ignorable="d"
         Height="450" Width="800"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
@@ -38,15 +38,15 @@
             </Setter>
         </Style>
 
-        
+
     </Window.Resources>
 
-    
-    
-    
-    
-    
-    
+
+
+
+
+
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
@@ -69,28 +69,31 @@
                 Width="50" Height="50" 
                 Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
                 FontSize="24" Style="{StaticResource latoFontButton}" Click="ExitButton_Click"/>
-       
+
         <spinnercontroller:LoadingSpinner Name="LoadingSpinner"
                                           HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,265,0,0"
                                           Thickness="4" Diameter="60"
-                                          IsLoading="False"/>
-        
+                                          IsLoading="True"/>
+
         <TextBlock Name="InfoTextBlock" 
                    HorizontalAlignment="Center" Margin="0,377,0,0" VerticalAlignment="Top" 
                    Height="27" Width="704"
                    Text="Looking for devices" Foreground="White" TextAlignment="Center" FontSize="18" Style="{StaticResource latoFontTextBlock}"
                    Visibility="Visible"/>
 
-        <Image Name="RetryButton" 
-               Height="60" Width="60" 
-               Margin="370,265,370,125"
-               Source="Media/retryArrow.png"
-               Visibility="Collapsed" RenderTransformOrigin="0.5,0.5">
-        </Image>
+        <Button  x:Name="RetryButton" 
+                 Height="60" Width="60"
+                 HorizontalAlignment="Center" VerticalAlignment="Top"
+                 Margin="0,265,0,0" 
+                 Background="Transparent" BorderBrush="Transparent" Style="{StaticResource latoFontButton}"
+                 Click="OnRetryClick"
+                 RenderTransformOrigin="0.5,0.5" Visibility="Collapsed">
+            <Button.RenderTransform>
+                <RotateTransform x:Name="RetryRotateTransform" Angle="0"/>
+            </Button.RenderTransform>
 
+            <Image Source="Media/retryArrow.png"/>
+        </Button>
         
-
-
     </Grid>
-
 </Window>
