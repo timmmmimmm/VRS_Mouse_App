@@ -14,16 +14,16 @@
 
 #include "i2c.h"
 
-typedef enum TLV_ADDRESS{
+enum TLV_ADDRESS{
     TLV493_ADDRESS1 = 0x5E,
     TLV493_ADDRESS2 = 0x1F   
-}TLV_ADDRESS;
+};
 
-typedef enum TLV_ERRORS{
+enum TLV_ERRORS{
     TLV493_OK = 0,
     TLV493_BUS_ERROR,
     TLV493_FRAME_ERROR
-}TLV_ERRORS;
+};
 
 
 class tlv493

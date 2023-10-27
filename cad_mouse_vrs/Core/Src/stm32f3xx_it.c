@@ -239,6 +239,20 @@ void EXTI4_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles TIM1 break and TIM15 interrupts.
+  */
+void TIM1_BRK_TIM15_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 0 */
+
+  /* USER CODE END TIM1_BRK_TIM15_IRQn 0 */
+
+  /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 1 */
+
+  /* USER CODE END TIM1_BRK_TIM15_IRQn 1 */
+}
+
+/**
   * @brief This function handles I2C1 event global interrupt / I2C1 wake-up interrupt through EXT line 23.
   */
 void I2C1_EV_IRQHandler(void)
