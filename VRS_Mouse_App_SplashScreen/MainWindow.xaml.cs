@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Text;
@@ -22,15 +23,22 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainWindow : Window 
     {
-        private bool _animationFinished = false;
-        private  SerialPort? mousePort { get; set; }
+        private const string DEVICE_VERIFIER = "FFFF", APP_VERIFIER = "GGGG", DEVICE_ACK = "NNNN";
+        private SerialPort? MousePort { get; set; }
+        private readonly DispatcherTimer timer;
+        private readonly EventHandler timerHandler;
+        private int ticks;
+        private short countdown;
 
         public MainWindow()
         {
             InitializeComponent();
-            InitializeTimer();
-            createRetryStoryboard();
-            createLoadingSpinnerFadeStoryboard();
+            timer = new DispatcherTimer();
+            timerHandler = new EventHandler(OnTimerTick);
+            ticks = 0;
+            countdown = 5;
+            CreateRetryStoryboard();
+            CreateLoadingSpinnerFadeStoryboard();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
@@ -40,52 +48,143 @@ namespace VRS_Mouse_App_SplashScreen
 
         private void OnRetryClick(object sender, RoutedEventArgs e)
         {
-
+            AnimateLoadingSpinner();
+            new Thread(FindPort).Start();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {  
-           new Thread(smthn).Start();
+            InitializeTimer();
+            new Thread(FindPort).Start();
         }
 
-        private void smthn()
-        {
-            Thread.Sleep(2000);
-            
-            this.Dispatcher.Invoke(new Action(() => 
-            {
-                LoadingSpinner.Opacity = 0;
-            }));
 
-            this.Dispatcher.Invoke(new Action(() => {
-                ((Storyboard)Resources["SpinnerFadeStoryboard"]).Begin(); 
-            }));
-        }
-
-        private void findPort()
+        private void FindPort()
         {
-           var portNames = SerialPort.GetPortNames();
-            
-            if(portNames.Count() == 0)
+            Thread.Sleep(1000);
+            var portNames = SerialPort.GetPortNames();
+            bool portFound = false;
+
+            if (portNames.Length == 0)
             {
-                
+                this.Dispatcher.Invoke(new Action(() => { 
+                    AnimateRetryButton("InfoTextPromptNoDevices"); }));
+                return;
             }
+
+            while (!portFound)
+            {
+                if (countdown == 0)
+                    return;
+
+                foreach (var port in portNames)
+                {
+                    if (countdown == 0)
+                        return;
+
+
+                    if (port.Equals("COM3") || port.Equals("COM4"))
+                        continue;
+                    try
+                    {
+                        MousePort = new(port)
+                        {
+                            ReadTimeout = 100,
+                            BaudRate = 115200
+
+                        };
+                        MousePort.Open();
+
+                        string verificator = MousePort.ReadLine();
+                        if (verificator.Equals(DEVICE_VERIFIER))
+                        {
+                            //TODO: Poslať Erika dopiče
+                            portFound = true;
+
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                timer.Stop();
+                                InfoTextBlock.Text = FindResource("InfoTextDeviceFound") as string;
+                            }));
+
+                            MousePort.ReadTimeout = -1;
+
+                            for (short j = 0; j < 20; j++)
+                            {
+                                MousePort.WriteLine(APP_VERIFIER);
+                            }
+
+                            verificator = MousePort.ReadLine();
+
+                            if (!verificator.Equals(DEVICE_ACK))
+                            {
+                                Dispatcher.Invoke(new Action(() => {
+                                    AnimateRetryButton("InfoTextDeviceIsNotResponding");
+                                }));
+                                return;
+                            }
+
+                            break;
+                        }
+
+                        MousePort.Close();
+                    }
+                    catch (IOException)
+                    {
+                        continue;
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        continue;
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        continue;
+                    }
+                    catch (TimeoutException)
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            Dispatcher.Invoke(new Action(() =>
+            {
+                var nextWindow = new MainMainWindow();
+                App.Current.MainWindow = nextWindow;
+                nextWindow.Show();
+                this.Close();
+            }));
+            
         }
 
         private void InitializeTimer()
         {
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler(onTimerTick);
+            timer.Tick += timerHandler;
             timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             timer.Start();
         }
 
-        private void onTimerTick(object ?sender, EventArgs e)
+        private void OnTimerTick(object ?sender, EventArgs e)
         {
+            ticks++;
+
+           if(ticks > 4) 
+            {
+                if(countdown > 0 && (ticks % 2 == 0))
+                {
+                    InfoTextBlock.Text = (this.FindResource("DefaultInfoTextPrompt") as string) + "\n ending in " + countdown.ToString() + "s";
+                    countdown--;
+                }
+                else if (countdown == 0 )
+                {
+                    AnimateRetryButton("InfoTextPromptDeviceNotFound");
+                }
+            }
 
         }
 
-        private void createRetryStoryboard()
+        private void CreateRetryStoryboard()
         {
             var retryStoryboard = new Storyboard
             {
@@ -108,7 +207,7 @@ namespace VRS_Mouse_App_SplashScreen
             Resources.Add("RetryStoryboard", retryStoryboard);
         }
 
-        private void createLoadingSpinnerFadeStoryboard()
+        private void CreateLoadingSpinnerFadeStoryboard()
         {
             var spinnerFadeStoryboard = new Storyboard();
 
@@ -125,6 +224,32 @@ namespace VRS_Mouse_App_SplashScreen
             spinnerFadeStoryboard.Children.Add(spinnerFadeAnimation);
 
             Resources.Add("SpinnerFadeStoryboard", spinnerFadeStoryboard);
+        }
+
+        private void AnimateRetryButton(string resourceName)
+        {
+            LoadingSpinner.Visibility = Visibility.Collapsed;
+            RetryButton.Visibility = Visibility.Visible;
+            StartStoryboard("RetryStoryboard");
+            InfoTextBlock.Text = (this.FindResource(resourceName) as string);
+            timer.Stop();
+            countdown = 5;
+            ticks = 0;
+        }
+
+        private void AnimateLoadingSpinner()
+        {
+            RetryButton.Visibility = Visibility.Collapsed;
+            LoadingSpinner.Opacity = 0;
+            LoadingSpinner.Visibility = Visibility.Visible;
+            StartStoryboard("SpinnerFadeStoryboard");
+            InfoTextBlock.Text = (this.FindResource("DefaultInfoTextPrompt") as string);
+            timer.Start();
+        }
+
+        private void StartStoryboard(string storyboardName)
+        {
+            ((Storyboard)Resources[storyboardName]).Begin();
         }
     }
 }

@@ -60,6 +60,7 @@ void SystemClock_Config(void);
 
 /* USER CODE END 0 */
 
+int sending = 0;
 /**
   * @brief  The application entry point.
   * @retval int
@@ -69,7 +70,6 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
-
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
@@ -100,14 +100,29 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
+  char s[] = "FFFF\n";
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-
+	while(sending){}
+    USART2_PutBuffer(s,strlen(s));
+    sending = 1;
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
+}
+
+void DMA1_Channel7_IRQHandler(void)
+{
+	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
+	{
+		LL_DMA_ClearFlag_TC7(DMA1);
+
+		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
+		sending = 0;
+	}
 }
 
 /**
