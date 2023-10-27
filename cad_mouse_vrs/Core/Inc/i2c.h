@@ -37,6 +37,7 @@ extern "C" {
 /* USER CODE END Private defines */
 
 void MX_I2C1_Init(void);
+uint8_t i2c_master_read_byte(uint8_t slave_address, uint8_t register_address);
 
 /* USER CODE BEGIN Prototypes */
 

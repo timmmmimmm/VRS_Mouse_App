@@ -21,7 +21,7 @@
 #include "i2c.h"
 
 /* USER CODE BEGIN 0 */
-
+uint8_t i2c_rx_data = 0;
 /* USER CODE END 0 */
 
 /* I2C1 init function */
@@ -82,5 +82,43 @@ void MX_I2C1_Init(void)
 }
 
 /* USER CODE BEGIN 1 */
+uint8_t i2c_master_read_byte(uint8_t slave_address, uint8_t register_address)
+{
+	// Enable It from I2C
+	LL_I2C_EnableIT_RX(I2C1);
+	// Initialize communication
+	LL_I2C_HandleTransfer(I2C1, slave_address, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
+	// Send register address
+	while(!LL_I2C_IsActiveFlag_STOP(I2C1))
+	{
+		if(LL_I2C_IsActiveFlag_TXIS(I2C1))
+		{
+			LL_I2C_TransmitData8(I2C1, register_address);
+		}
+	}
+	LL_I2C_ClearFlag_STOP(I2C1);
+	while(LL_I2C_IsActiveFlag_STOP(I2C1)){};
+
+	// Receive data from slave device
+	LL_I2C_HandleTransfer(I2C1, slave_address, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_READ);
+	while(!LL_I2C_IsActiveFlag_STOP(I2C1)){};
+
+	//End of transfer
+	LL_I2C_DisableIT_RX(I2C1);
+	LL_I2C_ClearFlag_STOP(I2C1);
+	LL_I2C_ClearFlag_NACK(I2C1);
+
+	return i2c_rx_data;
+}
+
+void I2C1_EV_IRQHandler(void)
+{
+	// Check RXNE flag value in ISR register
+	if(LL_I2C_IsActiveFlag_RXNE(I2C1))
+	{
+		// Call function Master Reception Callback
+		i2c_rx_data = LL_I2C_ReceiveData8(I2C1);
+	}
+}
 
 /* USER CODE END 1 */
