@@ -21,7 +21,7 @@
 #define TLV493D_TEMP_OFFSET 		315
 
 
-namespace tlv493
+namespace tlv493d
 {
 
 typedef struct

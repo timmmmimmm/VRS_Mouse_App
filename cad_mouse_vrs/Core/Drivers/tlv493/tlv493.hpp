@@ -1,5 +1,5 @@
 /*
- * tlv493.hpp
+ * Tlv493d.hpp
  *
  *  Created on: Oct 24, 2023
  *      Author: laptop
@@ -27,7 +27,7 @@ enum TLV_ERRORS{
 };
 
 
-class tlv493
+class Tlv493d
 {
 
 public:
@@ -81,11 +81,11 @@ private:
 	int16_t concat_results(uint8_t upperByte, uint8_t lowerByte, bool upperFull);
 };
 
-tlv493::tlv493()
+Tlv493d::tlv493()
 {
 }
 
-tlv493::~tlv493()
+Tlv493d::~tlv493()
 {
 }
 
