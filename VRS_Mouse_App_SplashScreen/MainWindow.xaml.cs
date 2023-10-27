@@ -116,14 +116,6 @@ namespace VRS_Mouse_App_SplashScreen
 
                             verificator = MousePort.ReadLine();
 
-                            if (!verificator.Equals(DEVICE_ACK))
-                            {
-                                Dispatcher.Invoke(new Action(() => {
-                                    AnimateRetryButton("InfoTextDeviceIsNotResponding");
-                                }));
-                                return;
-                            }
-
                             break;
                         }
 
