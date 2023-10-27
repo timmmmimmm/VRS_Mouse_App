@@ -10,7 +10,7 @@ TLV_ERRORS tlv493_init(TLV_ADDRESS slave_address,bool reset){
 
 	MX_I2C1_Init();
 
-
+	//test
 	return TLV493_OK;
 }
 
