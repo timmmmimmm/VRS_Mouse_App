@@ -255,7 +255,8 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 /**
   * @brief This function handles I2C1 event global interrupt / I2C1 wake-up interrupt through EXT line 23.
   */
-//void I2C1_EV_IRQHandler(void){
+//void I2C1_EV_IRQHandler(void)
+//{
 //  /* USER CODE BEGIN I2C1_EV_IRQn 0 */
 //
 //  /* USER CODE END I2C1_EV_IRQn 0 */

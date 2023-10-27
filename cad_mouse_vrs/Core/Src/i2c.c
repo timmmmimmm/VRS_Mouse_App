@@ -111,7 +111,10 @@ uint8_t i2c_master_read_byte(uint8_t slave_address, uint8_t register_address)
 	return i2c_rx_data;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> Maros
 void I2C1_EV_IRQHandler(void)
 {
 	// Check RXNE flag value in ISR register

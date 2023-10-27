@@ -33,7 +33,11 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
+<<<<<<< HEAD
 #define	DMA_USART2_BUFFER_SIZE 128
+=======
+#define DMA_USART2_BUFFER_SIZE 256
+>>>>>>> Maros
 /* USER CODE END Private defines */
 
 void MX_USART2_UART_Init(void);
