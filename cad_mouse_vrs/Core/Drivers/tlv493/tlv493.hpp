@@ -13,10 +13,11 @@
 #include <stdint.h>
 
 #include "i2c.h"
+#include "gpio.h"
 
 enum TLV_ADDRESS{
     TLV493_ADDRESS1 = 0x5E,
-    TLV493_ADDRESS2 = 0x1F   
+    TLV493_ADDRESS2 = 0x1F
 };
 
 enum TLV_ERRORS{
