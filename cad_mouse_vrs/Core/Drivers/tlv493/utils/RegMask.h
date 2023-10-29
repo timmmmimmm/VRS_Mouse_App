@@ -7,16 +7,16 @@
 namespace tlv493d
 {
 
-typedef struct
-{
-	uint8_t rw;
-	uint8_t byteAdress;
-	uint8_t bitMask;
-	uint8_t shift;
-} RegMask_t;
+// typedef struct
+// {
+// 	uint8_t rw;
+// 	uint8_t byteAdress;
+// 	uint8_t bitMask;
+// 	uint8_t shift;
+// } RegMask_t;
 
-uint8_t get_from_regs(const RegMask_t *mask, uint8_t *regData);
-uint8_t set_to_regs(const RegMask_t *mask, uint8_t *regData, uint8_t toWrite);
+// uint8_t get_from_regs(const RegMask_t *mask, uint8_t *regData);
+// uint8_t set_to_regs(const RegMask_t *mask, uint8_t *regData, uint8_t toWrite);
 
 }
 
