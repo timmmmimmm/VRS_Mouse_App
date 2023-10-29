@@ -65,6 +65,7 @@ int sending = 0;
   * @brief  The application entry point.
   * @retval int
   */
+ int sending = 0;
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -99,8 +100,8 @@ int main(void)
   /* USER CODE END 2 */
 
   /* Infinite loop */
-  char s[] = "FFFF\n";
   /* USER CODE BEGIN WHILE */
+  char s[] = "FFFF\n";
   while (1)
   {
     /* USER CODE END WHILE */
@@ -158,7 +159,17 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void DMA1_Channel7_IRQHandler(void)
+{
+	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
+	{
+		LL_DMA_ClearFlag_TC7(DMA1);
 
+		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
+		sending = 0;
+	}
+}
 /* USER CODE END 4 */
 
 /**

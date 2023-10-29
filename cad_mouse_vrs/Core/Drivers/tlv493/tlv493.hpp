@@ -15,11 +15,9 @@
 #include "i2c.h"
 #include "gpio.h"
 
-enum TLV_ADDRESS{
-    TLV493_ADDRESS1 = 0x5E,
-    TLV493_ADDRESS2 = 0x1F
-};
-
+#define TLV493_ADDRESS0     0x5E
+#define TLV493_ADDRESS1     0x1F
+#define WHO_AM_I            0b00111110
 enum TLV_ERRORS{
     TLV493_OK = 0,
     TLV493_BUS_ERROR,
@@ -32,18 +30,10 @@ class Tlv493d
 
 public:
     
-    tlv493(void);
-    ~tlv493();
-    TLV_ERRORS tlv493_init(TLV_ADDRESS slave_address,bool reset);
-    
-    enum AccessMode{
-        POWERDOWNMODE = 0,
-		FASTMODE,
-		LOWPOWERMODE,
-		ULTRALOWPOWERMODE,
-		MASTERCONTROLLEDMODE,
-    };
-    bool setAccessMode(AccessMode mode);
+//    void tlv493(void);
+//    coid ~tlv493();
+    TLV_ERRORS tlv493_init(bool reset);
+   
     void enableInterrupt(void);
     void disableInterrupt(void);
     void enableTemp(void);
@@ -67,7 +57,6 @@ public:
 	// temperature
 	float getTemp(void);
 private:
-    AccessMode Mode;
     int16_t x_data;
     int16_t y_data;
     int16_t z_data;
@@ -79,14 +68,16 @@ private:
 	uint8_t get_reg_bits(uint8_t regMaskIndex);
 	void calc_parity(void);
 	int16_t concat_results(uint8_t upperByte, uint8_t lowerByte, bool upperFull);
+    uint8_t tlv493_read_byte(uint8_t reg_address);
+    void tlv493_write_byte(uint8_t reg_address, uint8_t data);
 };
 
-Tlv493d::tlv493()
-{
-}
-
-Tlv493d::~tlv493()
-{
-}
+//Tlv493d::tlv493()
+//{
+//}
+//
+//Tlv493d::~tlv493()
+//{
+//}
 
 #endif /* DRIVERS_TLV493_TLV493_HPP_ */
