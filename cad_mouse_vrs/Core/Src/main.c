@@ -93,6 +93,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
@@ -147,17 +148,7 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-void DMA1_Channel7_IRQHandler(void)
-{
-	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
-	{
-		LL_DMA_ClearFlag_TC7(DMA1);
 
-		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
-		sending = 0;
-	}
-}
 /* USER CODE END 4 */
 
 /**
