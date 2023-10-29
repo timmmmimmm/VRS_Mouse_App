@@ -246,7 +246,18 @@ void TIM1_BRK_TIM15_IRQHandler(void)
   /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 0 */
 
   /* USER CODE END TIM1_BRK_TIM15_IRQn 0 */
+		 if (LL_TIM_IsActiveFlag_UPDATE(TIM15)) {
+		        // Clear the interrupt flag
+		        LL_TIM_ClearFlag_UPDATE(TIM15);
 
+		        // Send data over USART2
+		        const char* msg = "KOKOT";
+		        while (*msg) {
+		            while (!LL_USART_IsActiveFlag_TXE(USART2));  // Wait for TX buffer to be empty
+		            LL_USART_TransmitData8(USART2, *msg);      // Send character
+		            msg++;
+		        }
+		    }
   /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 1 */
 
   /* USER CODE END TIM1_BRK_TIM15_IRQn 1 */
