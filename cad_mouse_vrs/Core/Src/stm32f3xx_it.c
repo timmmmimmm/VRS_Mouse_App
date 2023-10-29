@@ -289,22 +289,6 @@ void DMA1_Channel7_IRQHandler(void)
 	}
 }
 
-
-void DMA1_Channel6_IRQHandler(void)
-{
-	if(LL_DMA_IsActiveFlag_TC6(DMA1) == SET)
-	{
-
-		LL_DMA_ClearFlag_TC6(DMA1);
-	}
-	else if(LL_DMA_IsActiveFlag_HT6(DMA1) == SET)
-	{
-
-		LL_DMA_ClearFlag_HT6(DMA1);
-	}
-}
-
-
 /* USER CODE BEGIN 1 */
 void USART2_IRQHandler(void)
 {
