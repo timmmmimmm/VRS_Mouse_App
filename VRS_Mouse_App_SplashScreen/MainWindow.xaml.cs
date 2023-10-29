@@ -27,35 +27,47 @@ namespace VRS_Mouse_App_SplashScreen
         private SerialPort? MousePort { get; set; }
         private readonly DispatcherTimer timer;
         private readonly EventHandler timerHandler;
+        private readonly Thread PortFinderThread;
         private int ticks;
-        private short countdown;
+        private static short countdown;
+        private static bool _shutdown;
 
         public MainWindow()
         {
             InitializeComponent();
             timer = new DispatcherTimer();
             timerHandler = new EventHandler(OnTimerTick);
+            PortFinderThread = new(FindPort);
+  
             ticks = 0;
             countdown = 5;
+            _shutdown = false;
             CreateRetryStoryboard();
             CreateLoadingSpinnerFadeStoryboard();
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
+            _shutdown = true;
+            if(PortFinderThread.IsAlive)
+            {
+                PortFinderThread.Join();
+            }
+          ;
             System.Windows.Application.Current.Shutdown();
         }
 
         private void OnRetryClick(object sender, RoutedEventArgs e)
         {
             AnimateLoadingSpinner();
+            countdown = 5;
             new Thread(FindPort).Start();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {  
             InitializeTimer();
-            new Thread(FindPort).Start();
+            PortFinderThread.Start();
         }
 
 
@@ -72,19 +84,14 @@ namespace VRS_Mouse_App_SplashScreen
                 return;
             }
 
-            while (!portFound)
+            while (!portFound && !_shutdown && countdown!=0)
             {
-                if (countdown == 0)
-                    return;
 
                 foreach (var port in portNames)
                 {
-                    if (countdown == 0)
+                    if (countdown == 0 || _shutdown)
                         return;
 
-
-                    if (port.Equals("COM3") || port.Equals("COM4"))
-                        continue;
                     try
                     {
                         MousePort = new(port)
@@ -94,32 +101,32 @@ namespace VRS_Mouse_App_SplashScreen
 
                         };
                         MousePort.Open();
-
-                        string verificator = MousePort.ReadLine();
-                        if (verificator.Equals(DEVICE_VERIFIER))
+                        if(MousePort.IsOpen)
                         {
-                            //TODO: Poslať Erika dopiče
-                            portFound = true;
-
-                            Dispatcher.Invoke(new Action(() =>
+                            string verificator = MousePort.ReadLine();
+                            if (verificator.Equals(DEVICE_VERIFIER))
                             {
-                                timer.Stop();
-                                InfoTextBlock.Text = FindResource("InfoTextDeviceFound") as string;
-                            }));
+                                portFound = true;
 
-                            MousePort.ReadTimeout = -1;
+                                Dispatcher.Invoke(new Action(() =>
+                                {
+                                    timer.Stop();
+                                    InfoTextBlock.Text = FindResource("InfoTextDeviceFound") as string;
+                                }));
 
-                            for (short j = 0; j < 20; j++)
-                            {
-                                MousePort.WriteLine(APP_VERIFIER);
+                                MousePort.ReadTimeout = -1;
+
+                                for (short j = 0; j < 20; j++)
+                                {
+                                    MousePort.WriteLine(APP_VERIFIER);
+                                }
+                                //TODO: Fetch current mouse state
+                                break;
                             }
 
-                            verificator = MousePort.ReadLine();
-
-                            break;
+                            MousePort.Close();
                         }
-
-                        MousePort.Close();
+                        
                     }
                     catch (IOException)
                     {
@@ -153,7 +160,7 @@ namespace VRS_Mouse_App_SplashScreen
         private void InitializeTimer()
         {
             timer.Tick += timerHandler;
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
             timer.Start();
         }
 
@@ -161,9 +168,9 @@ namespace VRS_Mouse_App_SplashScreen
         {
             ticks++;
 
-           if(ticks > 4) 
+           if(ticks > 5) 
             {
-                if(countdown > 0 && (ticks % 2 == 0))
+                if(countdown > 0)
                 {
                     InfoTextBlock.Text = (this.FindResource("DefaultInfoTextPrompt") as string) + "\n ending in " + countdown.ToString() + "s";
                     countdown--;
@@ -225,7 +232,6 @@ namespace VRS_Mouse_App_SplashScreen
             StartStoryboard("RetryStoryboard");
             InfoTextBlock.Text = (this.FindResource(resourceName) as string);
             timer.Stop();
-            countdown = 5;
             ticks = 0;
         }
 
