@@ -20,6 +20,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f3xx_it.h"
+#include "usart.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -249,14 +250,13 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 		 if (LL_TIM_IsActiveFlag_UPDATE(TIM15)) {
 		        // Clear the interrupt flag
 		        LL_TIM_ClearFlag_UPDATE(TIM15);
+		        char tx_buffer[256];
 
 		        // Send data over USART2
-		        const char* msg = "KOKOT";
-		        while (*msg) {
-		            while (!LL_USART_IsActiveFlag_TXE(USART2));  // Wait for TX buffer to be empty
-		            LL_USART_TransmitData8(USART2, *msg);      // Send character
-		            msg++;
-		        }
+		        uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
+
+		        USART2_PutBuffer((uint8_t*)tx_buffer, len);
+
 		    }
   /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 1 */
 

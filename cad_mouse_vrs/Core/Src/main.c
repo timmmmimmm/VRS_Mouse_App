@@ -101,15 +101,6 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  char s[] = "FFFF\n";
-  while (1)
-  {
-    /* USER CODE END WHILE */
-	while(sending){}
-    USART2_PutBuffer(s,strlen(s));
-    sending = 1;
-    /* USER CODE BEGIN 3 */
-  }
   /* USER CODE END 3 */
 }
 /**
