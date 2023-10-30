@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
         mc:Ignorable="d"
-        Title="MainMainWindow" Height="450" Width="800">
+        Title="MainMainWindow" Height="764" Width="532"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
+        SnapsToDevicePixels="True" Background="#FFE82121"
+        >
     <Grid>
+        <Button Name="ExitButton" Content="X" 
+        HorizontalAlignment="Right" VerticalAlignment="Top" 
+        Width="30" Height="30" 
+        Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
+        FontSize="18" Style="{StaticResource latoFontButton}"/>
         
+        <Button x:Name="ExitButton_Copy" Content="min" 
+            HorizontalAlignment="Left" VerticalAlignment="Top" 
+            Width="30" Height="30" 
+            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
+            FontSize="18" Style="{StaticResource latoFontButton}" Margin="467,0,0,0"/>
     </Grid>
 </Window>
