@@ -22,6 +22,7 @@
 
 /* USER CODE BEGIN 0 */
 uint8_t *aReceiveBuffer_read;
+uint8_t size = 0;
 volatile uint8_t ubReceiveIndex = 0;
 /* USER CODE END 0 */
 
@@ -82,7 +83,7 @@ void MX_I2C1_Init(void)
 }
 
 /* USER CODE BEGIN 1 */
-void i2c_master_write(uint8_t data, uint8_t register_addr, uint8_t slave_addr)
+void i2c_master_write(uint8_t *data, uint8_t register_addr, uint8_t slave_addr,uint8_t len)
 {
 	
 	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 2, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
@@ -91,18 +92,21 @@ void i2c_master_write(uint8_t data, uint8_t register_addr, uint8_t slave_addr)
 
 	while(!LL_I2C_IsActiveFlag_STOP(I2C1))
 	{
-		if(LL_I2C_IsActiveFlag_TXIS(I2C1))
-		{
-			LL_I2C_TransmitData8(I2C1, data);
+		for (size_t i = 0; i < len;i++) {
+			if(LL_I2C_IsActiveFlag_TXIS(I2C1))
+			{
+				LL_I2C_TransmitData8(I2C1, data[i]);
+			}
 		}
 	}
 	LL_I2C_ClearFlag_STOP(I2C1);
 }
 
 
-void i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uint8_t slave_addr, uint8_t read_flag)
+void i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uint8_t slave_addr)
 {
 	aReceiveBuffer_read = buffer;
+	size = length;
 
 	LL_I2C_EnableIT_RX(I2C1);
 
@@ -133,13 +137,14 @@ void i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uin
 
 void I2C1_IRQHandler(void)
 {
-	/* Check RXNE flag value in ISR register */
 	if(LL_I2C_IsActiveFlag_RXNE(I2C1))
 	{
 		/* Call function Master Reception Callback */
 		aReceiveBuffer_read[ubReceiveIndex++] = LL_I2C_ReceiveData8(I2C1);
 		(ubReceiveIndex > 19) ? ubReceiveIndex = 0 : ubReceiveIndex;
 	}
+	/* Check RXNE flag value in ISR register */
+
 }
 
 
