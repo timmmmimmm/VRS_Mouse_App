@@ -5,21 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
         mc:Ignorable="d"
-        Title="MainMainWindow" Height="764" Width="532"
+        Title="MainMainWindow" Height="1024" Width="800"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
         SnapsToDevicePixels="True" Background="#FFE82121"
         >
     <Grid>
-        <Button Name="ExitButton" Content="X" 
+        <Button Name="ExitButton"
         HorizontalAlignment="Right" VerticalAlignment="Top" 
-        Width="30" Height="30" 
-        Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
-        FontSize="18" Style="{StaticResource latoFontButton}"/>
-        
-        <Button x:Name="ExitButton_Copy" Content="min" 
+        Width="60" Height="60" 
+        Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}" Click="ExitButton_Click">
+            <Image Source="Media/exitButton.png"/>
+        </Button>
+
+        <Button x:Name="MinimizeButton"
             HorizontalAlignment="Left" VerticalAlignment="Top" 
-            Width="30" Height="30" 
-            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
-            FontSize="18" Style="{StaticResource latoFontButton}" Margin="467,0,0,0"/>
+            Width="60" Height="60" 
+            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}"
+            FontSize="18" Margin="675,0,0,0" Click="ExitButton_Copy_Click">
+            <Image Source="Media/minimize.png" />
+        </Button>
+
     </Grid>
 </Window>

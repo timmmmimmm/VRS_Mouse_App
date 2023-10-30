@@ -9,6 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Media\exitButton.png" />
+    <None Remove="Media\minimize-removebg-preview.png" />
+    <None Remove="Media\minimize.png" />
     <None Remove="Media\retryArrow.png" />
   </ItemGroup>
 
@@ -47,6 +50,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Media\exitButton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\minimize.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Media\retryArrow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>

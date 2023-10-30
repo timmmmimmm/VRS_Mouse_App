@@ -31,5 +31,15 @@ namespace VRS_Mouse_App_SplashScreen
         {
             MousePort = port;
         }
+
+        private void ExitButton_Copy_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void ExitButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
     }
 }
