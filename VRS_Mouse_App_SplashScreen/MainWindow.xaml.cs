@@ -1,27 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
 using System.IO.Ports;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Threading;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace VRS_Mouse_App_SplashScreen
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window 
+    public partial class MainWindow : Window
     {
         private const string DEVICE_VERIFIER = "FFFF", APP_VERIFIER = "GGGG";
         private SerialPort? MousePort { get; set; }
@@ -42,21 +30,21 @@ namespace VRS_Mouse_App_SplashScreen
             timer = new DispatcherTimer();
             timerHandler = new EventHandler(OnTimerTick);
             PortFinderThread = new(FindPort);
-            
+
             ticks = 0;
             countdown = 5;
             shutdown = false;
-            
+
         }
-        
+
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             shutdown = true;
-            if(PortFinderThread.IsAlive)
+            if (PortFinderThread.IsAlive)
             {
                 PortFinderThread.Join();
             }
-          
+
             System.Windows.Application.Current.Shutdown();
         }
 
@@ -64,7 +52,7 @@ namespace VRS_Mouse_App_SplashScreen
         {
             AnimateLoadingSpinner();
             countdown = 5;
-            if(PortFinderThread.IsAlive )
+            if (PortFinderThread.IsAlive)
             {
                 PortFinderThread.Join();
             }
@@ -73,7 +61,7 @@ namespace VRS_Mouse_App_SplashScreen
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
-        {  
+        {
             InitializeTimer();
             PortFinderThread.Start();
         }
@@ -95,7 +83,7 @@ namespace VRS_Mouse_App_SplashScreen
             //    }
 
             //    var portNames = SerialPort.GetPortNames();
-                
+
             //    if (portNames.Length == 0)
             //    {
             //        this.Dispatcher.Invoke(new Action(() => {
@@ -146,7 +134,7 @@ namespace VRS_Mouse_App_SplashScreen
 
             //                MousePort.Close();
             //            }
-                        
+
             //        }
             //        catch (IOException)
             //        {
@@ -174,7 +162,7 @@ namespace VRS_Mouse_App_SplashScreen
                 nextWindow.Show();
                 this.Close();
             }));
-            
+
         }
 
         private void InitializeTimer()
@@ -184,19 +172,19 @@ namespace VRS_Mouse_App_SplashScreen
             timer.Start();
         }
 
-        private void OnTimerTick(object ?sender, EventArgs e)
+        private void OnTimerTick(object? sender, EventArgs e)
         {
             ticks++;
 
-           if(ticks > 5) 
+            if (ticks > 5)
             {
-                if(countdown > 0)
+                if (countdown > 0)
                 {
-                    InfoTextBlock.Text = (this.FindResource(ResourceNames.SplashScreen.InfoBoxStrings.DEFAULT) as string) + 
+                    InfoTextBlock.Text = (this.FindResource(ResourceNames.SplashScreen.InfoBoxStrings.DEFAULT) as string) +
                                          "\n ending in " + countdown.ToString() + "s";
                     countdown--;
                 }
-                else if (countdown == 0 )
+                else if (countdown == 0)
                 {
                     AnimateRetryButton(ResourceNames.SplashScreen.InfoBoxStrings.DEVICE_NOT_FOUND);
                 }
@@ -204,7 +192,7 @@ namespace VRS_Mouse_App_SplashScreen
 
         }
 
-        
+
 
         private void AnimateRetryButton(string resourceName)
         {

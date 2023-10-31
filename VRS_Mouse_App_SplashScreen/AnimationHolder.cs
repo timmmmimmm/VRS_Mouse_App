@@ -1,12 +1,6 @@
-﻿using SpinnerController;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Animation;
+﻿using System;
 using System.Windows;
-using VRS_Mouse_App_SplashScreen.Properties;
+using System.Windows.Media.Animation;
 
 namespace VRS_Mouse_App_SplashScreen
 {
@@ -14,21 +8,21 @@ namespace VRS_Mouse_App_SplashScreen
     {
         private const string retryStoryboardAnimationName = "RetryStoryboard";
         private const string spinnerFadeStoryboardAnimationName = "SpinnerFadeStoryboard";
-        private readonly MainWindow ?SplashScreen;
+        private readonly MainWindow? SplashScreen;
 
         public AnimationHolder(MainWindow? splashScreen = null)
         {
             SplashScreen = splashScreen;
-
             CreateRetryStoryboard();
             CreateLoadingSpinnerFadeStoryboard();
+            
         }
 
 
 
         private void CreateRetryStoryboard()
         {
-            if(SplashScreen == null)
+            if (SplashScreen == null)
             {
                 return;
             }
@@ -51,12 +45,12 @@ namespace VRS_Mouse_App_SplashScreen
 
             retryStoryboard.Children.Add(retryAnimation);
 
-            SplashScreen.Resources.Add (retryStoryboardAnimationName, retryStoryboard);
+            SplashScreen.Resources.Add(retryStoryboardAnimationName, retryStoryboard);
         }
 
         private void CreateLoadingSpinnerFadeStoryboard()
         {
-            if(SplashScreen == null) 
+            if (SplashScreen == null)
             {
                 return;
             }
@@ -75,12 +69,12 @@ namespace VRS_Mouse_App_SplashScreen
 
             spinnerFadeStoryboard.Children.Add(spinnerFadeAnimation);
 
-           SplashScreen.Resources.Add(spinnerFadeStoryboardAnimationName, spinnerFadeStoryboard);
+            SplashScreen.Resources.Add(spinnerFadeStoryboardAnimationName, spinnerFadeStoryboard);
         }
 
         private void StartStoryboard(string storyboardName)
         {
-            if(SplashScreen ==null)
+            if (SplashScreen == null)
             {
                 return;
             }
@@ -90,7 +84,7 @@ namespace VRS_Mouse_App_SplashScreen
 
         public void HideRetryButtonFadeOutLoadnigSpinner()
         {
-            if(SplashScreen == null)
+            if (SplashScreen == null)
             {
                 return;
             }
@@ -101,16 +95,17 @@ namespace VRS_Mouse_App_SplashScreen
             StartStoryboard(spinnerFadeStoryboardAnimationName);
         }
 
-        public void HideLoadingSpinnerSpinRetryButtonThreeTimes() {
-        
-            if(SplashScreen == null)
+        public void HideLoadingSpinnerSpinRetryButtonThreeTimes()
+        {
+
+            if (SplashScreen == null)
             {
                 return;
             }
 
-           SplashScreen.LoadingSpinner.Visibility = Visibility.Collapsed;
-           SplashScreen.RetryButton.Visibility = Visibility.Visible;
-           StartStoryboard("RetryStoryboard");
+            SplashScreen.LoadingSpinner.Visibility = Visibility.Collapsed;
+            SplashScreen.RetryButton.Visibility = Visibility.Visible;
+            StartStoryboard("RetryStoryboard");
         }
     }
 }
