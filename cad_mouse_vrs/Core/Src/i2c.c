@@ -59,7 +59,7 @@ void MX_I2C1_Init(void)
   NVIC_EnableIRQ(I2C1_EV_IRQn);
 
   /* USER CODE BEGIN I2C1_Init 1 */
-  GPIOB->ODR |= (0b11 << 6);
+  // GPIOB->ODR |= (0b11 << 6);
   /* USER CODE END I2C1_Init 1 */
   /** I2C Initialization
   */

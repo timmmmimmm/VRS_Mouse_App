@@ -21,14 +21,12 @@ static uint8_t address = TLV493_ADDRESS0;
 //Tlv493d::~tlv493(void){
 //
 //}
-void tlv493_write_byte(uint8_t reg_address, uint8_t data){
-	i2c_master_write(data, reg_address, address);
+void tlv493_write_byte(uint8_t reg_address, uint8_t *data, uint8_t len){
+	i2c_master_write(data, reg_address, address, len);
 }
-uint8_t tlv493_read_byte(uint8_t reg_address)
+void tlv493_read_byte(uint8_t *data, uint8_t reg_address,uint8_t len)
 {
-	uint8_t data = 0;
-	i2c_master_read(&data, 1, reg_address, address, 0);
-	return data;
+	i2c_master_read(&data, len, reg_address, address);
 }
 TLV_ERRORS tlv493_init(bool reset){
 
