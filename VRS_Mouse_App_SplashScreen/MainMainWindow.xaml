@@ -5,8 +5,187 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
         mc:Ignorable="d"
-        Title="MainMainWindow" Height="450" Width="800">
+        Title="MainMainWindow" Height="450" Width="800"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
+        SnapsToDevicePixels="True" 
+        Background="Red" Foreground="Transparent" BorderBrush="Transparent"
+        Loaded="Window_Loaded"
+        >
+
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard Duration="00:00:3" Storyboard.TargetProperty="Opacity">
+                    <DoubleAnimation From="0" To="1"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </Window.Triggers>
+
+    <Window.Resources>
+        <Storyboard x:Key="fadeIn">
+            <DoubleAnimation 
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1"
+                Duration="0:0:0.5"/>
+        </Storyboard>
+        <Storyboard x:Key="fadeOut">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                             From="1" To="0"
+                             Duration="0:0:0.5"/>
+        </Storyboard>
+    </Window.Resources>
+
     <Grid>
+        <Button Name="ExitButton"
+        HorizontalAlignment="Right" VerticalAlignment="Top" 
+        Width="30" Height="30" 
+        Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}" Click="ExitButton_Click">
+            <Image Source="Media/exitButton.png"/>
+        </Button>
+
+        <Button x:Name="MinimizeButton"
+            HorizontalAlignment="Right" VerticalAlignment="Top" 
+            Width="30" Height="30" 
+            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}"
+            FontSize="18" Margin="0,0,30,0" Click="ExitButton_Copy_Click">
+            <Image Source="Media/minimize.png"  Width="25" Height="29"/>
+        </Button>
+
+        <StackPanel
+            VerticalAlignment="Top" HorizontalAlignment="Left"
+                   Width="490" Height="30" >
+            <Grid x:Name="DragRectangle"
+                   Width="490" Height="30" MouseDown="DragRectangle_MouseDown"
+                  Background="Transparent"/>
+
+        </StackPanel>
+
         
+            <Grid Width="auto" 
+                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,30,0,0">
+   
+                <StackPanel>
+                    <ListView x:Name="NavPanel" Height="auto" Width="auto" 
+                     Background="Transparent" 
+                     BorderBrush="Transparent" BorderThickness="0,0,0,0" 
+                     Margin="0,0,0,0"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="True"
+                     PreviewMouseLeftButtonUp="NavPanel_PreviewMouseLeftButtonUp">
+
+                    <ListView.Template>
+                        <ControlTemplate>
+                            <Border CornerRadius="20" BorderThickness="1" BorderBrush="Gray">
+                                <ItemsPresenter></ItemsPresenter>
+                            </Border>
+                            
+                            
+                        </ControlTemplate>
+                    </ListView.Template>
+
+                    <ListViewItem x:Name="mouseInfo" 
+                             Height="50" Width="auto" HorizontalContentAlignment="Left" 
+                             Margin="0,0,0,0" 
+                             BorderBrush="Gray" BorderThickness="0,0,0,1"
+                             Padding="5,2">
+
+                            <Grid HorizontalAlignment="Left">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image HorizontalAlignment="Left" 
+                                  Grid.Column="0" 
+                                  Source="Media/info-32.png"/>
+
+                                <TextBlock Grid.Column="1" 
+                                      Text="Mouse info" FontSize="22" Foreground="White" 
+                                      VerticalAlignment="Center"
+                                  Margin="5,0,0,0"/>
+                            </Grid>
+
+                            <ListViewItem.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard Storyboard="{StaticResource fadeIn}"/>
+                                </EventTrigger>
+
+                            </ListViewItem.Triggers>
+
+                        </ListViewItem>
+
+                        <ListViewItem x:Name="mouseSettings" 
+                             Height="50" Width="auto" HorizontalContentAlignment="Left" 
+                             Margin="0,0,0,0" 
+                             BorderBrush="Gray" BorderThickness="0,0,0,1"
+                             Padding="5,2">
+
+
+                            <Grid HorizontalAlignment="Left">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image HorizontalAlignment="Left" 
+                                  Grid.Column="0" 
+                                  Source="Media/mouse-32.png"/>
+
+                                <TextBlock Grid.Column="1" 
+                                      Text="Mouse Settings" FontSize="22" Foreground="White" 
+                                      VerticalAlignment="Center"
+                                  Margin="5,0,0,0"/>
+                            </Grid>
+
+                            <ListViewItem.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard Storyboard="{StaticResource fadeIn}"/>
+                                </EventTrigger>
+
+                            </ListViewItem.Triggers>
+                        </ListViewItem>
+
+                        <ListViewItem x:Name="keySettings" 
+                             Height="50" Width="auto" HorizontalContentAlignment="Left" 
+                             Margin="0,0,0,0" 
+                             BorderBrush="Gray" BorderThickness="0,0,0,0"
+                             Padding="5,2">
+
+
+                            <Grid HorizontalAlignment="Left">
+
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Image HorizontalAlignment="Left" 
+                              Grid.Column="0" 
+                              Source="Media/enter-32.png"/>
+
+                                <TextBlock Grid.Column="1" 
+                                  Text="Key Settings" FontSize="22" Foreground="White" 
+                                  VerticalAlignment="Center"
+                                  Margin="5,0,0,0"/>
+                            </Grid>
+
+                            <ListViewItem.Triggers>
+                                <EventTrigger RoutedEvent="Loaded">
+                                    <BeginStoryboard Storyboard="{StaticResource fadeIn}"/>
+                                </EventTrigger>
+
+                            </ListViewItem.Triggers>
+                        </ListViewItem>
+
+                    </ListView>
+
+                </StackPanel>
+ 
+
+        </Grid>
+       
+
     </Grid>
 </Window>

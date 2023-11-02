@@ -79,5 +79,15 @@ namespace VRS_Mouse_App_SplashScreen.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] xClose {
+            get {
+                object obj = ResourceManager.GetObject("xClose", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

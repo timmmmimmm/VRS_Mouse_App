@@ -11,33 +11,7 @@
         SnapsToDevicePixels="True" Loaded="Window_Loaded">
 
     <Window.Resources>
-        <Style x:Key="latoFontTextBlock" TargetType="TextBlock">
-            <Setter Property="FontFamily" Value="Fonts/Lato-Regular.ttf #latoR"/>
-        </Style>
 
-        <Style x:Key="latoFontButton" TargetType="Button">
-            <Setter Property="FontFamily" Value="Fonts/Lato-Regular.ttf #latoR"/>
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" 
-                BorderThickness="{TemplateBinding BorderThickness}"
-                Padding="4,2" 
-                BorderBrush="{TemplateBinding BorderBrush}"  
-                Background="{TemplateBinding Background}">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="black" />
-                                <Setter TargetName="border" Property="Background" Value="black"/>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
 
         <clr:String x:Key="DefaultInfoTextPrompt">
             Looking for devices
@@ -51,7 +25,7 @@
             Is it connected?
         </clr:String>
         <clr:String x:Key="InfoTextDeviceFound">
-            The mouse has been found. Gathering information. 
+            The mouse has been found. Gathering information.
         </clr:String>
         <clr:String x:Key="InfoTextDeviceIsNotResponding">
             The mouse is not responding. Please try again.
@@ -76,16 +50,17 @@
         <MediaElement Name="Video" 
                       Grid.Column="0" Grid.Row="0"
                       Height="450" Width="800"
-                      Visibility="Visible"
-                      LoadedBehavior="Play" 
+                      Visibility="Visible" 
                       UnloadedBehavior="Stop"
                       Source="Media/spashScreen.mp4"/>
 
-        <Button Name="ExitButton" Content="X" 
+        <Button Name="ExitButton"
                 HorizontalAlignment="Right" VerticalAlignment="Top" 
-                Width="50" Height="50" 
+                Width="35" Height="35" 
                 Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}"
-                FontSize="24" Style="{StaticResource latoFontButton}" Click="ExitButton_Click"/>
+                FontSize="24" Style="{StaticResource latoFontButton}" Click="ExitButton_Click">
+            <Image Source="Media/exitButton.png"  />
+        </Button>
 
         <spinnercontroller:LoadingSpinner Name="LoadingSpinner"
                                           HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,265,0,0"
@@ -111,6 +86,6 @@
 
             <Image Source="Media/retryArrow.png"/>
         </Button>
-        
+
     </Grid>
 </Window>
