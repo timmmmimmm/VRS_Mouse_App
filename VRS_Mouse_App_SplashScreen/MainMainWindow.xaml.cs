@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,12 +17,14 @@ namespace VRS_Mouse_App_SplashScreen
     {
         private readonly SerialPort? MousePort;
         private readonly Duration AnimationDuration;
+        private bool animationFinished = false;
+        private int lastIndex = 0;
 
         public MainMainWindow()
         {
             AnimationDuration = new Duration(TimeSpan.FromMilliseconds(300));
             InitializeComponent();
-            ChangeContent(new MouseInfoPanel());
+            ChangeContent(new MouseInfoPanel(), ScrollDirection.Up);
         }
 
         public MainMainWindow(SerialPort port) : this()
@@ -39,39 +42,52 @@ namespace VRS_Mouse_App_SplashScreen
             return animation;
         }
 
-        void SlideAnimation(UIElement newContent, UIElement oldContent, EventHandler? completedEventHndler)
+        void SlideAnimation(UIElement newContent, UIElement oldContent, EventHandler? completedEventHndler, ScrollDirection scrollDirection)
         {
             double start = Canvas.GetBottom(oldContent);
-            Canvas.SetBottom(newContent, start - oldContent.RenderSize.Height);
+            Canvas.SetBottom(newContent, scrollDirection == ScrollDirection.Up? -Height : Height);
             ScreenContainer.Children.Add(newContent);
 
             if(double.IsNaN(start))
             {
-                start = oldContent.RenderSize.Height;
+                start = 0;
             }
 
-            DoubleAnimation outAnimation = CreateAnimation(start, start - oldContent.RenderSize.Height,null);
-            DoubleAnimation inAnimation = CreateAnimation(start + oldContent.RenderSize.Height, start, completedEventHndler);
+            DoubleAnimation outAnimation = CreateAnimation(start, scrollDirection == ScrollDirection.Up ? start + Height : start - Height, null);
+            DoubleAnimation inAnimation = CreateAnimation(scrollDirection == ScrollDirection.Up ? start - Height: start + Height, start, completedEventHndler);
             oldContent.BeginAnimation(Canvas.BottomProperty, outAnimation);
             newContent.BeginAnimation(Canvas.BottomProperty, inAnimation);
         }
 
-        public void ChangeContent(UIElement newContent)
+        public void ChangeContent(UIElement newContent, ScrollDirection scrollDirection)
         {
-            ScreenContainer.IsHitTestVisible = false;
-            var oldContent = ScreenContainer.Children[0];
-            EventHandler onAnimationCompleted = delegate (object? sender, EventArgs e)
+            if(ScreenContainer.Children.Count == 0)
             {
-                ScreenContainer.IsHitTestVisible = true;
-                if (oldContent != null)
+                ScreenContainer.Children.Add(newContent);
+                return;
+            }
+
+            if(ScreenContainer.Children.Count == 1)
+            {
+                animationFinished = false;
+                ScreenContainer.IsHitTestVisible = false;
+                var oldContent = ScreenContainer.Children[0];
+                EventHandler onAnimationCompleted = delegate (object? sender, EventArgs e)
                 {
-                    ScreenContainer.Children.Remove(oldContent);
-                }
+                    ScreenContainer.IsHitTestVisible = true;
+                    if (oldContent != null)
+                    {
+                        ScreenContainer.Children.Remove(oldContent);
+                    }
 
-                oldContent = null;
-            };
+                    oldContent = null;
+                    animationFinished = true;
+                };
 
-            SlideAnimation(newContent,oldContent, onAnimationCompleted);
+                SlideAnimation(newContent, oldContent, onAnimationCompleted, scrollDirection);
+            }
+
+           
         }
 
         private void MinimizeButton_Click(object sender, RoutedEventArgs e)
@@ -100,27 +116,72 @@ namespace VRS_Mouse_App_SplashScreen
 
         private void NavPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Trace.WriteLine(NavPanel.SelectedIndex.ToString());
-
             var currentIndex = NavPanel.SelectedIndex;
-            switch (currentIndex)
+            
+            if(currentIndex != lastIndex)
             {
-                case (int)NavPanelNames.MouseInfo:
+               var diff = currentIndex - lastIndex;
+               var currentScrollDir = diff > 0 ? ScrollDirection.Down : ScrollDirection.Up;
+                switch (currentIndex)
+                {
+                    case (int)NavPanelNames.MouseInfo:
+                        if(Math.Abs(diff) > 1)
+                        {
+       
+                            ChangeContent(new MouseSettingsPanel(),currentScrollDir);
+                           
+                            new Thread(() => {
+                                while (!animationFinished) ;
+                                Dispatcher.Invoke(() =>
+                                {
+    
+                                    ChangeContent(new MouseInfoPanel(), currentScrollDir);
+                                });
+                            }).Start();
+                            break;
+                        }
 
-                    break;
-                case (int)NavPanelNames.MouseSettings: 
-                    break;
-                case (int)NavPanelNames.ButtonSettings: 
-                    break;
+                        ChangeContent(new MouseInfoPanel(), currentScrollDir);
+                        break;
+                    case (int)NavPanelNames.MouseSettings:
+                        
+                        new Thread(() => {
+                            while (!animationFinished) ;
+                            Dispatcher.Invoke(() =>
+                            {
+                                ChangeContent(new MouseSettingsPanel(), currentScrollDir);
+                            });
+                        }).Start();
+                        break;
+                    case (int)NavPanelNames.ButtonSettings:
+                        if(Math.Abs(diff) > 1)
+                        {
+                            ChangeContent(new MouseSettingsPanel(), currentScrollDir);
+    
+                            new Thread(() => {
+                                while (!animationFinished) ;
+                                Dispatcher.Invoke(() =>
+                            {
+                                ChangeContent(new ButtonSettingsPanel(), currentScrollDir);
+                            });
+                            }).Start();
+                            
+                            break;
+                        }
+                        ChangeContent(new ButtonSettingsPanel(), currentScrollDir);
+                        break;
+                }
+                var currentItem = NavPanel.Items.GetItemAt(currentIndex);
+                if (currentIndex != -1)
+                {
+                    NavPanel.Items.RemoveAt(currentIndex);
+                    NavPanel.Items.Insert(currentIndex, currentItem);
+                }
+                NavPanel.UpdateLayout();
+                NavPanel.SelectedIndex = currentIndex;
             }
-            var currentItem = NavPanel.Items.GetItemAt(currentIndex);
-            if (currentIndex != -1)
-            {
-                NavPanel.Items.RemoveAt(currentIndex);
-                NavPanel.Items.Insert(currentIndex, currentItem);
-            }
-            NavPanel.UpdateLayout();
-            NavPanel.SelectedIndex = currentIndex;
+            
+            lastIndex = currentIndex;
         }
 
         private void NavPanel_Loaded(object sender, RoutedEventArgs e)
