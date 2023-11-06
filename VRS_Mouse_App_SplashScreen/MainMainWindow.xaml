@@ -8,9 +8,8 @@
         Title="MainMainWindow" Height="450" Width="800"
         WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowStyle="None" 
         SnapsToDevicePixels="True" 
-        Background="Red" Foreground="Transparent" BorderBrush="Transparent"
-        Loaded="Window_Loaded"
-        >
+        Background="Black" Foreground="Transparent" BorderBrush="Transparent"
+        Loaded="Window_Loaded">
 
     <Window.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -48,22 +47,22 @@
             HorizontalAlignment="Right" VerticalAlignment="Top" 
             Width="30" Height="30" 
             Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}"
-            FontSize="18" Margin="0,0,30,0" Click="ExitButton_Copy_Click">
+            FontSize="18" Margin="0,0,30,0" Click="MinimizeButton_Click">
             <Image Source="Media/minimize.png"  Width="25" Height="29"/>
         </Button>
 
         <StackPanel
             VerticalAlignment="Top" HorizontalAlignment="Left"
-                   Width="490" Height="30" >
+                   Width="auto" Height="30" >
             <Grid x:Name="DragRectangle"
-                   Width="490" Height="30" MouseDown="DragRectangle_MouseDown"
+                   Width="735" Height="30" MouseDown="DragRectangle_MouseDown"
                   Background="Transparent"/>
 
         </StackPanel>
 
         
             <Grid Width="auto" 
-                  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,30,0,0">
+                  HorizontalAlignment="Left" VerticalAlignment="Center">
    
                 <StackPanel>
                     <ListView x:Name="NavPanel" Height="auto" Width="auto" 
@@ -71,23 +70,16 @@
                      BorderBrush="Transparent" BorderThickness="0,0,0,0" 
                      Margin="0,0,0,0"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" Focusable="True"
-                     PreviewMouseLeftButtonUp="NavPanel_PreviewMouseLeftButtonUp">
+                     PreviewMouseLeftButtonUp="NavPanel_PreviewMouseLeftButtonUp"
+                     Loaded="NavPanel_Loaded">
 
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <Border CornerRadius="20" BorderThickness="1" BorderBrush="Gray">
-                                <ItemsPresenter></ItemsPresenter>
-                            </Border>
-                            
-                            
-                        </ControlTemplate>
-                    </ListView.Template>
+                   
 
                     <ListViewItem x:Name="mouseInfo" 
                              Height="50" Width="auto" HorizontalContentAlignment="Left" 
                              Margin="0,0,0,0" 
-                             BorderBrush="Gray" BorderThickness="0,0,0,1"
-                             Padding="5,2">
+                             BorderBrush="Transparent"
+                             Padding="5,3">
 
                             <Grid HorizontalAlignment="Left">
 
@@ -118,9 +110,9 @@
                         <ListViewItem x:Name="mouseSettings" 
                              Height="50" Width="auto" HorizontalContentAlignment="Left" 
                              Margin="0,0,0,0" 
-                             BorderBrush="Gray" BorderThickness="0,0,0,1"
+                             BorderBrush="Transparent"
                              Padding="5,2">
-
+                            
 
                             <Grid HorizontalAlignment="Left">
 
@@ -145,12 +137,14 @@
                                 </EventTrigger>
 
                             </ListViewItem.Triggers>
+
+               
                         </ListViewItem>
 
                         <ListViewItem x:Name="keySettings" 
                              Height="50" Width="auto" HorizontalContentAlignment="Left" 
                              Margin="0,0,0,0" 
-                             BorderBrush="Gray" BorderThickness="0,0,0,0"
+                             BorderBrush="Transparent"
                              Padding="5,2">
 
 
@@ -185,7 +179,10 @@
  
 
         </Grid>
-       
 
+        <Canvas x:Name="ScreenContainer"
+                Width="580" Height="420" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+            
+        </Canvas>
     </Grid>
 </Window>

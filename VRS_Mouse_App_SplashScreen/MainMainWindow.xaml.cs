@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 
 namespace VRS_Mouse_App_SplashScreen
 {
@@ -14,19 +15,66 @@ namespace VRS_Mouse_App_SplashScreen
     public partial class MainMainWindow : Window
     {
         private readonly SerialPort? MousePort;
+        private readonly Duration AnimationDuration;
 
         public MainMainWindow()
         {
+            AnimationDuration = new Duration(TimeSpan.FromMilliseconds(300));
             InitializeComponent();
+            ChangeContent(new MouseInfoPanel());
         }
 
         public MainMainWindow(SerialPort port) : this()
         {
             MousePort = port;
-
         }
 
-        private void ExitButton_Copy_Click(object sender, RoutedEventArgs e)
+        DoubleAnimation CreateAnimation(double from, double to, EventHandler? completedEventaHandler)
+        {
+            DoubleAnimation animation = new(from,to,AnimationDuration);
+            if(completedEventaHandler != null)
+            {
+                animation.Completed += completedEventaHandler;
+            }
+            return animation;
+        }
+
+        void SlideAnimation(UIElement newContent, UIElement oldContent, EventHandler? completedEventHndler)
+        {
+            double start = Canvas.GetBottom(oldContent);
+            Canvas.SetBottom(newContent, start - oldContent.RenderSize.Height);
+            ScreenContainer.Children.Add(newContent);
+
+            if(double.IsNaN(start))
+            {
+                start = oldContent.RenderSize.Height;
+            }
+
+            DoubleAnimation outAnimation = CreateAnimation(start, start - oldContent.RenderSize.Height,null);
+            DoubleAnimation inAnimation = CreateAnimation(start + oldContent.RenderSize.Height, start, completedEventHndler);
+            oldContent.BeginAnimation(Canvas.BottomProperty, outAnimation);
+            newContent.BeginAnimation(Canvas.BottomProperty, inAnimation);
+        }
+
+        public void ChangeContent(UIElement newContent)
+        {
+            ScreenContainer.IsHitTestVisible = false;
+            var oldContent = ScreenContainer.Children[0];
+            EventHandler onAnimationCompleted = delegate (object? sender, EventArgs e)
+            {
+                ScreenContainer.IsHitTestVisible = true;
+                if (oldContent != null)
+                {
+                    ScreenContainer.Children.Remove(oldContent);
+                }
+
+                oldContent = null;
+            };
+
+            SlideAnimation(newContent,oldContent, onAnimationCompleted);
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState.Minimized;
         }
@@ -45,34 +93,41 @@ namespace VRS_Mouse_App_SplashScreen
         {
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                this.DragMove();
+                DragMove();
             }
         }
 
-        private void MouseInfoButton_Click(object sender, RoutedEventArgs e)
-        {
-            Trace.WriteLine(NavPanel.Items.Count.ToString());
-         
-        }
-
-        private void MouseOptions_Click(object sender, RoutedEventArgs e)
-        {
-            Trace.WriteLine(NavPanel.SelectedIndex.ToString());
-        }
 
         private void NavPanel_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             Trace.WriteLine(NavPanel.SelectedIndex.ToString());
-            if(!(NavPanel.SelectedIndex == 0))
+
+            var currentIndex = NavPanel.SelectedIndex;
+            switch (currentIndex)
             {
-                var currentItem = NavPanel.SelectedItem;
-                if (currentItem != null)
-                {
-                    NavPanel.Items.Remove(currentItem);
-                    NavPanel.Items.Insert(0, currentItem);
-                }
-                NavPanel.UpdateLayout();
+                case (int)NavPanelNames.MouseInfo:
+
+                    break;
+                case (int)NavPanelNames.MouseSettings: 
+                    break;
+                case (int)NavPanelNames.ButtonSettings: 
+                    break;
             }
+            var currentItem = NavPanel.Items.GetItemAt(currentIndex);
+            if (currentIndex != -1)
+            {
+                NavPanel.Items.RemoveAt(currentIndex);
+                NavPanel.Items.Insert(currentIndex, currentItem);
+            }
+            NavPanel.UpdateLayout();
+            NavPanel.SelectedIndex = currentIndex;
         }
+
+        private void NavPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            NavPanel.SelectedIndex = 0;
+        }
+
+      
     }
 }
