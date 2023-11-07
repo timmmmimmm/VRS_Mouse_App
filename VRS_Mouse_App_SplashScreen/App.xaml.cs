@@ -11,6 +11,7 @@ namespace VRS_Mouse_App_SplashScreen
     {
         protected override void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
             RenderOptions.ProcessRenderMode = RenderMode.SoftwareOnly;
         }
     }

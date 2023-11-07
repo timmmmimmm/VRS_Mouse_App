@@ -17,7 +17,7 @@ namespace VRS_Mouse_App_SplashScreen
     {
         private readonly SerialPort? MousePort;
         private readonly Duration AnimationDuration;
-        private bool animationFinished = false;
+        private bool animationFinished = true;
         private int lastIndex = 0;
 
         public MainMainWindow()
@@ -45,7 +45,7 @@ namespace VRS_Mouse_App_SplashScreen
         void SlideAnimation(UIElement newContent, UIElement oldContent, EventHandler? completedEventHndler, ScrollDirection scrollDirection)
         {
             double start = Canvas.GetBottom(oldContent);
-            Canvas.SetBottom(newContent, scrollDirection == ScrollDirection.Up? -Height : Height);
+            Canvas.SetBottom(newContent, scrollDirection == ScrollDirection.Up ? -Height : Height);
             ScreenContainer.Children.Add(newContent);
 
             if(double.IsNaN(start))
@@ -78,6 +78,8 @@ namespace VRS_Mouse_App_SplashScreen
                     if (oldContent != null)
                     {
                         ScreenContainer.Children.Remove(oldContent);
+                        if (oldContent is IDisposable)
+                            (oldContent as IDisposable).Dispose();
                     }
 
                     oldContent = null;
@@ -122,8 +124,8 @@ namespace VRS_Mouse_App_SplashScreen
             {
                var diff = currentIndex - lastIndex;
                var currentScrollDir = diff > 0 ? ScrollDirection.Down : ScrollDirection.Up;
-                switch (currentIndex)
-                {
+               switch (currentIndex)
+               {
                     case (int)NavPanelNames.MouseInfo:
                         if(Math.Abs(diff) > 1)
                         {
@@ -134,17 +136,18 @@ namespace VRS_Mouse_App_SplashScreen
                                 while (!animationFinished) ;
                                 Dispatcher.Invoke(() =>
                                 {
-    
                                     ChangeContent(new MouseInfoPanel(), currentScrollDir);
                                 });
                             }).Start();
+
                             break;
                         }
-
-                        ChangeContent(new MouseInfoPanel(), currentScrollDir);
-                        break;
-                    case (int)NavPanelNames.MouseSettings:
                         
+                        ChangeContent(new MouseInfoPanel(), currentScrollDir);
+                        
+                        break;
+                    
+                    case (int)NavPanelNames.MouseSettings:  
                         new Thread(() => {
                             while (!animationFinished) ;
                             Dispatcher.Invoke(() =>
@@ -152,7 +155,9 @@ namespace VRS_Mouse_App_SplashScreen
                                 ChangeContent(new MouseSettingsPanel(), currentScrollDir);
                             });
                         }).Start();
+
                         break;
+
                     case (int)NavPanelNames.ButtonSettings:
                         if(Math.Abs(diff) > 1)
                         {
@@ -168,9 +173,12 @@ namespace VRS_Mouse_App_SplashScreen
                             
                             break;
                         }
+                        
                         ChangeContent(new ButtonSettingsPanel(), currentScrollDir);
+                        
                         break;
-                }
+               }
+
                 var currentItem = NavPanel.Items.GetItemAt(currentIndex);
                 if (currentIndex != -1)
                 {

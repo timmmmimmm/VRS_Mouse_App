@@ -181,7 +181,9 @@
         </Grid>
 
         <Canvas x:Name="ScreenContainer"
-                Width="580" Height="420" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                Background="Transparent"
+                Width="580" Height="420" 
+                HorizontalAlignment="Right" VerticalAlignment="Bottom">
             
         </Canvas>
     </Grid>
