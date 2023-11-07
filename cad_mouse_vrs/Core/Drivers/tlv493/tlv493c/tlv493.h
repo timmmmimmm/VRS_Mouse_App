@@ -26,4 +26,36 @@
 #define TLV493_MOD2         0x3
 
 
+/**
+ * @brief Function for initialization tlv493D sensor which meassure rotation of magnet in 3-axis
+ * 
+ * @return 1 when sensor init ok 0 when is error while init
+*/
+uint8_t tlv493_init();
+
+/**
+ * @brief function for reading multiple bytes with i2c from sensor
+ * @param reg_address address of register read from 
+ * @param data pointer to variable to store data in
+ * @param len number of bytes 
+ * 
+*/
+void tlv493_read_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
+/**
+ * @brief function for write multiple bytes with i2c from sensor
+ * @param reg_address address of register read from 
+ * @param data pointer to variable store data in
+ * @param len number of bytes 
+ * 
+*/
+void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
+
+/**
+ * @brief read position of magnet on axis
+ * @return position of magnet on axis
+*/
+float getX();
+float getY();
+float getZ();
+
 #endif

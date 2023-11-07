@@ -21,40 +21,40 @@ static uint8_t address = TLV493_ADDRESS0;
 //Tlv493d::~tlv493(void){
 //
 //}
-void tlv493_write_byte(uint8_t reg_address, uint8_t *data, uint8_t len){
-	i2c_master_write(data, reg_address, address, len);
-}
-void tlv493_read_byte(uint8_t *data, uint8_t reg_address,uint8_t len)
-{
-	i2c_master_read(&data, len, reg_address, address);
-}
+//void tlv493_write_byte(uint8_t reg_address, uint8_t *data, uint8_t len){
+//	i2c_master_write(data, reg_address, address, len);
+//}
+//void tlv493_read_byte(uint8_t *data, uint8_t reg_address,uint8_t len)
+//{
+//	i2c_master_read(&data, len, reg_address, address);
+//}
 TLV_ERRORS tlv493_init(bool reset){
 
 //	delay(TLV493D_STARTUPDELAY);
-	uint8_t id = tlv493_read_byte(WHO_AM_I);
-	if(id  != WHO_AM_I){
-		address = TLV493_ADDRESS1;
-		id = tlv493_read_byte(WHO_AM_I);
-		if(id != WHO_AM_I)
-			return TLV493_BUS_ERROR;
-	}
+//	uint8_t id = tlv493_read_byte(WHO_AM_I);
+//	if(id  != WHO_AM_I){
+//		address = TLV493_ADDRESS1;
+//		id = tlv493_read_byte(WHO_AM_I);
+//		if(id != WHO_AM_I)
+//			return TLV493_BUS_ERROR;
+//	}
 //	if(reset == true)
 //	{
 //		reset_sensor(address);
 //	}
-	uint8_t config_reg_address = 0x00; // Example register address for configuration
-    uint8_t master_controlled_bit_mask = 0x08; // Example bitmask for power-down mode
-
-    // Read current configuration
-    uint8_t current_config = tlv493_read_byte(config_reg_address);
-
-    // Set the power-down bit
-    current_config |= master_controlled_bit_mask;
-
-	// also contains parity calculation and writeout to sensor
-    tlv493_write_byte(config_reg_address, current_config);
-	//test
-	return TLV493_OK;
+//	uint8_t config_reg_address = 0x00; // Example register address for configuration
+//    uint8_t master_controlled_bit_mask = 0x08; // Example bitmask for power-down mode
+//
+//    // Read current configuration
+////    uint8_t current_config = tlv493_read_byte(config_reg_address);
+//
+//    // Set the power-down bit
+//    current_config |= master_controlled_bit_mask;
+//
+//	// also contains parity calculation and writeout to sensor
+//    tlv493_write_byte(config_reg_address, current_config);
+//	//test
+//	return TLV493_OK;
 }
 
 // void Tlv493d::enableInterrupt(void)
@@ -141,7 +141,11 @@ TLV_ERRORS tlv493_init(bool reset){
 // 	mExpectedFrameCount = get_reg_bits(tlv493d::R_FRAMECOUNTER) + 1;
 // 	return ret;
 // }
-
+float Tlv493d::getX(void){
+	uint8_t data;
+	i2c_master_read(&data, 1, tlv493d::R_BX1, TLV493_ADDRESS0);
+ 	return data * TLV493D_B_MULT;
+}
 
 // float Tlv493d::getX(void){
 // 	return static_cast<float>(x_data) * TLV493D_B_MULT;
@@ -161,13 +165,13 @@ TLV_ERRORS tlv493_init(bool reset){
 
 void Tlv493d::reset_sensor(uint8_t adr)     // Recovery & Reset - this can be handled by any uC as it uses bitbanging
 {
-	if (adr == TLV493_ADDRESS1) {
-		// if the sensor shall be initialized with i2c address 0x1F
-		tlv493_write_byte(0xFF,adr);
-	} else {
-		// if the sensor shall be initialized with address 0x5E
-		tlv493_write_byte(0x00,adr);
-	}
+//	if (adr == TLV493_ADDRESS1) {
+//		// if the sensor shall be initialized with i2c address 0x1F
+//		tlv493_write_byte(0xFF,adr);
+//	} else {
+//		// if the sensor shall be initialized with address 0x5E
+//		tlv493_write_byte(0x00,adr);
+//	}
 }
 // void Tlv493d::set_reg_bits(uint8_t regMaskIndex, uint8_t data)
 // {

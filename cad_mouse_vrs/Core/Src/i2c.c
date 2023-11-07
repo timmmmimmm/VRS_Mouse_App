@@ -19,7 +19,6 @@
 ///* USER CODE END Header */
 ///* Includes ------------------------------------------------------------------*/
 #include "i2c.h"
-
 /* USER CODE BEGIN 0 */
 uint8_t *aReceiveBuffer_read;
 uint8_t size = 0;
@@ -81,11 +80,19 @@ void MX_I2C1_Init(void)
   /* USER CODE END I2C1_Init 2 */
 
 }
+void I2C_Start(void) {
+    LL_I2C_GenerateStartCondition(I2C1);
+    while (!LL_I2C_IsActiveFlag_SB(I2C1)) {}
+}
 
+void I2C_Stop(void) {
+    LL_I2C_GenerateStopCondition(I2C1);
+    while (LL_I2C_IsActiveFlag_STOP(I2C1)) {}
+}
 /* USER CODE BEGIN 1 */
 void i2c_master_write(uint8_t *data, uint8_t register_addr, uint8_t slave_addr,uint8_t len)
 {
-	
+	I2C_Start();
 	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 2, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
 
 	LL_I2C_TransmitData8(I2C1, register_addr);
@@ -100,18 +107,21 @@ void i2c_master_write(uint8_t *data, uint8_t register_addr, uint8_t slave_addr,u
 		}
 	}
 	LL_I2C_ClearFlag_STOP(I2C1);
+  I2C_Stop();
 }
 
 
-void i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uint8_t slave_addr)
+void i2c_master_read(uint8_t* data,  uint8_t register_addr, uint8_t slave_addr, uint8_t len)
 {
-	aReceiveBuffer_read = buffer;
-	size = length;
+
+	aReceiveBuffer_read = data;
+	size = len;
 
 	LL_I2C_EnableIT_RX(I2C1);
 
-	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
+	LL_I2C_HandleTransfer(I2C1, slave_addr << 1, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
 
+	I2C_Start();
 	while(!LL_I2C_IsActiveFlag_STOP(I2C1))
 	{
 		if(LL_I2C_IsActiveFlag_TXIS(I2C1))
@@ -122,7 +132,7 @@ void i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uin
 	LL_I2C_ClearFlag_STOP(I2C1);
 	while(LL_I2C_IsActiveFlag_STOP(I2C1)){}
 
-	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, length, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_READ);
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, len, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_READ);
 
 	while(!LL_I2C_IsActiveFlag_STOP(I2C1)){};
 
@@ -131,10 +141,19 @@ void i2c_master_read(uint8_t* buffer, uint8_t length, uint8_t register_addr, uin
 	LL_I2C_DisableIT_RX(I2C1);
 	I2C1->ICR |= (1 << 4);
 	LL_I2C_ClearFlag_NACK(I2C1);
-	ubReceiveIndex = 0;
 
+	ubReceiveIndex = 0;
+	I2C_Stop();
 }
 
+HAL_StatusTypeDef I2C_WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+{
+  return HAL_I2C_Mem_Write(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size, Timeout);
+}
+HAL_StatusTypeDef I2C_ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout)
+{
+  return HAL_I2C_Mem_Read(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size, Timeout);
+}
 void I2C1_IRQHandler(void)
 {
 	if(LL_I2C_IsActiveFlag_RXNE(I2C1))
