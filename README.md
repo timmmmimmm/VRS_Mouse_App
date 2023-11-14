@@ -1,11 +1,16 @@
 # DIY 3D Mouse for CAD programs
-- code on STM32F303k8
+- code on STM32F303K8
 - Drivers
     - TLV493D (3-axis magnetometer)
     - W25Q32 (flash)
 - 3D Models of mouse
 - Windows APP for settings 
 # About 
+This project aims to help CAD designers create their own 3D DIY Mouse for a cheaper price than usual.
+With a 3D Mouse, a designer is able to model significantly faster than with a classic 2D mouse.
+The brain of our project is a microcontroller STM32F303K8, which communicates with a 3D magnetic
+sensor TLV493D and transforms its data, so that they can be used in a CAD programme. This, in turn reduces
+the amount of movements necessary for certain operations (e.g. rotation of an object). 
 
 # Drivers
 We created drivers in the StmCubeIDE for all external HW. 
@@ -25,11 +30,11 @@ External serial flash memory W25Q32 (32M-bit) serves as a storage place for user
 It is organized 16384 programmable pages of 256-bytes each.
 
 <p align="center">
-    <img src="img/w25q32.jpg" width="" title="Flash W25Q32">
+    <img src="img/w25q32.jpg" width="450" title="Flash W25Q32">
 </p>
 
 The W25Q32 supports SPI which will be used for communication with the STM32F303K8.
 ## Sending commands to PC 
 # Models
-Folder models contains .stl model files which are 3D representation of 3D mouse.   
+Folder models contains .stl model files which are 3D representation of 3D mouse. 
 # App
