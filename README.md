@@ -15,10 +15,13 @@ magnetic flux density in the z-direction (Bz) is detected by a lateral-Hall plat
 chip. The magnetic flux density in the x- and y-direction (Bx and By) are detected by vertical-Hall plates
 perpendicular to the surface of the chip.
 
-OBRAZEK
+<p align="center">
+    <img src="img/tlv493d.png" width="" title="GPIO pin block scheme">
+</p>
 
 The MCU communicates with the sensor over I2C. 
 ## W25Q32
 ## Sending commands to PC 
 # Models
+Folder models contains .stl model files which are 3D representation of 3D mouse.   
 # App
