@@ -21,6 +21,14 @@ perpendicular to the surface of the chip.
 
 The MCU communicates with the sensor over I2C. 
 ## W25Q32
+External serial flash memory W25Q32 (32M-bit) serves as a storage place for user configuration of DPI.
+It is organized 16384 programmable pages of 256-bytes each.
+
+<p align="center">
+    <img src="img/w25q32.jpg" width="" title="Flash W25Q32">
+</p>
+
+The W25Q32 supports SPI which will be used for communication with the STM32F303K8.
 ## Sending commands to PC 
 # Models
 Folder models contains .stl model files which are 3D representation of 3D mouse.   
