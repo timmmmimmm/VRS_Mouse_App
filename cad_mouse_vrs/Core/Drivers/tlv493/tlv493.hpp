@@ -68,8 +68,8 @@ private:
 	uint8_t get_reg_bits(uint8_t regMaskIndex);
 	void calc_parity(void);
 	int16_t concat_results(uint8_t upperByte, uint8_t lowerByte, bool upperFull);
-    uint8_t tlv493_read_byte(uint8_t reg_address);
-    void tlv493_write_byte(uint8_t reg_address, uint8_t data);
+    void tlv493_read_byte(uint8_t *data, uint8_t reg_address,uint8_t len);
+    void tlv493_write_byte(uint8_t reg_address, uint8_t *data, uint8_t len);
 };
 
 //Tlv493d::tlv493()
