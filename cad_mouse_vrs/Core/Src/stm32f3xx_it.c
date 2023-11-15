@@ -20,9 +20,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f3xx_it.h"
-#include "usart.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "usart.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -301,19 +301,19 @@ void DMA1_Channel7_IRQHandler(void)
 void TIM1_BRK_TIM15_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 0 */
+	if (LL_TIM_IsActiveFlag_UPDATE(TIM15)) {
+			        // Clear the interrupt flag
+			        LL_TIM_ClearFlag_UPDATE(TIM15);
+			        char tx_buffer[256];
 
+			        // Send data over USART2
+			        uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
+
+			        USART2_PutBuffer((uint8_t*)tx_buffer, len);
+
+			    }
   /* USER CODE END TIM1_BRK_TIM15_IRQn 0 */
-		 if (LL_TIM_IsActiveFlag_UPDATE(TIM15)) {
-		        // Clear the interrupt flag
-		        LL_TIM_ClearFlag_UPDATE(TIM15);
-		        char tx_buffer[256];
 
-		        // Send data over USART2
-		        uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
-
-		        USART2_PutBuffer((uint8_t*)tx_buffer, len);
-
-		    }
   /* USER CODE BEGIN TIM1_BRK_TIM15_IRQn 1 */
 
   /* USER CODE END TIM1_BRK_TIM15_IRQn 1 */
@@ -331,6 +331,19 @@ I2C1_IRQHandler();
   /* USER CODE BEGIN I2C1_EV_IRQn 1 */
 
   /* USER CODE END I2C1_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles SPI1 global interrupt.
+  */
+void SPI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN SPI1_IRQn 0 */
+
+  /* USER CODE END SPI1_IRQn 0 */
+  /* USER CODE BEGIN SPI1_IRQn 1 */
+
+  /* USER CODE END SPI1_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

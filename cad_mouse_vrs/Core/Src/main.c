@@ -20,6 +20,7 @@
 #include "main.h"
 #include "dma.h"
 #include "i2c.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -95,6 +96,7 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_TIM15_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   uint8_t tlv493_works = tlv493_init();
   char *str;
@@ -110,14 +112,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-    get_data(&coord);
-    x = coord[0];
-    y = coord[1];
-    z = coord[2];
-    str = malloc(32*sizeof(char));
-    len = sprintf(str,"%.2f,%.2f,%.2f\n",x,y,z);
-    USART2_PutBuffer(str,len);
-    free(str);
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
