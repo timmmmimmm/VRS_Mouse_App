@@ -5,9 +5,7 @@
 #include <math.h>
 
 #define TLV493D_B_MULT 		0.098
-#define TLV493_ADDRESS0     0x5E
-#define TLV493_ADDRESS1     0x1F
-
+#define TLV493_ADDRESS     (0x5E << 1)
 /**
  * @note READ REGISTERS
  * 
@@ -57,5 +55,6 @@ void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
 float getX();
 float getY();
 float getZ();
+void get_data(float *coord);
 
 #endif

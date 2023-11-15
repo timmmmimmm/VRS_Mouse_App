@@ -95,21 +95,26 @@ int main(void)
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
   uint8_t tlv493_works = tlv493_init();
+  char *str;
+	int len;
+	float x, y, z;
+	float coord[3];
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  char *s;
-  int len;
-  float x, y, z;
 
   while (1)
   {
-    x = getX();
-    y = getY();
-    z = getZ();
     /* USER CODE END WHILE */
-
+    get_data(&coord);
+    x = coord[0];
+    y = coord[1];
+    z = coord[2];
+    str = malloc(32*sizeof(char));
+    len = sprintf(str,"%.2f,%.2f,%.2f\n",x,y,z);
+    USART2_PutBuffer(str,len);
+    free(str);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
