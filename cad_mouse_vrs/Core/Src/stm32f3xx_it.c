@@ -340,7 +340,7 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 void I2C1_EV_IRQHandler(void)
 {
   /* USER CODE BEGIN I2C1_EV_IRQn 0 */
-I2C1_IRQHandler();
+	I2C1_IRQHandler();
   /* USER CODE END I2C1_EV_IRQn 0 */
 
   /* USER CODE BEGIN I2C1_EV_IRQn 1 */
@@ -354,7 +354,7 @@ I2C1_IRQHandler();
 void SPI1_IRQHandler(void)
 {
   /* USER CODE BEGIN SPI1_IRQn 0 */
-
+	SPI_INTERRUPT_HANDLER();
   /* USER CODE END SPI1_IRQn 0 */
   /* USER CODE BEGIN SPI1_IRQn 1 */
 
