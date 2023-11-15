@@ -3,11 +3,11 @@
 
 static uint8_t slave_address = TLV493_ADDRESS0;
 void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len){
+	reg_address |= (1<<7);
     i2c_master_write(data, reg_address, slave_address, len);
 }
 void tlv493_read_bytes(uint8_t reg_address, uint8_t *data, uint8_t len){
-	// if(len > 1)
-	// 	reg_address |= (1<<7);
+	reg_address |= (1<<7);
     i2c_master_read(data, reg_address, slave_address, len);
 }
 

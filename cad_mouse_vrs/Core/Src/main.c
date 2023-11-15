@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
 #include "tim.h"
 #include "usart.h"
@@ -60,7 +61,6 @@ void SystemClock_Config(void);
 
 /* USER CODE END 0 */
 
-int sending = 0;
 /**
   * @brief  The application entry point.
   * @retval int
@@ -70,14 +70,11 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-
-  /* System interrupt init*/
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -94,24 +91,30 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART2_UART_Init();
+  MX_I2C1_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
-
+  uint8_t tlv493_works = tlv493_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  char s[] = "FFFF\n";
+  char *s;
+  int len;
+  float x, y, z;
+
   while (1)
   {
+    x = getX();
+    y = getY();
+    z = getZ();
     /* USER CODE END WHILE */
-	while(sending){}
-    USART2_PutBuffer(s,strlen(s));
-    sending = 1;
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
+
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -140,8 +143,13 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(8000000);
   LL_SetSystemCoreClock(8000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+  {
+    Error_Handler();
+  }
   LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_HSI);
 }
 
