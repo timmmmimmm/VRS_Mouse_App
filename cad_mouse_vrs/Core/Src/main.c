@@ -105,8 +105,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-<<<<<<< HEAD
-=======
+
 
   while (1)
   {
@@ -121,7 +120,6 @@ int main(void)
     free(str);
     /* USER CODE BEGIN 3 */
   }
->>>>>>> Maros
   /* USER CODE END 3 */
 }
 
