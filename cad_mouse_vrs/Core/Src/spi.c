@@ -114,39 +114,37 @@ void MX_SPI1_Init(void)
 }
 
 /* USER CODE BEGIN 1 */
-void spi_master_read_data(uint8_t slave_address, uint8_t register_address, uint8_t length, uint8_t* read_data)
+void spi_master_write_data(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* write_data)
 {
-	receive_buffer=read_data;
-	// Enable It from SPI
-	LL_SPI_EnableIT_RX(SPI1);
-	// Initialize communication
-	while(!LL_SPI_IsActiveFlag_STOP(SPI1))
-	{
-		if(LL_SPI_IsActiveFlag_TXIS(SPI1))
-		{
-			LL_SPI_TransmitData8(SPI1, register_address);
-		}
-	}
-	LL_SPI_ClearFlag_STOP(SPI1);
-	while(LL_SPI_IsActiveFlag_STOP(SPI1)){};
+    LL_GPIO_ResetOutputPin(GPIOA, CS_PIN);
 
+    for(uint16_t i=0; i<length;i++){
+    	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
+    	LL_SPI_TransmitData8(SPI1, register_address); //miesto adresy ORnute s READ/WRITE I GUESS
+    	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
+		LL_SPI_TransmitData8(SPI1,write_data[i]);
+		//bit shift register address ?
+    }
 
-	// Receive data from slave device
-	index=0;
-	while(!LL_SPI_IsActiveFlag_STOP(SPI1)){};
-
-	//End of transfer
-	LL_SPI_DisableIT_RX(SPI1);
-	LL_SPI_ClearFlag_STOP(SPI1);
-	LL_SPI_ClearFlag_NACK(SPI1);
+    LL_GPIO_SetOutputPin(GPIOA, CS_PIN);
 }
 
-void SPI_INTERRUPT_HANDLER(){
-	if (LL_SPI_IsActiveFlag_RXNE(SPI1)){
-		receive_buffer[index++]=LL_SPI_ReceiveData8(SPI1);
-		if (index>=16){
-			index=0;
-		}
-	}
+void spi_master_read_data(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* read_data)
+{
+    LL_GPIO_ResetOutputPin(GPIOA, CS_PIN);
+
+    for(uint16_t i=0; i<length;i++){
+    	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
+    	LL_SPI_TransmitData8(SPI1, register_address); //miesto adresy ORnute s READ/WRITE I GUESS
+    	while(LL_SPI_IsActiveFlag_RXNE(SPI1)==RESET);
+		read_data[i]=LL_SPI_ReceiveData8(SPI1);
+		//bit shift register address ?
+
+    }
+
+    LL_GPIO_SetOutputPin(GPIOA, CS_PIN);
 }
+
+//dont need interrupt i guess? o.O
+
 /* USER CODE END 1 */
