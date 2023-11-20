@@ -58,9 +58,7 @@ void SysTick_Handler(void);
 void EXTI3_IRQHandler(void);
 void EXTI4_IRQHandler(void);
 void DMA1_Channel2_IRQHandler(void);
-void DMA1_Channel3_IRQHandler(void);
 void DMA1_Channel6_IRQHandler(void);
-void DMA1_Channel7_IRQHandler(void);
 void TIM1_BRK_TIM15_IRQHandler(void);
 void I2C1_EV_IRQHandler(void);
 /* USER CODE BEGIN EFP */
