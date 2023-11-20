@@ -18,32 +18,37 @@ uint8_t tlv493_init(){
 	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
 	return 1;
 }
-
-float getX(){
+void tlv493_update_data(){
     uint8_t data[6];
     tlv493_read_bytes(TLV493_BX1, &data,6);
-    uint16_t cast = (uint16_t)((data[0] << 8)) | (data[4] >> 4);
-    return (float)(cast)*TLV493D_B_MULT;
+    dataX = (uint16_t )((data[0] << 8)) | (data[4] >> 4);
+    dataY = (uint16_t)(data[1] << 8 | (data[4] & 0b1111) << 8);
+    dataZ = (uint16_t)(data[3] << 8) | data[5] & 0b1111;
+}
+float getX(){
+    return (float)dataX*TLV493D_B_MULT;
 }
 float getY(){
-    uint8_t data[5];
-    tlv493_read_bytes(TLV493_BX1, &data,6);
-    uint16_t cast = (uint16_t)(data[1] << 8 | (data[4] & 0b1111) << 8);
-    return (float)cast*TLV493D_B_MULT;
+    return (float)dataY*TLV493D_B_MULT;
 }
 float getZ(){
-    uint8_t data[5];
-    tlv493_read_bytes(TLV493_BX1, &data,6);
-    uint16_t cast = (uint16_t)(data[3] << 8) | data[5] & 0b1111;
-    return (float)cast*TLV493D_B_MULT;
+    return (float)dataZ*TLV493D_B_MULT;
 }
-void get_data(float *coord){
-    uint8_t data[6];
-    tlv493_read_bytes(&data,0x0,6);
-	uint16_t xx = (uint16_t)((data[0] << 8)) | (data[4] >> 4);
-    uint16_t yy = (uint16_t)(data[1] << 8 | (data[4] & 0b1111) << 8);
-    uint16_t zz = (uint16_t)(data[2] << 8) | (data[5] & 0b1111);
-    coord[0] = (float)((float)xx*TLV493D_B_MULT);
-    coord[1] = (float)((float)yy*TLV493D_B_MULT);
-    coord[2] = (float)((float)zz*TLV493D_B_MULT);
+void tlv493_test(){
+    tlv493_update_data();
+    char *str;
+    str = malloc(32*sizeof(char));
+    int len = sprintf(str,"%.2f,%.2f,%.2f\n",getX,getY,getZ);
+    USART2_PutBuffer(str,len);
+    free(str);
 }
+// void get_data(float *coord){
+//     uint8_t data[6];
+//     tlv493_read_bytes(&data,0x0,6);
+// 	uint16_t xx = (uint16_t)((data[0] << 8)) | (data[4] >> 4);
+//     uint16_t yy = (uint16_t)(data[1] << 8 | (data[4] & 0b1111) << 8);
+//     uint16_t zz = (uint16_t)(data[2] << 8) | (data[5] & 0b1111);
+//     coord[0] = (float)((float)xx*TLV493D_B_MULT);
+//     coord[1] = (float)((float)yy*TLV493D_B_MULT);
+//     coord[2] = (float)((float)zz*TLV493D_B_MULT);
+// }

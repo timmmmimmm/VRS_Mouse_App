@@ -2,6 +2,7 @@
 #define TLV493C_H_INCLUDE
 
 #include "i2c.h"
+#include "usart.h"
 #include <math.h>
 
 #define TLV493D_B_MULT 		0.098
@@ -23,7 +24,7 @@
 #define TLV493_MOD1         0x1
 #define TLV493_MOD2         0x3
 
-
+uint16_t dataX, dataY, dataZ;
 /**
  * @brief Function for initialization tlv493D sensor which meassure rotation of magnet in 3-axis
  * 
@@ -48,6 +49,8 @@ void tlv493_read_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
 */
 void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
 
+void tlv493_update_data();
+void tlv493_test();
 /**
  * @brief read position of magnet on axis
  * @return position of magnet on axis
