@@ -33,7 +33,7 @@ extern "C" {
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
-void spi_master_write_data(uint8_t slave_address, uint8_t register_address, uint8_t length, uint8_t* write_data);
+void spi_master_write_data(uint8_t CS_PIN, uint8_t *register_address, uint8_t length, uint8_t* write_data);
 void spi_master_read_data(uint8_t slave_address, uint8_t register_address, uint8_t length, uint8_t* read_data);
 void SPI_INTERRUPT_HANDLER();
 /* USER CODE END Private defines */

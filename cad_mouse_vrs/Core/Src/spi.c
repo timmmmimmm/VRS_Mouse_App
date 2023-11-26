@@ -19,6 +19,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "spi.h"
+#include "W25Q32.h"
 
 /* USER CODE BEGIN 0 */
 uint8_t *receive_buffer;
@@ -109,14 +110,34 @@ void MX_SPI1_Init(void)
 
 }
 
+void read_id(){
+	uint8_t tData = ID_INSTRUCTION;
+	uint8_t rData[3];
+
+    LL_GPIO_ResetOutputPin(GPIOA, SPI1_CS_Pin);
+
+    while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
+	LL_SPI_TransmitData8(SPI1,tData);
+
+	for(uint16_t i=0; i<3;i++){
+	    	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
+			rData[i]=LL_SPI_ReceiveData8(SPI1);
+	    }
+
+
+    LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
+
+
+}
+
 /* USER CODE BEGIN 1 */
-void spi_master_write_data(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* write_data)
+void spi_master_write_data(uint8_t CS_PIN, uint8_t *register_address, uint8_t length, uint8_t* write_data)
 {
     LL_GPIO_ResetOutputPin(GPIOA, CS_PIN);
 
     for(uint16_t i=0; i<length;i++){
     	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
-    	LL_SPI_TransmitData8(SPI1, register_address); //miesto adresy ORnute s READ/WRITE I GUESS
+    	LL_SPI_TransmitData8(SPI1,register_address[i]); //miesto adresy ORnute s READ/WRITE I GUESS
     	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
 		LL_SPI_TransmitData8(SPI1,write_data[i]);
 		//bit shift register address ?
@@ -125,18 +146,13 @@ void spi_master_write_data(uint8_t CS_PIN, uint8_t register_address, uint8_t len
     LL_GPIO_SetOutputPin(GPIOA, CS_PIN);
 }
 
-
 void spi_master_read_data(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* read_data)
 {
     LL_GPIO_ResetOutputPin(GPIOA, CS_PIN);
 
     for(uint16_t i=0; i<length;i++){
-    	while(LL_SPI_IsActiveFlag_TXE(SPI1)==RESET);
-    	LL_SPI_TransmitData8(SPI1, register_address); //miesto adresy ORnute s READ/WRITE I GUESS
     	while(LL_SPI_IsActiveFlag_RXNE(SPI1)==RESET);
 		read_data[i]=LL_SPI_ReceiveData8(SPI1);
-		//bit shift register address ?
-
     }
 
     LL_GPIO_SetOutputPin(GPIOA, CS_PIN);
