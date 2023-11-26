@@ -99,10 +99,7 @@ int main(void)
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   uint8_t tlv493_works = tlv493_init();
-  char *str;
-	int len;
-	float x, y, z;
-	float coord[3];
+
   /* USER CODE END 2 */
 
   /* Infinite loop */

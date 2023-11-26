@@ -42,14 +42,12 @@
 void MX_GPIO_Init(void)
 {
 
-  LL_EXTI_InitTypeDef EXTI_InitStruct = {0};
-  LL_GPIO_InitTypeDef GPIO_InitStruct = {0};
-
   /* GPIO Ports Clock Enable */
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOF);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOB);
 
+<<<<<<< HEAD
   /**/
   LL_GPIO_ResetOutputPin(led0_GPIO_Port, led0_Pin);
 
@@ -101,6 +99,8 @@ void MX_GPIO_Init(void)
   NVIC_SetPriority(EXTI4_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(EXTI4_IRQn);
 
+=======
+>>>>>>> Maros
 }
 
 /* USER CODE BEGIN 2 */
