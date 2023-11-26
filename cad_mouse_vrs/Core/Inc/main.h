@@ -38,7 +38,6 @@ extern "C" {
 #include "stm32f3xx_ll_utils.h"
 #include "stm32f3xx_ll_pwr.h"
 #include "stm32f3xx_ll_dma.h"
-#include "stm32f3xx_ll_spi.h"
 #include "stm32f3xx_ll_tim.h"
 #include "stm32f3xx_ll_usart.h"
 #include "stm32f3xx_ll_gpio.h"
@@ -80,7 +79,7 @@ void Error_Handler(void);
 #define button0_EXTI_IRQn EXTI3_IRQn
 #define led0_Pin LL_GPIO_PIN_4
 #define led0_GPIO_Port GPIOA
-#define SPI1_CS_Pin LL_GPIO_PIN_11
+#define SPI1_CS_Pin LL_GPIO_PIN_8
 #define SPI1_CS_GPIO_Port GPIOA
 #define SWDIO_Pin LL_GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA

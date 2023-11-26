@@ -96,9 +96,7 @@ int main(void)
   MX_TIM15_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-
-  read_id();
-
+  id();
 
   uint8_t tlv493_works = tlv493_init();
   char *str;
