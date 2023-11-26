@@ -86,10 +86,6 @@ void MX_SPI1_Init(void)
 
   LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_3, LL_DMA_MDATAALIGN_BYTE);
 
-  /* SPI1 interrupt Init */
-  NVIC_SetPriority(SPI1_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
-  NVIC_EnableIRQ(SPI1_IRQn);
-
   /* USER CODE BEGIN SPI1_Init 1 */
 
   /* USER CODE END SPI1_Init 1 */
@@ -129,6 +125,7 @@ void spi_master_write_data(uint8_t CS_PIN, uint8_t register_address, uint8_t len
     LL_GPIO_SetOutputPin(GPIOA, CS_PIN);
 }
 
+
 void spi_master_read_data(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* read_data)
 {
     LL_GPIO_ResetOutputPin(GPIOA, CS_PIN);
@@ -144,7 +141,5 @@ void spi_master_read_data(uint8_t CS_PIN, uint8_t register_address, uint8_t leng
 
     LL_GPIO_SetOutputPin(GPIOA, CS_PIN);
 }
-
-//dont need interrupt i guess? o.O
 
 /* USER CODE END 1 */

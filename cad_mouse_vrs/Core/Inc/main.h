@@ -80,6 +80,8 @@ void Error_Handler(void);
 #define button0_EXTI_IRQn EXTI3_IRQn
 #define led0_Pin LL_GPIO_PIN_4
 #define led0_GPIO_Port GPIOA
+#define SPI1_CS_Pin LL_GPIO_PIN_11
+#define SPI1_CS_GPIO_Port GPIOA
 #define SWDIO_Pin LL_GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin LL_GPIO_PIN_14
