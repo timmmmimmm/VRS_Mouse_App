@@ -11,8 +11,8 @@ uint8_t tlv493_init(){
 	uint8_t mod1 = 0x0;
     uint8_t data[8];
     uint8_t mod2 = 0b11100000;
-    tlv493_read_bytes(&data,0x0,8);
-    mod1 = data[7];
+//    tlv493_read_bytes(&data,0x0,8);
+//    mod1 = data[7];
 	mod1 = mod1 | 0x0 << 2;
 	mod1 = mod1 | 1<<1;
 	mod1 = mod1 & ~(0b0);
