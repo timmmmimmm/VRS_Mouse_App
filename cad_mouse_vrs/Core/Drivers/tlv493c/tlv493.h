@@ -24,7 +24,7 @@
 #define TLV493_MOD1         0x1
 #define TLV493_MOD2         0x3
 
-uint16_t dataX, dataY, dataZ;
+#define SAMPLES				256
 /**
  * @brief Function for initialization tlv493D sensor which meassure rotation of magnet in 3-axis
  * 
