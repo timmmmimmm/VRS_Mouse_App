@@ -54,8 +54,6 @@ void MX_I2C1_Init(void)
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
 
-<<<<<<< HEAD
-=======
   /* I2C1 DMA Init */
 
   /* I2C1_TX Init */
@@ -75,7 +73,6 @@ void MX_I2C1_Init(void)
 //
 //  LL_SYSCFG_SetRemapDMA_I2C(LL_SYSCFG_I2C1TX_RMP_DMA1_CH2);
 
->>>>>>> Maros
   /* I2C1 interrupt Init */
   NVIC_SetPriority(I2C1_EV_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(I2C1_EV_IRQn);

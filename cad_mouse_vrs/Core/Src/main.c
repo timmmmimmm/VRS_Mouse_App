@@ -78,9 +78,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  while(1){
 
-  }
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -109,7 +107,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
+	  tlv493_test();
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

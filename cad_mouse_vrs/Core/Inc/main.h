@@ -75,20 +75,12 @@ void Error_Handler(void);
 #define MCO_GPIO_Port GPIOF
 #define VCP_TX_Pin LL_GPIO_PIN_2
 #define VCP_TX_GPIO_Port GPIOA
-#define button0_Pin LL_GPIO_PIN_3
-#define button0_GPIO_Port GPIOA
-#define button0_EXTI_IRQn EXTI3_IRQn
-#define led0_Pin LL_GPIO_PIN_4
-#define led0_GPIO_Port GPIOA
 #define SWDIO_Pin LL_GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin LL_GPIO_PIN_14
 #define SWCLK_GPIO_Port GPIOA
 #define VCP_RX_Pin LL_GPIO_PIN_15
 #define VCP_RX_GPIO_Port GPIOA
-#define button1_Pin LL_GPIO_PIN_4
-#define button1_GPIO_Port GPIOB
-#define button1_EXTI_IRQn EXTI4_IRQn
 
 /* USER CODE BEGIN Private defines */
 
