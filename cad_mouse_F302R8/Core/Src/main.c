@@ -25,7 +25,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../Drivers/tlv493c/tlv493.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -95,15 +95,16 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_I2C1_Init();
-  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  uint8_t tlv_works = tlv493_init();
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	//  USART2_PutBuffer("kokot\n", 7);
+   tlv493_test();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
