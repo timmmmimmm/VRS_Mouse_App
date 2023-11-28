@@ -155,28 +155,5 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 }
 
 /* USER CODE BEGIN 1 */
-void reset(){
-	uint8_t tData[2];
-	tData[0]=0x66;
-	tData[1]=0x99;
-
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
-
-	HAL_SPI_Transmit(&hspi1, tData, 2, 1000);
-
-    LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
-
-}
-
-void id(){
-	uint8_t tData = 0x9F;
-	uint8_t rData[3];
-
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
-	HAL_SPI_Transmit(&hspi1, &tData, 1, 1000);
-	HAL_SPI_Receive(&hspi1, rData, 3, 3000);
-
-    LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
-}
 
 /* USER CODE END 1 */
