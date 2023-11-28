@@ -1,0 +1,108 @@
+﻿<UserControl x:Class="VRS_Mouse_App_SplashScreen.MouseInfoPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
+             mc:Ignorable="d" 
+             d:DesignHeight="420" d:DesignWidth="580" Background="Transparent">
+    <UserControl.Resources>
+        <Style x:Key="descTextBox" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+
+        <Style x:Key="descContentTextBox" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="22"/>
+            <Setter Property="Margin" Value="10,0,0,10"/>
+        </Style>
+
+        <Style x:Key="btnDescTextBox" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,10,0,10"/>
+        </Style>
+
+        <Style x:Key="btnDescValTextBox" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+    </UserControl.Resources>
+    <Grid Height="420" Width="580">
+        <TextBlock Text="Mouse Info" FontSize="30"
+                   Width="420" Height="auto" 
+                   VerticalAlignment="Top" HorizontalAlignment="Center"
+                   Foreground="White" TextAlignment="Center"/>
+        
+        <Grid Width="auto" Height="auto"
+              VerticalAlignment="Top" HorizontalAlignment="Right"
+              Margin="0,40,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="15" MaxWidth="15"/>
+                <ColumnDefinition Width="15" MaxWidth="15"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.ColumnSpan="3" 
+                       Text="Current button settings:" FontSize="20" FontWeight="Bold" Foreground="white"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" 
+                       Text="Button 1:" 
+                       Style="{StaticResource btnDescTextBox}"/>
+            <TextBlock x:Name="Button1ModeDescription"
+                       Grid.Row="2" Grid.Column="2"
+                       Text="adaks" 
+                       Style="{StaticResource btnDescValTextBox}"/>
+            <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                       Text="Button 2:"
+                       Style="{StaticResource btnDescTextBox}"/>
+            <TextBlock x:Name="Button2ModeDescription" 
+                       Grid.Row="4" Grid.Column="2"
+                       Text="opvus" 
+                       Style="{StaticResource btnDescValTextBox}"/>
+        </Grid>
+        
+        <Grid Width="auto" Height="auto"
+              VerticalAlignment="Center" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Grid.Column="0"
+                       Text="Name:"
+                       Style="{StaticResource descTextBox}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1"
+                       Text="VRS Mouse 1.0" 
+                       Style="{StaticResource descContentTextBox}"/>
+
+            <TextBlock Grid.Row="1" Grid.Column="0"
+                       Text="UID:" 
+                       Style="{StaticResource descTextBox}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1"
+                       Text="0000001" 
+                       Style="{StaticResource descContentTextBox}"/>
+
+            <TextBlock Grid.Row="2" Grid.Column="0"
+                       Text="Controller:" 
+                       Style="{StaticResource descTextBox}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1"
+                       Text="STM32F303K8" 
+                       Style="{StaticResource descContentTextBox}"/>
+        </Grid>
+    </Grid>
+</UserControl>
