@@ -94,7 +94,7 @@ int main(void)
   MX_I2C1_Init();
   MX_TIM15_Init();
   /* USER CODE BEGIN 2 */
-  uint8_t tlv493_works = tlv493_init();
+  //uint8_t tlv493_works = tlv493_init();
 
   /* USER CODE END 2 */
 
@@ -105,7 +105,10 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  tlv493_test();
+	  for(uint8_t i=1;i<=3;i++){
+		  tlv493_send(i);
+		  LL_mDelay(2000);
+	  }
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

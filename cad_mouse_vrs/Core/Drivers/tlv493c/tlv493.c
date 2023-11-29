@@ -57,6 +57,29 @@ void tlv493_test(){
     USART2_PutBuffer(str,len);
     free(str);
 }
+void tlv493_send(uint8_t i){
+	char *str;
+	int len;
+	str = malloc(128*sizeof(char));
+	switch(i){
+	case 1:
+		len = sprintf(str,"{\"Rotate_x\":\"30\",\"Rotate_y\":\"30\",\"Rotate_z\":\"30\",\"Button\":\"none\",\"Zoom\":\"-10\"}");
+		USART2_PutBuffer(str,len);
+		free(str);
+		break;
+	case 2:
+		len = sprintf(str,"{\"Rotate_x\":\"-30\",\"Rotate_y\":\"0\",\"Rotate_z\":\"20\",\"Button\":\"none\",\"Zoom\":\"0\"}");
+		USART2_PutBuffer(str,len);
+		free(str);
+		break;
+	case 3:
+		len = sprintf(str,"{\"Rotate_x\":\"0\",\"Rotate_y\":\"0\",\"Rotate_z\":\"100\",\"Button\":\"none\",\"Zoom\":\"10\"}");
+		USART2_PutBuffer(str,len);
+		free(str);
+		break;
+
+	}
+}
 // void get_data(float *coord){
 //     uint8_t data[6];
 //     tlv493_read_bytes(&data,0x0,6);

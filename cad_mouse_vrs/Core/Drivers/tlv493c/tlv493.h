@@ -51,6 +51,7 @@ void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
 
 void tlv493_update_data();
 void tlv493_test();
+void tlv493_send(uint8_t i);
 /**
  * @brief read position of magnet on axis
  * @return position of magnet on axis
