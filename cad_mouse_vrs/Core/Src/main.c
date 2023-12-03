@@ -97,7 +97,20 @@ int main(void)
   MX_TIM15_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+  reset();
   id();
+
+  uint32_t page=0;
+  page=(WRITE_ADDRESS_MSB<<16) | (WRITE_ADDRESS_MID<<8) | (WRITE_ADDRESS_LSB);
+
+  uint8_t data=25;
+
+  uint8_t read=0;
+  readDpi(1, 0, 1, &read);
+  write(1, 0, 1, &data);
+  readDpi(1,0,1,&read);
+
+
 
   uint8_t tlv493_works = tlv493_init();
   char *str;
