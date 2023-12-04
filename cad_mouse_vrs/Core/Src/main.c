@@ -20,10 +20,10 @@
 #include "main.h"
 #include "dma.h"
 #include "i2c.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-#include "W25Q32.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -94,10 +94,13 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   MX_TIM15_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
   W25Q32_RESET();
   W25Q32_GET_ID();
 
+  W25Q32_WRITE_DPI(356);
+  uint16_t dpi=W25Q32_READ_DPI();
 
   uint8_t tlv493_works = tlv493_init();
 
@@ -110,7 +113,7 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-	  tlv493_test();
+
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
