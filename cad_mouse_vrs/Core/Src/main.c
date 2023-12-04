@@ -79,7 +79,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  W25Q32_REGISTERCALLBACKS(SPI_Receive,SPI_Send,GPIO_SPI_CS_LOW,GPIO_SPI_CS_HIGH,SPI_Delay);
+  W25Q32_REGISTER_CALLBACKS(SPI_Receive,SPI_Send,GPIO_SPI_CS_LOW,GPIO_SPI_CS_HIGH,SPI_Delay);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -97,8 +97,8 @@ int main(void)
   MX_TIM15_Init();
   MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
-  reset();
-  id();
+  W25Q32_RESET();
+  W25Q32_GET_ID();
 
   uint32_t page=0;
   page=(WRITE_ADDRESS_MSB<<16) | (WRITE_ADDRESS_MID<<8) | (WRITE_ADDRESS_LSB);
@@ -106,9 +106,9 @@ int main(void)
   uint8_t data=69;
 
   uint8_t read=0;
-  readDpi(1, 0, 1, &read);
-  write(1, 0, 1, &data);
-  readDpi(1,0,1,&read);
+  W25Q32_READ_DATA(1, 0, 1, &read);
+  W25Q32_WRITE_DATA(1, 0, 1, &data);
+  W25Q32_READ_DATA(1,0,1,&read);
 
 
 
