@@ -11,13 +11,22 @@
 //make the functions in SPI, then just use them as callback functions in here ....
 //add cs low, high as a callback function
 
-void W25Q32_REGISTERCALLBACKS(void *receive_callback, void *send_callback){
+void W25Q32_REGISTERCALLBACKS(void *receive_callback, void *send_callback, void *cs_low_callback, void *cs_high_callback, void *delay_callback){
 	if (receive_callback!=0){
 			W25Q32_RECEIVE=receive_callback;
 		}
 	if (send_callback!=0){
 			W25Q32_SEND=send_callback;
 		}
+	if (cs_low_callback!=0){
+			W25Q32_CS_LOW=cs_low_callback;
+	}
+	if (cs_high_callback!=0){
+			W25Q32_CS_HIGH=cs_high_callback;
+		}
+	if (delay_callback!=0){
+			W25Q32_DELAY=delay_callback;
+	}
 }
 
 void erase_sector(uint16_t numsector){
@@ -32,12 +41,12 @@ void erase_sector(uint16_t numsector){
 	tData[2]=(memAddr >> 8)&0xFF; //MID
 	tData[3]=(memAddr)&0xFF; //LSB
 
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_LOW();
 
 	W25Q32_SEND(tData, 4);
 
-	LL_GPIO_SetOutputPin(GPIOA,SPI1_CS_Pin);
-	HAL_Delay(450);
+	W25Q32_CS_HIGH();
+	W25Q32_DELAY(450);
 
 	write_disable();
 }
@@ -82,9 +91,9 @@ void write(uint32_t page, uint16_t offset, uint32_t size, uint8_t *data){
 		for (uint16_t i=0; i < bytesremaining; i++){
 			tData[index++]=data[i+dataPosition];
 		}
-		LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+		W25Q32_CS_LOW();
 		W25Q32_SEND(tData, bytestosend);
-		LL_GPIO_SetOutputPin(GPIOA,SPI1_CS_Pin);
+		W25Q32_CS_HIGH();
 
 		startPage++;
 		offset=0;
@@ -99,20 +108,20 @@ void write(uint32_t page, uint16_t offset, uint32_t size, uint8_t *data){
 void write_enable(){
 	uint8_t en=WRITE_ENABLE_INSTRUCTION;
 
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_LOW();
 
 	W25Q32_SEND(&en, 1);
-	LL_GPIO_SetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_HIGH();
 	HAL_Delay(10);
 }
 
 void write_disable(){
 	uint8_t en=WRITE_DISABLE_INSTRUCTION;
 
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_LOW();
 
 	W25Q32_SEND(&en, 1);
-	LL_GPIO_SetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_HIGH();
 	HAL_Delay(10);
 }
 
@@ -127,14 +136,14 @@ void readDpi(uint32_t startPage,uint8_t offset, uint8_t size, uint8_t * rData){
 	tData[2]=(address >> 8)&0xFFU; //MID
 	tData[3]=(address)&0xFFU; //LSB
 
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_LOW();
 
 	W25Q32_SEND(tData, 4);
 	HAL_Delay(10);
 	W25Q32_RECEIVE(rData, size);
 
 
-	LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
+	W25Q32_CS_HIGH();
 
 	HAL_Delay(100);
 }
@@ -145,11 +154,11 @@ void reset(){
 	tData[0]=0x66;
 	tData[1]=0x99;
 
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_LOW();
 
 	W25Q32_SEND(tData, 2);
 
-    LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
+    W25Q32_CS_HIGH();
 
     HAL_Delay(100);
 
@@ -159,9 +168,10 @@ void id(){
 	uint8_t tData = 0x9F;
 	uint8_t rData[3];
 
-	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+	W25Q32_CS_LOW();
+
 	W25Q32_SEND(&tData, 1);
 	W25Q32_RECEIVE(rData, 3);
 
-    LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
+	W25Q32_CS_HIGH();
 }

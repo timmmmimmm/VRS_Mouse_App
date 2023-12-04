@@ -31,6 +31,7 @@ extern "C" {
 /* USER CODE BEGIN Includes */
 void SPI_Send(uint8_t* send_data, uint32_t size);
 void SPI_Receive(uint8_t* receive_data, uint32_t size);
+void SPI_Delay(uint16_t delay);
 /* USER CODE END Includes */
 
 extern SPI_HandleTypeDef hspi1;

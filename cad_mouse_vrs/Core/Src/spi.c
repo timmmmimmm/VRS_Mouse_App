@@ -160,4 +160,7 @@ void SPI_Send(uint8_t* send_data, uint32_t size){
 void SPI_Receive(uint8_t* receive_data, uint32_t size){
 	HAL_SPI_Receive(&hspi1, receive_data, size, 3000);
 }
+void SPI_Delay(uint16_t delay){
+	HAL_Delay(delay);
+}
 /* USER CODE END 1 */

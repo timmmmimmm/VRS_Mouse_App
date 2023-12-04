@@ -115,5 +115,10 @@ void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 2 */
-
+void GPIO_SPI_CS_LOW(){
+	LL_GPIO_ResetOutputPin(GPIOA,SPI1_CS_Pin);
+}
+void GPIO_SPI_CS_HIGH(){
+	LL_GPIO_SetOutputPin(GPIOA, SPI1_CS_Pin);
+}
 /* USER CODE END 2 */

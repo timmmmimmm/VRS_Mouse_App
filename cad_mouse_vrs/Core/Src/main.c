@@ -79,7 +79,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  W25Q32_REGISTERCALLBACKS(SPI_Receive,SPI_Send);
+  W25Q32_REGISTERCALLBACKS(SPI_Receive,SPI_Send,GPIO_SPI_CS_LOW,GPIO_SPI_CS_HIGH,SPI_Delay);
   /* USER CODE END Init */
 
   /* Configure the system clock */
