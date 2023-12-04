@@ -21,8 +21,6 @@
 #include "spi.h"
 
 /* USER CODE BEGIN 0 */
-uint8_t *receive_buffer;
-uint8_t index=0;
 /* USER CODE END 0 */
 
 SPI_HandleTypeDef hspi1;
@@ -155,5 +153,11 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
 }
 
 /* USER CODE BEGIN 1 */
+void SPI_Send(uint8_t* send_data, uint32_t size){
+	HAL_SPI_Transmit(&hspi1, send_data, size, 4000);
+}
 
+void SPI_Receive(uint8_t* receive_data, uint32_t size){
+	HAL_SPI_Receive(&hspi1, receive_data, size, 3000);
+}
 /* USER CODE END 1 */

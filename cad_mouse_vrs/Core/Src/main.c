@@ -79,7 +79,7 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-
+  W25Q32_REGISTERCALLBACKS(SPI_Receive,SPI_Send);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -103,7 +103,7 @@ int main(void)
   uint32_t page=0;
   page=(WRITE_ADDRESS_MSB<<16) | (WRITE_ADDRESS_MID<<8) | (WRITE_ADDRESS_LSB);
 
-  uint8_t data=25;
+  uint8_t data=69;
 
   uint8_t read=0;
   readDpi(1, 0, 1, &read);

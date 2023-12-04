@@ -19,9 +19,11 @@
 void W25Q32_WRITE_DPI(uint8_t dpi);
 uint8_t W25Q32_READ_DPI();
 
-static void (*W25Q32_READ)(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* write_data)=0;
-static void (*W25Q32_WRITE)(uint8_t CS_PIN, uint8_t register_address, uint8_t length, uint8_t* read_data)=0;
+static void (*W25Q32_RECEIVE)(uint8_t* receive_data, uint32_t size)=0;
+static void (*W25Q32_SEND)(uint8_t* send_data, uint32_t size)=0;
+static void (*W25Q32_CS_LOW)()=0;
+static void (*W25Q32_CS_HIGH)()=0;
 
-void W25Q32_REGISTERCALLBACKS(void *read_callback, void *write_callback);
+void W25Q32_REGISTERCALLBACKS(void *receive_callback, void *send_callback);
 #endif
 
