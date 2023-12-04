@@ -24,6 +24,15 @@ void W25Q32_WRITE_DISABLE();
 void W25Q32_ERASE_SECTOR(uint16_t numsector);
 void W25Q32_REGISTER_CALLBACKS(void *receive_callback, void *send_callback, void *cs_low_callback, void *cs_high_callback, void *delay_callback);
 
+uint16_t W25Q32_READ_DPI();
+void W25Q32_WRITE_DPI(uint16_t dpi);
+uint8_t W25Q32_READ_ACTION_BUTTON_0();
+void W25Q32_WRITE_ACTION_BUTTON_0(uint8_t action_button);
+uint8_t W25Q32_READ_ACTION_BUTTON_1();
+void W25Q32_WRITE_ACTION_BUTTON_1(uint8_t action_button);
+
+
+
 uint32_t bytes_to_write(uint32_t size,uint16_t offset);
 
 static void (*W25Q32_RECEIVE)(uint8_t* receive_data, uint32_t size)=0;

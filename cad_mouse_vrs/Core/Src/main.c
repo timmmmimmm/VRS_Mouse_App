@@ -100,17 +100,6 @@ int main(void)
   W25Q32_RESET();
   W25Q32_GET_ID();
 
-  uint32_t page=0;
-  page=(WRITE_ADDRESS_MSB<<16) | (WRITE_ADDRESS_MID<<8) | (WRITE_ADDRESS_LSB);
-
-  uint8_t data=69;
-
-  uint8_t read=0;
-  W25Q32_READ_DATA(1, 0, 1, &read);
-  W25Q32_WRITE_DATA(1, 0, 1, &data);
-  W25Q32_READ_DATA(1,0,1,&read);
-
-
 
   uint8_t tlv493_works = tlv493_init();
   char *str;
