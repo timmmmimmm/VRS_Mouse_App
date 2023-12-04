@@ -27,8 +27,8 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f3xx_hal.h"
 
+#include "stm32f3xx_ll_dma.h"
 #include "stm32f3xx_ll_i2c.h"
 #include "stm32f3xx_ll_rcc.h"
 #include "stm32f3xx_ll_bus.h"
@@ -37,10 +37,12 @@ extern "C" {
 #include "stm32f3xx_ll_cortex.h"
 #include "stm32f3xx_ll_utils.h"
 #include "stm32f3xx_ll_pwr.h"
-#include "stm32f3xx_ll_dma.h"
-#include "stm32f3xx_ll_tim.h"
 #include "stm32f3xx_ll_usart.h"
 #include "stm32f3xx_ll_gpio.h"
+
+#if defined(USE_FULL_ASSERT)
+#include "stm32_assert.h"
+#endif /* USE_FULL_ASSERT */
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -70,18 +72,32 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define MCO_Pin LL_GPIO_PIN_0
-#define MCO_GPIO_Port GPIOF
-#define VCP_TX_Pin LL_GPIO_PIN_2
-#define VCP_TX_GPIO_Port GPIOA
-#define SPI1_CS_Pin LL_GPIO_PIN_8
-#define SPI1_CS_GPIO_Port GPIOA
-#define SWDIO_Pin LL_GPIO_PIN_13
-#define SWDIO_GPIO_Port GPIOA
-#define SWCLK_Pin LL_GPIO_PIN_14
-#define SWCLK_GPIO_Port GPIOA
-#define VCP_RX_Pin LL_GPIO_PIN_15
-#define VCP_RX_GPIO_Port GPIOA
+#define B1_Pin LL_GPIO_PIN_13
+#define B1_GPIO_Port GPIOC
+#define USART_TX_Pin LL_GPIO_PIN_2
+#define USART_TX_GPIO_Port GPIOA
+#define USART_RX_Pin LL_GPIO_PIN_3
+#define USART_RX_GPIO_Port GPIOA
+#define LD2_Pin LL_GPIO_PIN_13
+#define LD2_GPIO_Port GPIOB
+#define TMS_Pin LL_GPIO_PIN_13
+#define TMS_GPIO_Port GPIOA
+#define TCK_Pin LL_GPIO_PIN_14
+#define TCK_GPIO_Port GPIOA
+#define SWO_Pin LL_GPIO_PIN_3
+#define SWO_GPIO_Port GPIOB
+#ifndef NVIC_PRIORITYGROUP_0
+#define NVIC_PRIORITYGROUP_0         ((uint32_t)0x00000007) /*!< 0 bit  for pre-emption priority,
+                                                                 4 bits for subpriority */
+#define NVIC_PRIORITYGROUP_1         ((uint32_t)0x00000006) /*!< 1 bit  for pre-emption priority,
+                                                                 3 bits for subpriority */
+#define NVIC_PRIORITYGROUP_2         ((uint32_t)0x00000005) /*!< 2 bits for pre-emption priority,
+                                                                 2 bits for subpriority */
+#define NVIC_PRIORITYGROUP_3         ((uint32_t)0x00000004) /*!< 3 bits for pre-emption priority,
+                                                                 1 bit  for subpriority */
+#define NVIC_PRIORITYGROUP_4         ((uint32_t)0x00000003) /*!< 4 bits for pre-emption priority,
+                                                                 0 bit  for subpriority */
+#endif
 
 /* USER CODE BEGIN Private defines */
 

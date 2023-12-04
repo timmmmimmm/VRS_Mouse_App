@@ -54,11 +54,11 @@ void MX_USART2_UART_Init(void)
   LL_AHB1_GRP1_EnableClock(LL_AHB1_GRP1_PERIPH_GPIOA);
   /**USART2 GPIO Configuration
   PA2   ------> USART2_TX
-  PA15   ------> USART2_RX
+  PA3   ------> USART2_RX
   */
-  GPIO_InitStruct.Pin = VCP_TX_Pin|VCP_RX_Pin;
+  GPIO_InitStruct.Pin = USART_TX_Pin|USART_RX_Pin;
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
-  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_LOW;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_PUSHPULL;
   GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   GPIO_InitStruct.Alternate = LL_GPIO_AF_7;
@@ -71,7 +71,7 @@ void MX_USART2_UART_Init(void)
 
   LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_6, LL_DMA_PRIORITY_LOW);
 
-  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_MODE_CIRCULAR);
+  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_MODE_NORMAL);
 
   LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_PERIPH_NOINCREMENT);
 
@@ -96,8 +96,12 @@ void MX_USART2_UART_Init(void)
 
   LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_7, LL_DMA_MDATAALIGN_BYTE);
 
+  /* USART2 interrupt Init */
+  NVIC_SetPriority(USART2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
+  NVIC_EnableIRQ(USART2_IRQn);
+
   /* USER CODE BEGIN USART2_Init 1 */
-  /* USART2_RX Init */
+   /* USART2_RX Init */
     LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_6, LL_DMA_DIRECTION_PERIPH_TO_MEMORY);
     LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_6, LL_DMA_PRIORITY_MEDIUM);
     LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_6, LL_DMA_MODE_CIRCULAR);
@@ -137,7 +141,6 @@ void MX_USART2_UART_Init(void)
     /* USART2 interrupt Init */
     NVIC_SetPriority(USART2_IRQn, 0);
     NVIC_EnableIRQ(USART2_IRQn);
-
   /* USER CODE END USART2_Init 1 */
   USART_InitStruct.BaudRate = 115200;
   USART_InitStruct.DataWidth = LL_USART_DATAWIDTH_8B;
@@ -204,6 +207,7 @@ void USART2_CheckDmaReception(void)
 		}
 	}
 }
+
 
 
 /* USER CODE END 1 */
