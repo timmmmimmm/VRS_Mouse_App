@@ -99,7 +99,7 @@ int main(void)
   W25Q32_RESET();
   W25Q32_GET_ID();
 
-  W25Q32_WRITE_DPI(356);
+  W25Q32_WRITE_DPI(200);
   uint16_t dpi=W25Q32_READ_DPI();
 
   uint8_t tlv493_works = tlv493_init();
