@@ -84,7 +84,7 @@ void Error_Handler(void);
 #define VCP_RX_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+void proccesDmaData(const uint8_t* data, uint8_t len);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

@@ -7,6 +7,7 @@
 
 #include "W25Q32.h"
 
+
 void W25Q32_WRITE_DPI(uint16_t dpi){
 	uint8_t tData[2];
 	tData[0]=(dpi >> 8)&0xFF;;
@@ -22,24 +23,24 @@ uint16_t W25Q32_READ_DPI(){
 
 uint8_t W25Q32_READ_ACTION_BUTTON_0(){
 	uint8_t rData;
-	W25Q32_READ_DATA(0, 4, 1, &rData);
+	W25Q32_READ_DATA(17, 0, 1, &rData);
 	return rData;
 }
 
 void W25Q32_WRITE_ACTION_BUTTON_0(uint8_t action_button){
 	uint8_t tData=action_button;
-	W25Q32_WRITE_DATA(0, 4, 1, &tData);
+	W25Q32_WRITE_DATA(17, 0, 1, &tData);
 }
 
 uint8_t W25Q32_READ_ACTION_BUTTON_1(){
 	uint8_t rData;
-	W25Q32_READ_DATA(0, 8, 1, &rData);
+	W25Q32_READ_DATA(33, 0, 1, &rData);
 	return rData;
 }
 
 void W25Q32_WRITE_ACTION_BUTTON_1(uint8_t action_button){
 	uint8_t tData=action_button;
-	W25Q32_WRITE_DATA(0, 8, 1, &tData);
+	W25Q32_WRITE_DATA(33, 0, 1, &tData);
 }
 
 void W25Q32_REGISTER_CALLBACKS(void *receive_callback, void *send_callback, void *cs_low_callback, void *cs_high_callback, void *delay_callback){

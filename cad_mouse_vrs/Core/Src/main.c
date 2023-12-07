@@ -79,6 +79,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
   W25Q32_REGISTER_CALLBACKS(SPI_Receive,SPI_Send,GPIO_SPI_CS_LOW,GPIO_SPI_CS_HIGH,SPI_Delay);
+  USART2_RegisterCallback(proccesDmaData);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -99,10 +100,9 @@ int main(void)
   W25Q32_RESET();
   W25Q32_GET_ID();
 
-  W25Q32_WRITE_DPI(200);
-  uint16_t dpi=W25Q32_READ_DPI();
-
-  uint8_t tlv493_works = tlv493_init();
+//  W25Q32_WRITE_ACTION_BUTTON_0(5);
+//  W25Q32_WRITE_ACTION_BUTTON_1(2);
+  	uint8_t tlv493_works = tlv493_init();
 
   /* USER CODE END 2 */
 
@@ -113,7 +113,6 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -158,7 +157,40 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void proccesDmaData(const uint8_t* data, uint8_t len)
+{
+	//this function parses 3 numbers representing DPI, ACTION BUTTON 0 and ACTION BUTTON 1 and writes them to the flash
+	uint16_t numbers[3];
+	static uint8_t k=0;
+	static uint8_t counter = 0;
+	for (uint8_t i= 0;i<len;i++){
+		if ((data[i]<='9')&&(data[i]>='0')){
+			if (counter==0){
+				numbers[k]=data[i]-'0'; //first digit
+			}
+			else{
+				numbers[k]=numbers[k]*10+(data[i]-'0');
+			}
+			counter++;
+		}
+		else if (data[i]==','){
+			k++;
+			counter=0;
+		}
+		else if (data[i]=='$'){
+			uint16_t a=W25Q32_READ_DPI();
+			uint8_t b=W25Q32_READ_ACTION_BUTTON_0();
+			uint8_t c=W25Q32_READ_ACTION_BUTTON_1();
+			char tx_buffer[128];
+			uint16_t len = sprintf(tx_buffer, "%d,%d,%d,\r\n",a,b,c);
+			USART2_PutBuffer((uint8_t*)tx_buffer, len);
+		}
+	}
 
+	W25Q32_WRITE_DPI(numbers[0]);
+	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
+	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
+}
 /* USER CODE END 4 */
 
 /**
