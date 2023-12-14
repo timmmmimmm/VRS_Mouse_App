@@ -76,6 +76,12 @@ void Error_Handler(void);
 #define VCP_TX_GPIO_Port GPIOA
 #define SPI1_CS_Pin LL_GPIO_PIN_8
 #define SPI1_CS_GPIO_Port GPIOA
+#define Button0_Pin LL_GPIO_PIN_10
+#define Button0_GPIO_Port GPIOA
+#define Button0_EXTI_IRQn EXTI15_10_IRQn
+#define Button1_Pin LL_GPIO_PIN_11
+#define Button1_GPIO_Port GPIOA
+#define Button1_EXTI_IRQn EXTI15_10_IRQn
 #define SWDIO_Pin LL_GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin LL_GPIO_PIN_14

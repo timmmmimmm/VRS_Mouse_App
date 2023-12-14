@@ -50,7 +50,7 @@ void tlv493_read_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
 void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len);
 
 void tlv493_update_data();
-void tlv493_test();
+//void tlv493_test();
 /**
  * @brief read position of magnet on axis
  * @return position of magnet on axis
@@ -58,6 +58,6 @@ void tlv493_test();
 float getX();
 float getY();
 float getZ();
-void get_data(float *coord);
+//void get_data(float *coord);
 
 #endif

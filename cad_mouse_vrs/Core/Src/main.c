@@ -24,7 +24,7 @@
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
+#include "stm32f3xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -59,7 +59,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom);
 /* USER CODE END 0 */
 
 /**
@@ -109,10 +109,20 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
+  char message[256];
+  uint8_t length;
+  float rotX = 0, rotY = 0, rotZ = 0, zoom = 0;
 
   while (1)
   {
     /* USER CODE END WHILE */
+	  //pride vzdy predosla hodnota a ty ju prepocitas napr predosla je 60deg dalsie 61 tak neotoci ju o 61 dlasich ale len o 1 ?
+	  //akoze neviem ci to dava zmysel alebo pokiaal drzi do strany tak zeby to posuvalo ?
+	  //idk mozme dat discusion
+	  //vo funkci si zavolaj najprv tlv493_update_data(); a potom getX()...
+//	  calc_rot(&rotX,&rotY,&rotZ,&zoom);
+	  create_message(message,&length,rotX,rotY,rotZ,zoom);
+	  USART2_PutBuffer(message, length);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -190,6 +200,19 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 	W25Q32_WRITE_DPI(numbers[0]);
 	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
 	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
+}
+void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom){
+	uint8_t but0 = 0, but1 = 0;
+	if(get_button(0)){
+		but0 = W25Q32_READ_ACTION_BUTTON_0();
+		reset_button(0);
+	}
+	if(get_button(1)){
+		but1 = W25Q32_READ_ACTION_BUTTON_1();
+		reset_button(1);
+	}
+//	message = malloc(256*sizeof(char));
+	*len = sprintf(message,"{\"RotX\":\"%.2f\",\"RotY\":\"%.2f\",\"RotZ\":\"%.2f\",\"Zoom\":\"%.2f\",\"Button0\":\"%d\",\"Button1\":\"%d\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
 }
 /* USER CODE END 4 */
 

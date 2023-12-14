@@ -48,15 +48,15 @@ float getY(){
 float getZ(){
     return (float)dataZ*TLV493D_B_MULT-cal_z;
 }
-void tlv493_test(){
-	//ukazka ziskavania dat
-    tlv493_update_data();
-    char *str;
-    str = malloc(32*sizeof(char));
-    int len = sprintf(str,"%.2f,%.2f,%.2f\n",getX(),getY(),getZ());
-    USART2_PutBuffer(str,len);
-    free(str);
-}
+//void tlv493_test(){
+//	//ukazka ziskavania dat
+//    tlv493_update_data();
+//    char *str;
+//    str = malloc(32*sizeof(char));
+//    int len = sprintf(str,"%.2f,%.2f,%.2f\n",getX(),getY(),getZ());
+//    USART2_PutBuffer(str,len);
+//    free(str);
+//}
 // void get_data(float *coord){
 //     uint8_t data[6];
 //     tlv493_read_bytes(&data,0x0,6);
