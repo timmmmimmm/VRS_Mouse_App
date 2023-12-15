@@ -55,9 +55,9 @@ void tlv493_update_data();
  * @brief read position of magnet on axis
  * @return position of magnet on axis
 */
-float getX();
-float getY();
-float getZ();
+float tlv493_getX();
+float tlv493_getY();
+float tlv493_getZ();
 //void get_data(float *coord);
 
 #endif

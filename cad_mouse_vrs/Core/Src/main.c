@@ -25,6 +25,9 @@
 #include "usart.h"
 #include "gpio.h"
 #include "stm32f3xx_it.h"
+#include "tlv493c/tlv493.h"
+#include "W25Q32.h"
+#include "movingAverageFIlter.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -59,7 +62,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom);
+void create_message(uint8_t *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom);
 /* USER CODE END 0 */
 
 /**
@@ -102,14 +105,16 @@ int main(void)
 
 //  W25Q32_WRITE_ACTION_BUTTON_0(5);
 //  W25Q32_WRITE_ACTION_BUTTON_1(2);
-  	uint8_t tlv493_works = tlv493_init();
+  //uint8_t tlv493_works =
+  (void)tlv493_init();
+  initFilter(tlv493_getX, tlv493_getY, tlv493_getZ, tlv493_update_data);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-  char message[256];
+  uint8_t message[256];
   uint8_t length;
   float rotX = 0, rotY = 0, rotZ = 0, zoom = 0;
 
@@ -188,12 +193,12 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 			counter=0;
 		}
 		else if (data[i]=='$'){
-			uint16_t a=W25Q32_READ_DPI();
+			/*uint16_t a=W25Q32_READ_DPI();
 			uint8_t b=W25Q32_READ_ACTION_BUTTON_0();
 			uint8_t c=W25Q32_READ_ACTION_BUTTON_1();
 			char tx_buffer[128];
 			uint16_t len = sprintf(tx_buffer, "%d,%d,%d,\r\n",a,b,c);
-			USART2_PutBuffer((uint8_t*)tx_buffer, len);
+			USART2_PutBuffer((uint8_t*)tx_buffer, len);*/
 		}
 	}
 
@@ -201,7 +206,7 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
 	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
 }
-void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom){
+void create_message(uint8_t *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom){
 	uint8_t but0 = 0, but1 = 0;
 	if(get_button(0)){
 		but0 = W25Q32_READ_ACTION_BUTTON_0();
@@ -212,7 +217,7 @@ void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float
 		reset_button(1);
 	}
 //	message = malloc(256*sizeof(char));
-	*len = sprintf(message,"{\"RotX\":\"%.2f\",\"RotY\":\"%.2f\",\"RotZ\":\"%.2f\",\"Zoom\":\"%.2f\",\"Button0\":\"%d\",\"Button1\":\"%d\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
+	*len = (uint8_t)sprintf(message,"{\"RotX\":\"%.2f\",\"RotY\":\"%.2f\",\"RotZ\":\"%.2f\",\"Zoom\":\"%.2f\",\"Button0\":\"%d\",\"Button1\":\"%d\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
 }
 /* USER CODE END 4 */
 

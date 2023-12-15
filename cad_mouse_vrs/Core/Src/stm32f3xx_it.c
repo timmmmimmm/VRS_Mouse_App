@@ -265,12 +265,12 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 	if (LL_TIM_IsActiveFlag_UPDATE(TIM15)) {
 			        // Clear the interrupt flag
 			        LL_TIM_ClearFlag_UPDATE(TIM15);
-			        char tx_buffer[256];
+			        //char tx_buffer[256];
 
 			        // Send data over USART2
-			        uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
+			        //uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
 
-			        USART2_PutBuffer((uint8_t*)tx_buffer, len);
+			        //USART2_PutBuffer((uint8_t*)tx_buffer, len);
 
 			    }
   /* USER CODE END TIM1_BRK_TIM15_IRQn 0 */

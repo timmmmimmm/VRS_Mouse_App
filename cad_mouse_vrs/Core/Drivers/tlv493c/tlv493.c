@@ -46,9 +46,9 @@ uint8_t tlv493_init(){
 	float x,y,z;
 	for(size_t i = 0; i < SAMPLES; i++){
 		tlv493_update_data();
-		x += getX();
-		y += getY();
-		z += getZ();
+		x += tlv493_getX();
+		y += tlv493_getY();
+		z += tlv493_getZ();
 	}
 	cal_x = (float)x/SAMPLES;
 	cal_y = (float)y/SAMPLES;
@@ -62,13 +62,13 @@ void tlv493_update_data(){
     dataY = (uint16_t)(data[1] << 4 | (data[4] & 0b1111));
     dataZ = (uint16_t)(data[2] << 4) | data[5] & 0b1111;
 }
-float getX(){
+float tlv493_getX(){
     return (float)dataX*TLV493D_B_MULT-cal_x;
 }
-float getY(){
+float tlv493_getY(){
     return (float)dataY*TLV493D_B_MULT-cal_y;
 }
-float getZ(){
+float tlv493_getZ(){
     return (float)dataZ*TLV493D_B_MULT-cal_z;
 }
 //void tlv493_test(){
