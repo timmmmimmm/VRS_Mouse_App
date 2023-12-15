@@ -62,7 +62,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void create_message(uint8_t *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom);
+void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z, float zoom);
 /* USER CODE END 0 */
 
 /**
@@ -116,7 +116,8 @@ int main(void)
 
   uint8_t message[256];
   uint8_t length;
-  float rotX = 0, rotY = 0, rotZ = 0, zoom = 0;
+  float zoom = 0;
+  MouseAxisInfo * mouseAxisInfo = 0;
 
   while (1)
   {
@@ -126,7 +127,8 @@ int main(void)
 	  //idk mozme dat discusion
 	  //vo funkci si zavolaj najprv tlv493_update_data(); a potom getX()...
 //	  calc_rot(&rotX,&rotY,&rotZ,&zoom);
-	  create_message(message,&length,rotX,rotY,rotZ,zoom);
+	  mouseAxisInfo = MA_filterData();
+	  create_message(message,&length,mouseAxisInfo->x,mouseAxisInfo->y,mouseAxisInfo->z,zoom);
 	  USART2_PutBuffer(message, length);
     /* USER CODE BEGIN 3 */
   }
@@ -206,7 +208,7 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
 	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
 }
-void create_message(uint8_t *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom){
+void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z, float zoom){
 	uint8_t but0 = 0, but1 = 0;
 	if(get_button(0)){
 		but0 = W25Q32_READ_ACTION_BUTTON_0();
@@ -217,7 +219,8 @@ void create_message(uint8_t *message, uint8_t *len, float rot_x, float rot_y, fl
 		reset_button(1);
 	}
 //	message = malloc(256*sizeof(char));
-	*len = (uint8_t)sprintf(message,"{\"RotX\":\"%.2f\",\"RotY\":\"%.2f\",\"RotZ\":\"%.2f\",\"Zoom\":\"%.2f\",\"Button0\":\"%d\",\"Button1\":\"%d\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
+	//*len = (uint8_t)sprintf(message,"{\"RotX\":\"%d\",\"RotY\":\"%d\",\"RotZ\":\"%d\",\"Zoom\":\"%.2f\",\"Button0\":\"%u\",\"Button1\":\"%u\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
+	*len = (uint8_t)sprintf(message,"RotX:%d,RotY:%d,RotZ:%d\r\n",rot_x,rot_y,rot_z);
 }
 /* USER CODE END 4 */
 

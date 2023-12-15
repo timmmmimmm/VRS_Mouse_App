@@ -236,25 +236,7 @@ void DMA1_Channel6_IRQHandler(void)
   /* USER CODE END DMA1_Channel6_IRQn 1 */
 }
 
-/**
-  * @brief This function handles DMA1 channel7 global interrupt.
-  */
-void DMA1_Channel7_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
 
-  /* USER CODE END DMA1_Channel7_IRQn 0 */
-
-  /* USER CODE BEGIN DMA1_Channel7_IRQn 1 */
-	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
-	{
-		LL_DMA_ClearFlag_TC7(DMA1);
-
-		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
-	}
-  /* USER CODE END DMA1_Channel7_IRQn 1 */
-}
 
 /**
   * @brief This function handles TIM1 break and TIM15 interrupts.

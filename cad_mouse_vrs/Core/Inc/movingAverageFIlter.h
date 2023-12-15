@@ -18,7 +18,9 @@ typedef struct{
 	int16_t z;
 }MouseAxisInfo;
 
-
+/**
+ * Filter window init, loads callbacks and initializes values
+ */
 void initFilter(float(* xFn)(void),
 			       float(* yFn)(void),
 				   float(* zFn)(void),

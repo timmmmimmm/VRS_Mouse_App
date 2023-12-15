@@ -24,6 +24,7 @@
 uint8_t bufferUSART2dma[DMA_USART2_BUFFER_SIZE];
 uint16_t buf_read_pos = 0;
 uint8_t MAX_MESSAGE_SIZE =128;
+static uint8_t sending = 0;
 /* Declaration and initialization of callback function */
 static void (* USART2_ProcessData)(const uint8_t* data, uint16_t len) = 0;
 
@@ -167,7 +168,35 @@ void USART2_PutBuffer(uint8_t *buffer, uint8_t length)
 	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
 
 	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
+
+	sending = 1;
+	while(sending){}
 }
+
+
+/**
+  * @brief This function handles DMA1 channel7 global interrupt.
+  */
+void DMA1_Channel7_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel7_IRQn 0 */
+
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 1 */
+	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
+	{
+		LL_DMA_ClearFlag_TC7(DMA1);
+
+		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
+
+		sending = 0;
+	}
+  /* USER CODE END DMA1_Channel7_IRQn 1 */
+}
+
+
 void USART2_CheckDmaReception(void)
 {
 	if(USART2_ProcessData == 0) return;
