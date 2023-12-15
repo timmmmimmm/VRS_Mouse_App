@@ -18,11 +18,13 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "dma.h"
 #include "i2c.h"
+#include "spi.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
-
+#include "stm32f3xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -57,10 +59,9 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom);
 /* USER CODE END 0 */
 
-int sending = 0;
 /**
   * @brief  The application entry point.
   * @retval int
@@ -70,19 +71,15 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
-  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
-
-  /* System interrupt init*/
-  NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
-  while(1){
-
-  }
+  W25Q32_REGISTER_CALLBACKS(SPI_Receive,SPI_Send,GPIO_SPI_CS_LOW,GPIO_SPI_CS_HIGH,SPI_Delay);
+  USART2_RegisterCallback(proccesDmaData);
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -96,15 +93,41 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_USART2_UART_Init();
+  MX_I2C1_Init();
   MX_TIM15_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
+  W25Q32_RESET();
+  W25Q32_GET_ID();
+
+//  W25Q32_WRITE_ACTION_BUTTON_0(5);
+//  W25Q32_WRITE_ACTION_BUTTON_1(2);
+  	uint8_t tlv493_works = tlv493_init();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+  char message[256];
+  uint8_t length;
+  float rotX = 0, rotY = 0, rotZ = 0, zoom = 0;
+
+  while (1)
+  {
+    /* USER CODE END WHILE */
+	  //pride vzdy predosla hodnota a ty ju prepocitas napr predosla je 60deg dalsie 61 tak neotoci ju o 61 dlasich ale len o 1 ?
+	  //akoze neviem ci to dava zmysel alebo pokiaal drzi do strany tak zeby to posuvalo ?
+	  //idk mozme dat discusion
+	  //vo funkci si zavolaj najprv tlv493_update_data(); a potom getX()...
+//	  calc_rot(&rotX,&rotY,&rotZ,&zoom);
+	  create_message(message,&length,rotX,rotY,rotZ,zoom);
+	  USART2_PutBuffer(message, length);
+    /* USER CODE BEGIN 3 */
+  }
   /* USER CODE END 3 */
 }
+
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -133,13 +156,64 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(8000000);
   LL_SetSystemCoreClock(8000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+  {
+    Error_Handler();
+  }
   LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_HSI);
 }
 
 /* USER CODE BEGIN 4 */
+void proccesDmaData(const uint8_t* data, uint8_t len)
+{
+	//this function parses 3 numbers representing DPI, ACTION BUTTON 0 and ACTION BUTTON 1 and writes them to the flash
+	uint16_t numbers[3];
+	static uint8_t k=0;
+	static uint8_t counter = 0;
+	for (uint8_t i= 0;i<len;i++){
+		if ((data[i]<='9')&&(data[i]>='0')){
+			if (counter==0){
+				numbers[k]=data[i]-'0'; //first digit
+			}
+			else{
+				numbers[k]=numbers[k]*10+(data[i]-'0');
+			}
+			counter++;
+		}
+		else if (data[i]==','){
+			k++;
+			counter=0;
+		}
+		else if (data[i]=='$'){
+			uint16_t a=W25Q32_READ_DPI();
+			uint8_t b=W25Q32_READ_ACTION_BUTTON_0();
+			uint8_t c=W25Q32_READ_ACTION_BUTTON_1();
+			char tx_buffer[128];
+			uint16_t len = sprintf(tx_buffer, "%d,%d,%d,\r\n",a,b,c);
+			USART2_PutBuffer((uint8_t*)tx_buffer, len);
+		}
+	}
 
+	W25Q32_WRITE_DPI(numbers[0]);
+	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
+	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
+}
+void create_message(char *message, uint8_t *len, float rot_x, float rot_y, float rot_z, float zoom){
+	uint8_t but0 = 0, but1 = 0;
+	if(get_button(0)){
+		but0 = W25Q32_READ_ACTION_BUTTON_0();
+		reset_button(0);
+	}
+	if(get_button(1)){
+		but1 = W25Q32_READ_ACTION_BUTTON_1();
+		reset_button(1);
+	}
+//	message = malloc(256*sizeof(char));
+	*len = sprintf(message,"{\"RotX\":\"%.2f\",\"RotY\":\"%.2f\",\"RotZ\":\"%.2f\",\"Zoom\":\"%.2f\",\"Button0\":\"%d\",\"Button1\":\"%d\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
+}
 /* USER CODE END 4 */
 
 /**

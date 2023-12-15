@@ -1,4 +1,4 @@
-///* USER CODE BEGIN Header */
+/* USER CODE BEGIN Header */
 ///**
 //  ******************************************************************************
 //  * @file    i2c.c
@@ -16,9 +16,10 @@
 //  *
 //  ******************************************************************************
 //  */
-///* USER CODE END Header */
-///* Includes ------------------------------------------------------------------*/
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
 #include "i2c.h"
+
 /* USER CODE BEGIN 0 */
 uint8_t *aReceiveBuffer_read;
 uint8_t size = 0;
@@ -46,20 +47,40 @@ void MX_I2C1_Init(void)
   GPIO_InitStruct.Mode = LL_GPIO_MODE_ALTERNATE;
   GPIO_InitStruct.Speed = LL_GPIO_SPEED_FREQ_HIGH;
   GPIO_InitStruct.OutputType = LL_GPIO_OUTPUT_OPENDRAIN;
-  GPIO_InitStruct.Pull = LL_GPIO_PULL_UP;
+  GPIO_InitStruct.Pull = LL_GPIO_PULL_NO;
   GPIO_InitStruct.Alternate = LL_GPIO_AF_4;
   LL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* Peripheral clock enable */
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_I2C1);
 
+  /* I2C1 DMA Init */
+
+  /* I2C1_TX Init */
+  LL_DMA_SetDataTransferDirection(DMA1, LL_DMA_CHANNEL_2, LL_DMA_DIRECTION_MEMORY_TO_PERIPH);
+
+  LL_DMA_SetChannelPriorityLevel(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PRIORITY_LOW);
+
+  LL_DMA_SetMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MODE_NORMAL);
+
+  LL_DMA_SetPeriphIncMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PERIPH_NOINCREMENT);
+
+  LL_DMA_SetMemoryIncMode(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MEMORY_INCREMENT);
+
+  LL_DMA_SetPeriphSize(DMA1, LL_DMA_CHANNEL_2, LL_DMA_PDATAALIGN_BYTE);
+
+  LL_DMA_SetMemorySize(DMA1, LL_DMA_CHANNEL_2, LL_DMA_MDATAALIGN_BYTE);
+
+  LL_SYSCFG_SetRemapDMA_I2C(LL_SYSCFG_I2C1TX_RMP_DMA1_CH2);
+
   /* I2C1 interrupt Init */
   NVIC_SetPriority(I2C1_EV_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),0, 0));
   NVIC_EnableIRQ(I2C1_EV_IRQn);
 
   /* USER CODE BEGIN I2C1_Init 1 */
-  // GPIOB->ODR |= (0b11 << 6);
+   GPIOB->ODR |= (0b11 << 6);
   /* USER CODE END I2C1_Init 1 */
+
   /** I2C Initialization
   */
   LL_I2C_EnableAutoEndMode(I2C1);
@@ -70,7 +91,7 @@ void MX_I2C1_Init(void)
   I2C_InitStruct.Timing = 0x2000090E;
   I2C_InitStruct.AnalogFilter = LL_I2C_ANALOGFILTER_ENABLE;
   I2C_InitStruct.DigitalFilter = 0;
-  I2C_InitStruct.OwnAddress1 = 2;
+  I2C_InitStruct.OwnAddress1 = 0;
   I2C_InitStruct.TypeAcknowledge = LL_I2C_ACK;
   I2C_InitStruct.OwnAddrSize = LL_I2C_OWNADDRESS1_7BIT;
   LL_I2C_Init(I2C1, &I2C_InitStruct);
@@ -80,19 +101,10 @@ void MX_I2C1_Init(void)
   /* USER CODE END I2C1_Init 2 */
 
 }
-void I2C_Start(void) {
-    LL_I2C_GenerateStartCondition(I2C1);
-    while (!LL_I2C_IsActiveFlag_SB(I2C1)) {}
-}
 
-void I2C_Stop(void) {
-    LL_I2C_GenerateStopCondition(I2C1);
-    while (LL_I2C_IsActiveFlag_STOP(I2C1)) {}
-}
 /* USER CODE BEGIN 1 */
 void i2c_master_write(uint8_t *data, uint8_t register_addr, uint8_t slave_addr,uint8_t len)
 {
-	I2C_Start();
 	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 2, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
 
 	LL_I2C_TransmitData8(I2C1, register_addr);
@@ -107,7 +119,6 @@ void i2c_master_write(uint8_t *data, uint8_t register_addr, uint8_t slave_addr,u
 		}
 	}
 	LL_I2C_ClearFlag_STOP(I2C1);
-  I2C_Stop();
 }
 
 
@@ -119,9 +130,8 @@ void i2c_master_read(uint8_t* data,  uint8_t register_addr, uint8_t slave_addr, 
 
 	LL_I2C_EnableIT_RX(I2C1);
 
-	LL_I2C_HandleTransfer(I2C1, slave_addr << 1, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
+	LL_I2C_HandleTransfer(I2C1, slave_addr, LL_I2C_ADDRSLAVE_7BIT, 1, LL_I2C_MODE_AUTOEND, LL_I2C_GENERATE_START_WRITE);
 
-	I2C_Start();
 	while(!LL_I2C_IsActiveFlag_STOP(I2C1))
 	{
 		if(LL_I2C_IsActiveFlag_TXIS(I2C1))
@@ -143,16 +153,6 @@ void i2c_master_read(uint8_t* data,  uint8_t register_addr, uint8_t slave_addr, 
 	LL_I2C_ClearFlag_NACK(I2C1);
 
 	ubReceiveIndex = 0;
-	I2C_Stop();
-}
-
-HAL_StatusTypeDef I2C_WriteRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout)
-{
-  return HAL_I2C_Mem_Write(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size, Timeout);
-}
-HAL_StatusTypeDef I2C_ReadRegister(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint16_t MemAddress, uint16_t MemAddSize, uint8_t *pData, uint16_t Size, uint32_t Timeout)
-{
-  return HAL_I2C_Mem_Read(hi2c, DevAddress, MemAddress, MemAddSize, pData, Size, Timeout);
 }
 void I2C1_IRQHandler(void)
 {

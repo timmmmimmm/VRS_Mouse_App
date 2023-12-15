@@ -29,7 +29,8 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+void GPIO_SPI_CS_LOW();
+void GPIO_SPI_CS_HIGH();
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN Private defines */
