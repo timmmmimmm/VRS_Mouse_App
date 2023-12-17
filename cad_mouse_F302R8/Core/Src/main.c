@@ -20,7 +20,9 @@
 #include "main.h"
 #include "dma.h"
 #include "i2c.h"
+#include "spi.h"
 #include "usart.h"
+#include "usb_device.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -73,6 +75,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
   LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
   LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_PWR);
 
@@ -95,6 +98,8 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_I2C1_Init();
+  MX_SPI3_Init();
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 2 */
   uint8_t tlv_works = tlv493_init();
   /* USER CODE END 2 */
@@ -118,9 +123,17 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
-  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_2)
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_1);
+  while(LL_FLASH_GetLatency()!= LL_FLASH_LATENCY_1)
   {
+  }
+  LL_RCC_HSE_EnableBypass();
+  LL_RCC_HSE_Enable();
+
+   /* Wait till HSE is ready */
+  while(LL_RCC_HSE_IsReady() != 1)
+  {
+
   }
   LL_RCC_HSI_Enable();
 
@@ -130,7 +143,7 @@ void SystemClock_Config(void)
 
   }
   LL_RCC_HSI_SetCalibTrimming(16);
-  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI_DIV_2, LL_RCC_PLL_MUL_16);
+  LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSE_DIV_2, LL_RCC_PLL_MUL_12);
   LL_RCC_PLL_Enable();
 
    /* Wait till PLL is ready */
@@ -148,9 +161,15 @@ void SystemClock_Config(void)
   {
 
   }
-  LL_Init1msTick(64000000);
-  LL_SetSystemCoreClock(64000000);
+  LL_SetSystemCoreClock(48000000);
+
+   /* Update the time base */
+  if (HAL_InitTick (TICK_INT_PRIORITY) != HAL_OK)
+  {
+    Error_Handler();
+  }
   LL_RCC_SetI2CClockSource(LL_RCC_I2C1_CLKSOURCE_HSI);
+  LL_RCC_SetUSBClockSource(LL_RCC_USB_CLKSOURCE_PLL);
 }
 
 /* USER CODE BEGIN 4 */

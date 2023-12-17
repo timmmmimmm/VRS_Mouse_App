@@ -374,3 +374,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+cad_mouse_F302R8/.settings/language.settings.xml
+cad_mouse_F302R8/.settings/stm32cubeide.project.prefs
