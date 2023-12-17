@@ -107,7 +107,7 @@ int main(void)
 //  W25Q32_WRITE_ACTION_BUTTON_1(2);
   //uint8_t tlv493_works =
   (void)tlv493_init();
-  initFilter(tlv493_getX, tlv493_getY, tlv493_getZ, tlv493_update_data);
+  initFilter(tlv493_getX, tlv493_getY, tlv493_getZ, tlv493_update_data,LL_mDelay);
 
   /* USER CODE END 2 */
 
@@ -130,6 +130,7 @@ int main(void)
 	  mouseAxisInfo = MA_filterData();
 	  create_message(message,&length,mouseAxisInfo->x,mouseAxisInfo->y,mouseAxisInfo->z,zoom);
 	  USART2_PutBuffer(message, length);
+	  LL_mDelay(200);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */

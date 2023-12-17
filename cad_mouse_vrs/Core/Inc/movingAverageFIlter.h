@@ -24,7 +24,8 @@ typedef struct{
 void initFilter(float(* xFn)(void),
 			       float(* yFn)(void),
 				   float(* zFn)(void),
-				   void(* updateData)(void));
+				   void(* updateFn)(void),
+				   void(* delayFn)(uint32_t));
 MouseAxisInfo* MA_filterData();
 
 #endif /* INC_MOVINGAVERAGEFILTER_H_ */

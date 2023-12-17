@@ -8,12 +8,13 @@
 #include "movingAverageFIlter.h"
 #include "math.h"
 
-#define WINDOW_SIZE 10
+#define WINDOW_SIZE 100
 
 static float(* getX)(void) = 0;
 static float(* getY)(void) = 0;
 static float(* getZ)(void) = 0;
 static void(* update)(void) = 0;
+void(* delay)(uint32_t) = 0;
 
 static int16_t checkForOverflow(float data);
 static void updateWindowValues(int16_t nX, int16_t nY, int16_t nZ);
@@ -28,11 +29,13 @@ int16_t xVals[WINDOW_SIZE],
 void initFilter(float(* xFn)(void),
 			       float(* yFn)(void),
 				   float(* zFn)(void),
-				   void(* updateData)(void)){
+				   void(* updateFn)(void),
+				   void(* delayFn)(uint32_t)){
 	getX = xFn;
 	getY = yFn;
 	getZ = zFn;
-	update = updateData;
+	update = updateFn;
+	delay = delayFn;
 
 	for (uint8_t i = 0; i < WINDOW_SIZE; ++i) {
 		update();
@@ -41,6 +44,7 @@ void initFilter(float(* xFn)(void),
 		yVals[i] = checkForOverflow((float)round(getY()));
 		zVals[i] = checkForOverflow((float)round(getZ()));
 
+		delay(200);
 	}
 }
 
