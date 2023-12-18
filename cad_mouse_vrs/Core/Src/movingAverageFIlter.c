@@ -44,7 +44,7 @@ void initFilter(float(* xFn)(void),
 		yVals[i] = checkForOverflow((float)round(getY()));
 		zVals[i] = checkForOverflow((float)round(getZ()));
 
-		delay(200);
+		delay(50);
 	}
 }
 

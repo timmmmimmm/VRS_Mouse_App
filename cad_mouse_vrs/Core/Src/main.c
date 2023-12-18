@@ -130,7 +130,7 @@ int main(void)
 	  mouseAxisInfo = MA_filterData();
 	  create_message(message,&length,mouseAxisInfo->x,mouseAxisInfo->y,mouseAxisInfo->z,zoom);
 	  USART2_PutBuffer(message, length);
-	  LL_mDelay(200);
+	  LL_mDelay(50);
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
