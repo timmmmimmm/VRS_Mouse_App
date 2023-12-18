@@ -1,7 +1,7 @@
 #include "tlv493.h"
 
 uint16_t dataX, dataY, dataZ;
-float cal_x, cal_y, cal_z;
+float cal_x=0, cal_y=0, cal_z=0;
 void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len){
     i2c_master_write(data, reg_address, TLV493_ADDRESS, len);
 }
@@ -9,41 +9,24 @@ void tlv493_read_bytes(uint8_t reg_address, uint8_t *data, uint8_t len){
     i2c_master_read(data, reg_address, TLV493_ADDRESS, len);
 }
 
-//uint8_t tlv493_init(){
-//	uint8_t mod[4] = {0x0};
-//    uint8_t data[8];
-//    uint8_t mod[3] = 0b11100000;
-//    tlv493_read_bytes(&data,0x0,8);
+uint8_t tlv493_init(){
+	uint8_t mod[4] = {0x0};
+    uint8_t data[10];
+    mod[3] = 0b11100000;
+    tlv493_read_bytes(&data,0x0,10);
+    mod[2] = data[8];
+
+
+    mod[1] = 0b00000001;
+    mod[1] = mod[1] | (data[7] & 0b00011000);
 //    mod[1] = data[7];
 //	mod[1] = mod[1] | 0x0 << 2;
-//	mod[1] = mod[1] | 1<<1;
-//	mod[1] = mod[1] & ~(0b0);
-//	tlv493_write_bytes(0x0, &mod, 4);
-////	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
-//	float x,y,z;
-//	for(size_t i = 0; i < SAMPLES; i++){
-//		tlv493_update_data();
-//		x += getX();
-//		y += getY();
-//		z += getZ();
-//	}
-//	cal_x = (float)x/SAMPLES;
-//	cal_y = (float)y/SAMPLES;
-//	cal_z = (float)z/SAMPLES;
-//	return 1;
-//}
-uint8_t tlv493_init(){
-	uint8_t mod1 = 0x0;
-    uint8_t data[8];
-    uint8_t mod2 = 0b11100000;
-//    tlv493_read_bytes(&data,0x0,8);
-//    mod1 = data[7];
-	mod1 = mod1 | 0x0 << 2;
-	mod1 = mod1 | 1<<1;
-	mod1 = mod1 & ~(0b0);
-	tlv493_write_bytes(TLV493_MOD1, &mod1, 1);
-	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
-	float x,y,z;
+//	mod[1] = mod[1] & ~(1<<1);		//low power
+//	mod[1] = mod[1] | 0x1;//& ~(0b0);
+	mod[3] = mod[3] | (data[9] & 0x00001111);
+	tlv493_write_bytes(0x0, &mod, 4);
+//	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
+	float x=0,y=0,z=0;
 	for(size_t i = 0; i < SAMPLES; i++){
 		tlv493_update_data();
 		x += tlv493_getX();
@@ -55,6 +38,29 @@ uint8_t tlv493_init(){
 	cal_z = (float)z/SAMPLES;
 	return 1;
 }
+//uint8_t tlv493_init(){
+//	uint8_t mod1 = 0x0;
+//    uint8_t data[8];
+//    uint8_t mod2 = 0b11100000;
+////    tlv493_read_bytes(&data,0x0,8);
+////    mod1 = data[7];
+//	mod1 = mod1 | 0x0 << 2;
+//	mod1 = mod1 | 1<<1;
+//	mod1 = mod1 & ~(0b0);
+//	tlv493_write_bytes(TLV493_MOD1, &mod1, 1);
+//	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
+//	float x,y,z;
+//	for(size_t i = 0; i < SAMPLES; i++){
+//		tlv493_update_data();
+//		x += tlv493_getX();
+//		y += tlv493_getY();
+//		z += tlv493_getZ();
+//	}
+//	cal_x = (float)x/SAMPLES;
+//	cal_y = (float)y/SAMPLES;
+//	cal_z = (float)z/SAMPLES;
+//	return 1;
+//}
 void tlv493_update_data(){
     uint8_t data[6];
     tlv493_read_bytes(TLV493_BX1, &data,6);
