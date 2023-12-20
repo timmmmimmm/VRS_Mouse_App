@@ -2,97 +2,130 @@
 
 uint16_t dataX, dataY, dataZ;
 float cal_x=0, cal_y=0, cal_z=0;
-void tlv493_write_bytes(uint8_t reg_address, uint8_t *data, uint8_t len){
-    i2c_master_write(data, reg_address, TLV493_ADDRESS, len);
+
+int16_t powTable[] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, -2048};
+
+static HAL_StatusTypeDef(* i2cRead)(uint8_t registerAddress, uint8_t *data, uint8_t len);
+static HAL_StatusTypeDef(* i2cWrite)(uint8_t registerAddress, uint8_t *data, uint8_t len);
+static void(* delay)(uint32_t ms);
+
+typedef enum
+{
+	X = 0,
+	Y,
+	Z
+}AXIS;
+
+/**
+ * @brief function for write multiple bytes with i2c from sensor
+ * @param reg_address address of register read from
+ * @param data pointer to variable store data in
+ * @param len number of bytes
+ *
+*/
+static void tlv493_write_bytes(uint8_t *data, uint8_t len){
+    (void) i2cWrite(TLV493_ADDRESS, data, len);
 }
-void tlv493_read_bytes(uint8_t reg_address, uint8_t *data, uint8_t len){
-    i2c_master_read(data, reg_address, TLV493_ADDRESS, len);
+
+/**
+ * @brief function for reading multiple bytes with i2c from sensor
+ * @param reg_address address of register read from
+ * @param data pointer to variable to store data in
+ * @param len number of bytes
+ *
+*/
+static void tlv493_read_bytes( uint8_t *data, uint8_t len){
+    (void) i2cRead(TLV493_ADDRESS, data, len);
 }
 
-uint8_t tlv493_init(){
-	uint8_t mod[4] = {0x0};
-    uint8_t data[10];
-    mod[3] = 0b11100000;
-    tlv493_read_bytes(&data,0x0,10);
-    mod[2] = data[8];
+static void tlv493_reset(){
+	(void) i2cWrite(TLV493_ADDR_RESET,0,0);
+}
 
+static float getAxis(AXIS axis);
 
-    mod[1] = 0b00000001;
-    mod[1] = mod[1] | (data[7] & 0b00011000);
-//    mod[1] = data[7];
-//	mod[1] = mod[1] | 0x0 << 2;
-//	mod[1] = mod[1] & ~(1<<1);		//low power
-//	mod[1] = mod[1] | 0x1;//& ~(0b0);
-	mod[3] = mod[3] | (data[9] & 0x00001111);
-	tlv493_write_bytes(0x0, &mod, 4);
-//	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
-	float x=0,y=0,z=0;
-	for(size_t i = 0; i < SAMPLES; i++){
-		tlv493_update_data();
-		x += tlv493_getX();
-		y += tlv493_getY();
-		z += tlv493_getZ();
-	}
-	cal_x = (float)x/SAMPLES;
-	cal_y = (float)y/SAMPLES;
-	cal_z = (float)z/SAMPLES;
+uint8_t tlv493_init(HAL_StatusTypeDef(* i2cReadFn)(uint8_t registerAddress, uint8_t *data, uint8_t len),
+					HAL_StatusTypeDef(* i2cWriteFn)(uint8_t registerAddress, uint8_t *data, uint8_t len),
+					void(* delayFn)(uint32_t ms))
+{
+
+	i2cRead = i2cReadFn;
+	i2cWrite = i2cWriteFn;
+	delay = delayFn;
+
+	tlv493_reset();
+
+	delay(1);
+
+	uint8_t metaDataBuff[10] = {0};
+	tlv493_read_bytes(metaDataBuff, 10);
+
+	uint8_t setupDataBuff[4] = {0};
+	setupDataBuff[1] = (metaDataBuff[7] & 0x18) | (uint8_t)TLV493_ITEn_LP;
+	setupDataBuff[2] = metaDataBuff[8];
+	setupDataBuff[3] = (uint8_t)TLV493_TempOff_LP_PT | (metaDataBuff[9] & 0x0F);
+
+	tlv493_write_bytes(setupDataBuff, 4);
+
 	return 1;
 }
-//uint8_t tlv493_init(){
-//	uint8_t mod1 = 0x0;
-//    uint8_t data[8];
-//    uint8_t mod2 = 0b11100000;
-////    tlv493_read_bytes(&data,0x0,8);
-////    mod1 = data[7];
-//	mod1 = mod1 | 0x0 << 2;
-//	mod1 = mod1 | 1<<1;
-//	mod1 = mod1 & ~(0b0);
-//	tlv493_write_bytes(TLV493_MOD1, &mod1, 1);
-//	tlv493_write_bytes(TLV493_MOD2, &mod2, 1);
-//	float x,y,z;
-//	for(size_t i = 0; i < SAMPLES; i++){
-//		tlv493_update_data();
-//		x += tlv493_getX();
-//		y += tlv493_getY();
-//		z += tlv493_getZ();
-//	}
-//	cal_x = (float)x/SAMPLES;
-//	cal_y = (float)y/SAMPLES;
-//	cal_z = (float)z/SAMPLES;
-//	return 1;
-//}
+
 void tlv493_update_data(){
-    uint8_t data[6];
-    tlv493_read_bytes(TLV493_BX1, &data,6);
-    dataX = (uint16_t )((data[0] << 4)) | (data[4] >> 4);
-    dataY = (uint16_t)(data[1] << 4 | (data[4] & 0b1111));
-    dataZ = (uint16_t)(data[2] << 4) | data[5] & 0b1111;
+    uint8_t data[6] = {0};
+    uint8_t prevData = 0;
+
+    while(prevData == (data[3] & 0x0C)) //Check if the frame advanced
+    {
+    	prevData = (data[3] & 0x0C);
+    	tlv493_read_bytes(data,6);
+    	delay(5);
+    }
+
+
+    dataX = (uint16_t)(data[0] << 4) | (uint16_t)(data[4] >> 4);
+    dataY = (uint16_t)(data[1] << 4) | (uint16_t)(data[4] & 0x0F);
+    dataZ = (uint16_t)(data[2] << 4) | (uint16_t)(data[5] & 0x0F);
 }
-float tlv493_getX(){
-    return (float)dataX*TLV493D_B_MULT-cal_x;
+
+float tlv493_getX()
+{
+	return getAxis(X);
 }
+
 float tlv493_getY(){
-    return (float)dataY*TLV493D_B_MULT-cal_y;
+	return getAxis(Y);
 }
+
 float tlv493_getZ(){
-    return (float)dataZ*TLV493D_B_MULT-cal_z;
+	return getAxis(Z);
 }
-//void tlv493_test(){
-//	//ukazka ziskavania dat
-//    tlv493_update_data();
-//    char *str;
-//    str = malloc(32*sizeof(char));
-//    int len = sprintf(str,"%.2f,%.2f,%.2f\n",getX(),getY(),getZ());
-//    USART2_PutBuffer(str,len);
-//    free(str);
-//}
-// void get_data(float *coord){
-//     uint8_t data[6];
-//     tlv493_read_bytes(&data,0x0,6);
-// 	uint16_t xx = (uint16_t)((data[0] << 8)) | (data[4] >> 4);
-//     uint16_t yy = (uint16_t)(data[1] << 8 | (data[4] & 0b1111) << 8);
-//     uint16_t zz = (uint16_t)(data[2] << 8) | (data[5] & 0b1111);
-//     coord[0] = (float)((float)xx*TLV493D_B_MULT);
-//     coord[1] = (float)((float)yy*TLV493D_B_MULT);
-//     coord[2] = (float)((float)zz*TLV493D_B_MULT);
-// }
+
+
+float getAxis(AXIS axis){
+	uint16_t* currentAxis = 0;
+
+	switch (axis) {
+		case X:
+			currentAxis = &dataX;
+			break;
+		case Y:
+			currentAxis = &dataY;
+			break;
+		case Z:
+			currentAxis = &dataZ;
+		default:
+			currentAxis = 0;
+			break;
+	}
+
+	int16_t res = 0;
+	for (int i = 0; i < 12; ++i) {
+
+			if(*currentAxis & (1 << i)) // TLV Manual Page 9 - Table 1
+			{
+				res += powTable[i];
+			}
+		}
+
+	return (float)res * TLV493D_B_MULT;
+}
