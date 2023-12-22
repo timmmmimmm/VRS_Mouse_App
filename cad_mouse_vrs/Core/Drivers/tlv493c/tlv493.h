@@ -5,13 +5,13 @@
 #include "usart.h"
 #include <math.h>
 
-#define TLV493D_B_MULT 			(float)0.098
+#define TLV493D_B_MULT 			(float)0.98 //0.098
 #define TLV493_ADDRESS			(0x5E << 1)
 
 #define TLV493_ADDR_RESET		(0x00)
 
 
-#define TLV493_ITEn_LP			0x04
+#define TLV493_ITEn_LP			0x02
 #define TLV493_TempOff_LP_PT 	0xC0
 
 

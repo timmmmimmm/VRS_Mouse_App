@@ -59,19 +59,19 @@ uint8_t tlv493_init(HAL_StatusTypeDef(* i2cReadFn)(uint8_t registerAddress, uint
 
 	uint8_t metaDataBuff[10] = {0};
 	tlv493_read_bytes(metaDataBuff, 10);
-
+	delay(1);
 	uint8_t setupDataBuff[4] = {0};
 	setupDataBuff[1] = (metaDataBuff[7] & 0x18) | (uint8_t)TLV493_ITEn_LP;
 	setupDataBuff[2] = metaDataBuff[8];
 	setupDataBuff[3] = (uint8_t)TLV493_TempOff_LP_PT | (metaDataBuff[9] & 0x0F);
-
-	tlv493_write_bytes(setupDataBuff, 4);
+	delay(1);
+	tlv493_write_bytes(setupDataBuff, 2);
 
 	return 1;
 }
 
 void tlv493_update_data(){
-    uint8_t data[6] = {0};
+	uint8_t data[6] = {0};
     uint8_t prevData = 0;
 
     while(prevData == (data[3] & 0x0C)) //Check if the frame advanced
@@ -113,6 +113,7 @@ float getAxis(AXIS axis){
 			break;
 		case Z:
 			currentAxis = &dataZ;
+			break;
 		default:
 			currentAxis = 0;
 			break;
