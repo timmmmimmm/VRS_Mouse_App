@@ -9,7 +9,6 @@
 #define INC_MOVINGAVERAGEFILTER_H_
 
 #include "stdint.h"
-#include "string.h"
 
 
 typedef struct{

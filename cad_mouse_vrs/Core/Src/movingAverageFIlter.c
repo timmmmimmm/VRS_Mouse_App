@@ -8,7 +8,10 @@
 #include "movingAverageFIlter.h"
 #include "math.h"
 
-#define WINDOW_SIZE 10
+#define WINDOW_SIZE 35
+#define Z_SHIFT 75
+#define Z_POS_CONVERSION_COEFF (float)0.35
+#define Z_NEG_CONVERSION_COEFF (float)1.45
 
 static float(* getX)(void) = 0;
 static float(* getY)(void) = 0;
@@ -37,24 +40,34 @@ void initFilter(float(* xFn)(void),
 	update = updateData;
 	delay = delayFn;
 
+	float z = 0;
+
 	for (uint8_t i = 0; i < WINDOW_SIZE; ++i) {
 		update();
 
 		xVals[i] = checkForOverflow((float)round(getX()));
 		yVals[i] = checkForOverflow((float)round(getY()));
-		zVals[i] = checkForOverflow((float)round(getZ()));
+
+		z = (getZ() - Z_SHIFT);
+		z = z > 0 ? z * Z_POS_CONVERSION_COEFF : z * Z_NEG_CONVERSION_COEFF;
+		zVals[i] = checkForOverflow((float)round(z));
 
 
-		delay(50);
+		delay(1);
 
 	}
 }
 
 MouseAxisInfo* MA_filterData(){
 	update();
+
+	float z = 0;
+
+	z = (getZ() - Z_SHIFT);
+	z = z > 0 ? z * Z_POS_CONVERSION_COEFF : z * Z_NEG_CONVERSION_COEFF;
 	updateWindowValues(checkForOverflow((float)round(getX())),
 				  	   checkForOverflow((float)round(getY())),
-					   checkForOverflow((float)round(getZ())));
+					   checkForOverflow((float)round(z)));
 
 	int16_t xSum = 0, ySum = 0, zSum = 0;
 

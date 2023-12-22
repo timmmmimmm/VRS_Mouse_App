@@ -55,18 +55,18 @@ uint8_t tlv493_init(HAL_StatusTypeDef(* i2cReadFn)(uint8_t registerAddress, uint
 
 	tlv493_reset();
 
-	delay(1);
+
 
 	uint8_t metaDataBuff[10] = {0};
 	tlv493_read_bytes(metaDataBuff, 10);
-	delay(1);
+
 	uint8_t setupDataBuff[4] = {0};
 	setupDataBuff[1] = (metaDataBuff[7] & 0x18) | (uint8_t)TLV493_ITEn_LP;
 	setupDataBuff[2] = metaDataBuff[8];
 	setupDataBuff[3] = (uint8_t)TLV493_TempOff_LP_PT | (metaDataBuff[9] & 0x0F);
-	delay(1);
-	tlv493_write_bytes(setupDataBuff, 2);
 
+	tlv493_write_bytes(setupDataBuff, 2);
+	delay(1);
 	return 1;
 }
 

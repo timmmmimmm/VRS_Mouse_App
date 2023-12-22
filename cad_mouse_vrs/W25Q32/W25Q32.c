@@ -7,6 +7,11 @@
 
 #include "W25Q32.h"
 
+static void (*W25Q32_RECEIVE)(uint8_t* receive_data, uint32_t size)=0;
+static void (*W25Q32_SEND)(uint8_t* send_data, uint32_t size)=0;
+static void (*W25Q32_CS_LOW)()=0;
+static void (*W25Q32_CS_HIGH)()=0;
+static void (*W25Q32_DELAY)(uint16_t delay)=0;
 
 void W25Q32_WRITE_DPI(uint16_t dpi){
 	uint8_t tData[2];
