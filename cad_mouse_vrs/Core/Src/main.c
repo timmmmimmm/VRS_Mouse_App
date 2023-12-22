@@ -17,7 +17,6 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
-#include <stdlib.h>
 #include "main.h"
 #include "dma.h"
 #include "i2c.h"
@@ -29,6 +28,7 @@
 #include "tlv493c/tlv493.h"
 #include "W25Q32.h"
 #include "movingAverageFIlter.h"
+#include "mouseAxisPostProcessing.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
@@ -63,7 +63,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z, float zoom);
+void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z);
 /* USER CODE END 0 */
 
 /**
@@ -116,9 +116,7 @@ int main(void)
 
   uint8_t message[256];
   uint8_t length;
-  float zoom = 0;
-  MouseAxisInfo *mouseAxisInfo = 0, prevAxisInfo = {0};
-  int16_t x = 0,y = 0,z = 0;
+  MouseAxisInfo *mouseAxisInfo = 0;
 
   while (1)
   {
@@ -130,33 +128,11 @@ int main(void)
 //	  calc_rot(&rotX,&rotY,&rotZ,&zoom);
 	  mouseAxisInfo = MA_filterData();
 
-	  x = mouseAxisInfo->x;
-	  y = mouseAxisInfo->y;
-	  z = mouseAxisInfo->z;
+	  mouseAxisInfo = PP_ProcessData(mouseAxisInfo);
 
-	  if(abs(prevAxisInfo.x) < 5 && abs(mouseAxisInfo->x) < 5)
-	  {
-		  if(abs(mouseAxisInfo->x - prevAxisInfo.x) <= 3)
-			 x = 0;
-	  }
-
-	  if(abs(prevAxisInfo.y) < 5 && abs(mouseAxisInfo->y) < 5)
-	  {
-		  if(abs(mouseAxisInfo->y - prevAxisInfo.y) <= 3)
-			 y = 0;
-	  }
-
-	  if(abs(prevAxisInfo.z) < 5 && abs(mouseAxisInfo->z) < 5)
-	  {
-		  if(abs(mouseAxisInfo->z - prevAxisInfo.z) <= 3)
-			  z = 0;
-	  }
-
-
-	  create_message(message, &length, x, y, z, zoom);
+	  create_message(message, &length, mouseAxisInfo->x, mouseAxisInfo->y, mouseAxisInfo->z);
 	  USART2_PutBuffer(message, length);
 	  HAL_Delay(1);
-	  prevAxisInfo = *mouseAxisInfo;
 
     /* USER CODE BEGIN 3 */
   }
@@ -236,7 +212,7 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
 	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
 }
-void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z, float zoom){
+void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z){
 	uint8_t but0 = 0, but1 = 0;
 //	if(get_button(0)){
 //		but0 = W25Q32_READ_ACTION_BUTTON_0();
@@ -246,25 +222,31 @@ void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y
 //		but1 = W25Q32_READ_ACTION_BUTTON_1();
 //		reset_button(1);
 //	}
-//	message = malloc(256*sizeof(char));
-	//*len = (uint8_t)sprintf(message,"{\"RotX\":\"%d\",\"RotY\":\"%d\",\"RotZ\":\"%d\",\"Zoom\":\"%.2f\",\"Button0\":\"%u\",\"Button1\":\"%u\"}",rot_x,rot_y,rot_z,zoom,but0,but1);
 
 	but0 = get_button(0);
 	but1 = get_button(1);
 
 	if(but0 || but1)
 	{
+//		*len = (uint8_t)sprintf((char*)message,
+//				"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
+//				rot_x,rot_y,rot_z,but0,but1);
+
 		*len = (uint8_t)sprintf((char*)message,
-				"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
-				rot_x,rot_y,rot_z,but0,but1);
+					"{\n\"RotX\":%d,\n\"RotY\":%d,\n\"Zoom\":%d,\n\"Button0\":%d,\n\"Button1\":%d\n}",
+					rot_x,rot_y,rot_z,but0,but1);
+
 		reset_button(0);
 		reset_button(1);
 		return;
 	}
 
+//	*len = (uint8_t)sprintf((char*)message,
+//					"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
+//					rot_x,rot_y,rot_z,0,0);
 	*len = (uint8_t)sprintf((char*)message,
-					"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
-					rot_x,rot_y,rot_z,0,0);
+						"{\n\"RotX\":%d,\n\"RotY\":%d,\n\"Zoom\":%d,\n\"Button0\":%d,\n\"Button1\":%d\n}",
+						rot_x,rot_y,rot_z,but0,but1);
 
 }
 /* USER CODE END 4 */

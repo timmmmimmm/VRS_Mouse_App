@@ -1,4 +1,4 @@
-import serial
+from serial import Serial
 import serial.tools.list_ports
 import pyautogui
 import time
@@ -8,34 +8,65 @@ import http.server
 import socketserver
 import threading
 
-BAUD_RATE = 115200
+
 # Define SOFTWARE as 'inventor' or 'fusion' to switch between Autodesk Inventor and Autodesk Fusion
-SOFTWARE = 'inventor'
+SOFTWARE = 'Autodesk Inventor Professional 2024'
 # Flag to indicate if the Autodesk window is in focus
 autodesk_window_in_focus = False  # Initialize to False
 
-def main():
-    port = detect_stm32_port()
-    ser = serial.Serial(port, BAUD_RATE, timeout=5)
-    buffer = b''
 
-    while True:
-        json_bytes = ser.read(ser.inWaiting())
-        buffer += json_bytes
+class PortParser:
+    
+    def __init__(self, port) -> None:
+        self.port = port
+        self.BAUD_RATE = 115200
+        self.payload = ""
+        self.lock = False
+        self.response = b''
+        self.ser = Serial(self.port,self.BAUD_RATE, timeout=5)
+    
+    def start(self) -> None: 
+        buffer = b''
 
-        if b'{' in buffer and b'}' in buffer:
-            json_start = buffer.index(b'{')
-            json_end = buffer.index(b'}') + 1
-            json_obj = buffer[json_start:json_end]
-            json_input = json_obj.decode('utf-8')
-            data = parse_json_data(json_input)
+        while True:
+            while self.lock:
+                pass
+            
+            json_bytes = self.ser.read(60)
+            buffer += json_bytes
 
-            if data is not None:
-                if autodesk_window_in_focus:
+            if b'{' in buffer and b'}' in buffer:
+                json_start = buffer.index(b'{')
+                json_end = buffer.index(b'}') + 1
+                json_obj = buffer[json_start:json_end]
+                json_input = json_obj.decode('utf-8')
+                data = parse_json_data(json_input)
+
+                if data is not None:
+                    #if autodesk_window_in_focus:
                     focus_autodesk_window()
                     perform_actions(data)
-            
-            buffer = buffer[json_end:]
+                        
+                print(data)
+                buffer = buffer[json_end:]
+    
+    def addPayload(self, payload)-> bytearray:
+        self.lock = True
+        self.payload = payload
+        
+        self.ser.write(payload)
+        self.response = self.ser.readline()
+        self.lock = False
+        return self.response
+        
+        
+
+
+def main():
+    global portParser 
+    portParser = PortParser(detect_stm32_port())
+    portParser.start()
+    
 
 def detect_stm32_port():
     try:
@@ -55,7 +86,8 @@ def detect_stm32_port():
         return None
 
 def focus_autodesk_window():
-    autodesk_window_title = f'Autodesk {SOFTWARE.capitalize()}'  # Form window title based on SOFTWARE
+    autodesk_window_title = SOFTWARE  # Form window title based on SOFTWARE
+    global window
     window = pygetwindow.getWindowsWithTitle(autodesk_window_title)
 
     global autodesk_window_in_focus  # Use the global flag
@@ -123,32 +155,43 @@ def parse_json_data(json_input):
         return None
 
 def perform_actions(data):
-    rotate_x_degrees = data.get('Rotate_x')
-    rotate_y_degrees = data.get('Rotate_y')
-    rotate_z_degrees = data.get('Rotate_z')
-    sensitivity = data.get('Sensitivity')
-    button = data.get('Button')
+    rotate_x_degrees = data.get('RotX')
+    rotate_y_degrees = data.get('RotY')
+    #rotate_z_degrees = data.get('RotZ')
+    #sensitivity = data.get('Sensitivity')
+    button1 = data.get('Button0')
+    button2 = data.get('Button1')
     zoom_value = data.get('Zoom')
 
-    if all(val is not None for val in [rotate_x_degrees, rotate_y_degrees, rotate_z_degrees, sensitivity, button, zoom_value]):
-        print(f'Rotate_x: {rotate_x_degrees}')
-        print(f'Rotate_y: {rotate_y_degrees}')
-        print(f'Rotate_z: {rotate_z_degrees}')
-        print(f'Sensitivity: {sensitivity}')
-        print(f'Button: {button}')
-        print(f'Zoom: {zoom_value}')
+    #if all(val is not None for val in [rotate_x_degrees, rotate_y_degrees, rotate_z_degrees, sensitivity, button, zoom_value]):
+    if all(val is not None for val in [rotate_x_degrees, rotate_y_degrees, button1, button2, zoom_value]):
+        # print(f'Rotate_x: {rotate_x_degrees}')
+        # print(f'Rotate_y: {rotate_y_degrees}')
+        # #print(f'Rotate_z: {rotate_z_degrees}')
+        # #print(f'Sensitivity: {sensitivity}')
+        # print(f'Button: {button1}')
+        # print(f'Button: {button2}')
+        # print(f'Zoom: {zoom_value}')
         
-        pyautogui.scroll(zoom_value) 
-        if button == 'home':
-            pyautogui.hotkey('fn', 'f6')  # Modify based on your function key
+        pyautogui.scroll(zoom_value)
+        
+        
+        if zoom_value == 0: 
+            if button1 == 'home':
+                pyautogui.hotkey('f6')  # Modify based on your function key
+                return
 
-        # Add your action logic here based on the parsed data
-        rotate(rotate_x_degrees, rotate_y_degrees, rotate_z_degrees)
-        # TODO: dokoncit ostatne funkcie
+            # Add your action logic here based on the parsed data
+            #rotate(rotate_x_degrees, rotate_y_degrees, rotate_z_degrees)
+            rotate(rotate_x_degrees, rotate_y_degrees)
+            # TODO: dokoncit ostatne funkcie
 
-def rotate(rotate_x_degrees, rotate_y_degrees, rotate_z_degrees):
-    # Implement your rotation logic here
-    pass
+#def rotate(rotate_x_degrees, rotate_y_degrees, rotate_z_degrees):
+def rotate(rotate_x_degrees, rotate_y_degrees):
+    pyautogui.keyDown('f4')
+    pyautogui.moveTo(x=window[0].width/2, y=window[0].height/2)
+    pyautogui.drag(xOffset=rotate_x_degrees, yOffset=rotate_y_degrees)
+    pyautogui.keyUp('f4')
 
 
 
@@ -158,10 +201,10 @@ if __name__ == "__main__":
     main_thread.start()
 
     # Create a thread to run the HTTP server concurrently
-    server_thread = threading.Thread(target=start_http_server)
-    server_thread.start()
+    # server_thread = threading.Thread(target=start_http_server)
+    # server_thread.start()
 
     # Run the focus_autodesk_window() function in the main thread
-    while True:
-        focus_autodesk_window()
-        time.sleep(0.5)
+    # while True:
+    #     focus_autodesk_window()
+    #     time.sleep(0.5)
