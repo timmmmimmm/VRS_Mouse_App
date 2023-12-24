@@ -6,25 +6,28 @@ class AutodeskWindowManager:
     def __init__(self, windowTitle : str) -> None:
         self.windowTitle = windowTitle
         self.window = pygetwindow.getWindowsWithTitle(windowTitle)
-        self.windowInFocus = False
-        
-    
+      
     def focusAutodeskWindow(self):
-
         if len(self.window) > 0:
-            if not self.window[0].isActive or self.window[0].isMinimized or not self.window[0].visible:  # Check if the window is not already in focus
-                try:
+            try:
+                if not self.isAutodeskWindowInFocus():
                     self.window[0].activate()
-                    self.windowInFocus = True  # Window is now in focus
-                except pygetwindow.PyGetWindowException as e:
-                    self.windowInFocus = False  # Window is not in focus
-            else:
-                self.windowInFocus = True  # Window is already in focus
-        else:
-            self.windowInFocus = False  # Window is not in focus
-            
+            except pygetwindow.PyGetWindowException:
+                pass
+    
     def isAutodeskWindowInFocus(self) -> bool:
-        return self.windowInFocus
+        if len(self.window) > 0:
+            try:
+                if self.window[0].isActive and not self.window[0].isMinimized and self.window[0].visible:
+                    return True
+                else:
+                    return False
+                    
+            except pygetwindow.PyGetWindowException:
+                return False
+            
+        else:
+            return False
     
     def windowExists(self) -> bool:
         return self.window.count > 0
@@ -97,6 +100,4 @@ class AutodeskWindowActionManager:
         pyautogui.keyDown(self.hotkeys[self.ButtonActions.ROTATE])
         pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
         pyautogui.drag(xOffset=rotate_x_degrees, yOffset=rotate_y_degrees)
-        pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
-
-        
+        pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])       

@@ -40,7 +40,7 @@ class PortParser:
                 continue
 
     
-    def addPayload(self, payload,response=True)-> bytearray:
+    def addPayload(self, payload,response=True)-> bytes:
         self.lock = True
         self.payload = payload
         
