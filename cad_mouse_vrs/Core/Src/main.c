@@ -199,18 +199,23 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 			counter=0;
 		}
 		else if (data[i]=='$'){
-			/*uint16_t a=W25Q32_READ_DPI();
+			uint16_t a=W25Q32_READ_DPI();
 			uint8_t b=W25Q32_READ_ACTION_BUTTON_0();
 			uint8_t c=W25Q32_READ_ACTION_BUTTON_1();
 			char tx_buffer[128];
-			uint16_t len = sprintf(tx_buffer, "%d,%d,%d,\r\n",a,b,c);
-			USART2_PutBuffer((uint8_t*)tx_buffer, len);*/
+			uint16_t len = sprintf(tx_buffer, "{\"dpi\":%d,\"button0\":%d,\"button1\":%d}\r\n",a,b,c);
+			USART2_PutBuffer((uint8_t*)tx_buffer, len);
+			k=0;
+			break;
 		}
 	}
+	if (k>=2){  //if there were 3 numbers sent
+		W25Q32_WRITE_DPI(numbers[0]);
+		W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
+		W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
+		k=0;
+	}
 
-	W25Q32_WRITE_DPI(numbers[0]);
-	W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
-	W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
 }
 void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z){
 	uint8_t but0 = 0, but1 = 0;

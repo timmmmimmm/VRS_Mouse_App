@@ -61,7 +61,7 @@ class MyHandler(http.server.BaseHTTPRequestHandler):
             self.send_header('Content-type', 'text/plain')
             self.end_headers()
             self.wfile.write(b'Success')
-            send_data=str(dpi_value)+','+str(button0_value)+','+str(button1_value) 
+            send_data=str(dpi_value)+','+str(button0_value)+','+str(button1_value+',') 
             portParser.addPayload(send_data.encode('utf-8'),response=False)
 
         else:
