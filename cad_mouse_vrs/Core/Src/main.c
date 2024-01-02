@@ -238,7 +238,7 @@ void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y
 //				rot_x,rot_y,rot_z,but0,but1);
 
 		*len = (uint8_t)sprintf((char*)message,
-					"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\n",
+					"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\r\n",
 					rot_x,rot_y,rot_z,but0,but1);
 
 		reset_button(0);
@@ -250,7 +250,7 @@ void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y
 //					"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
 //					rot_x,rot_y,rot_z,0,0);
 	*len = (uint8_t)sprintf((char*)message,
-						"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\n",
+						"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\r\n",
 						rot_x,rot_y,rot_z,but0,but1);
 
 }

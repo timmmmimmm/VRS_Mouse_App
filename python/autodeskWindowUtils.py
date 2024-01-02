@@ -55,7 +55,7 @@ class AutodeskWindowActionManager:
         ROTATE = 2
         
     
-    def performActions(self, rotX : int, rotY : int, zoom: int, dpi : float, button1 : ButtonActions, button2 : ButtonActions) -> None:
+    def performActions(self, rotX = None | int, rotY = None | int, zoom = None | int, dpi = None | float, button1 = None | ButtonActions, button2 = None | ButtonActions) -> None:
         ########################  DPI CHECK   ########################
         if dpi is None:
             dpi = 1
