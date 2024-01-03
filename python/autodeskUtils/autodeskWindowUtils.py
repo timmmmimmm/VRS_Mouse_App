@@ -145,7 +145,43 @@ keyboard = KeyboardController()
 mouse = MouseController()
 
 class AutodeskWindowManager:
-    # ... (no changes to this class)
+     def __init__(self, windowTitle : str) -> None:
+            self.windowTitle = windowTitle
+            self.window = pygetwindow.getWindowsWithTitle(windowTitle)
+        
+        def focusAutodeskWindow(self):
+            if len(self.window) > 0:
+                try:
+                    if not self.isAutodeskWindowInFocus():
+                        self.window[0].activate()
+                except pygetwindow.PyGetWindowException:
+                    pass
+        
+        def isAutodeskWindowInFocus(self) -> bool:
+            if len(self.window) > 0:
+                try:
+                    if self.window[0].isActive and not self.window[0].isMinimized and self.window[0].visible:
+                        return True
+                    else:
+                        return False
+                    
+                except pygetwindow.PyGetWindowException:
+                    return False
+                
+            else:
+                return False
+        
+        def windowExists(self) -> bool:
+            return self.window.count > 0
+        
+        def aquireWindow(self) -> None:
+            self.window = pygetwindow.getWindowsWithTitle(self.windowTitle)
+        
+        def setWindowTitle(self, windowTitle : str) -> None:
+            self.windowTitle = windowTitle
+        
+        class WindowDoesNotExistException (Exception):
+            pass
 
 class AutodeskWindowActionManager:
     def __init__(self, autodeskWindowManager : AutodeskWindowManager) -> None:
