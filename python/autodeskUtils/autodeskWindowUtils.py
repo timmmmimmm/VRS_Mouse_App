@@ -211,13 +211,15 @@ class AutodeskWindowActionManager:
         ########################  ZOOM CHECK   ########################
         znn = False
         if zoom is not None: 
-            
             if self.hotkeyStatus[self.ButtonActions.ROTATE]:
-                pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
+                keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
                 self.hotkeyStatus[self.ButtonActions.ROTATE] = False
-                pyautogui.mouseUp()
+                mouse.release(Button.left)
             
-            pyautogui.scroll(zoom*dpi*-1) #By default the Zoom axis is inverted soo *-1 it is
+            # pynput doesn't support scrolling, so we'll use the wheel button
+            for _ in range(int(zoom*dpi*-1)):
+                mouse.press(Button.middle)
+                mouse.release(Button.middle)
             znn = True
         
         ########################  BUTTON CHECK   ########################
