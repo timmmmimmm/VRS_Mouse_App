@@ -20,11 +20,17 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MouseInfoPanel : UserControl
     {
-    
+        private readonly string ?mouseSensitivity;
 
         public MouseInfoPanel()
         {
             InitializeComponent();
+        }
+
+        public MouseInfoPanel(MainMainWindow mainWindow) : this()
+        {
+            mouseSensitivity = mainWindow.GetMouseSensitivityValue().ToString();
+            TextBlockSensitivity.Text = mouseSensitivity;
         }
     }
 }

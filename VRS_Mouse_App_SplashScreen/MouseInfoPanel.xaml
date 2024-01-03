@@ -152,9 +152,9 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Grid.Row="0" Grid.Column="0"
-                           Text="DPI:"
+                           Text="Sensitivity:"
                            Style="{StaticResource descTextBox}"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1"
+                    <TextBlock x:Name="TextBlockSensitivity" Grid.Row="0" Grid.Column="1"
                            Text="1" 
                            Style="{StaticResource descContentTextBox}"/>
 

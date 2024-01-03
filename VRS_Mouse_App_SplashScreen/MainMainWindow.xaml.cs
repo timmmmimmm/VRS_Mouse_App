@@ -25,8 +25,8 @@ namespace VRS_Mouse_App_SplashScreen
         {
             AnimationDuration = new Duration(TimeSpan.FromMilliseconds(300));
             InitializeComponent();
-            ChangeContent(new MouseInfoPanel(), ScrollDirection.Up);
             mouseSensitivityValue = 0.1;
+            ChangeContent(new MouseInfoPanel(this), ScrollDirection.Up);
         }
 
         //public MainMainWindow(SerialPort port) : this()
@@ -132,20 +132,20 @@ namespace VRS_Mouse_App_SplashScreen
                         if(Math.Abs(diff) > 1)
                         {
        
-                            ChangeContent(new MouseSettingsPanel(),currentScrollDir);
+                            ChangeContent(new MouseSettingsPanel(this),currentScrollDir);
                            
                             new Thread(() => {
                                 while (!animationFinished) ;
                                 Dispatcher.Invoke(() =>
                                 {
-                                    ChangeContent(new MouseInfoPanel(), currentScrollDir);
+                                    ChangeContent(new MouseInfoPanel(this), currentScrollDir);
                                 });
                             }).Start();
 
                             break;
                         }
                         
-                        ChangeContent(new MouseInfoPanel(), currentScrollDir);
+                        ChangeContent(new MouseInfoPanel(this), currentScrollDir);
                         
                         break;
                     
@@ -154,7 +154,7 @@ namespace VRS_Mouse_App_SplashScreen
                             while (!animationFinished) ;
                             Dispatcher.Invoke(() =>
                             {
-                                ChangeContent(new MouseSettingsPanel(), currentScrollDir);
+                                ChangeContent(new MouseSettingsPanel(this), currentScrollDir);
                             });
                         }).Start();
 

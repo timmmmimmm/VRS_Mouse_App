@@ -20,9 +20,25 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class ButtonSettingsPanel : UserControl
     {
+        private string btn1ModeSelected;
         public ButtonSettingsPanel()
         {
             InitializeComponent();
+        }
+
+        private void SyncButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ComboBoxButton1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           
+        }
+
+        private void ComboBoxButton2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

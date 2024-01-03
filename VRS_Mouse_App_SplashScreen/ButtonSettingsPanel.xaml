@@ -3,10 +3,135 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
+             xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen" xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800" Background="Transparent">
+    <UserControl.Resources>
+        <Style TargetType="TextBlock" x:Key="textBlockDesc">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Margin" Value="0,60,0,10"/>
+        </Style>
+        <Style TargetType="TextBlock" x:Key="comboBoxDesc">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="Black"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}" >
+                                <ToggleButton.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="5*" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border x:Name="Border"  Grid.ColumnSpan="2" CornerRadius="5" Background="Transparent" BorderBrush="White" BorderThickness="1" />
+                                            <Border Grid.Column="0" CornerRadius="5,0,0,5"  Margin="1"  Background="Transparent"  BorderBrush="White" BorderThickness="0,0,1,0" />
+                                            <Path x:Name="Arrow" Grid.Column="1"  Fill="White" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="ToggleButton.IsMouseOver" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="gray" />
+                                            </Trigger>
+                                            <Trigger Property="ToggleButton.IsChecked" Value="true">
+                                                <Setter TargetName="Border" Property="Background" Value="gray" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                            </ToggleButton>
+                            <ContentPresenter Name="ContentSite" IsHitTestVisible="False"  Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="0"  />
+                            <TextBox x:Name="PART_EditableTextBox" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}"/>
+                            <Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True"  Focusable="False" PopupAnimation="Slide">
+                                <Grid  Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+                                    <Border x:Name="DropDownBorder" Background="Transparent" />
+                                    <ScrollViewer SnapsToDevicePixels="True">
+                                        <StackPanel IsItemsHost="True" />
+                                    </ScrollViewer>
+                                </Grid>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
     <Grid Width="580" Height="420">
-        <TextBlock Text="auiorhvjoiy" FontSize="40" Foreground="Red" Width="auto" Height="auto" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.ColumnSpan="2" Text="Button Settings" FontSize="30"
+                Width="580" Height="auto" 
+                 VerticalAlignment="Top" HorizontalAlignment="Center"
+                Foreground="White" TextAlignment="Center"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Button 1 function" 
+               VerticalAlignment="Center" HorizontalAlignment="Center"
+               Style="{StaticResource textBlockDesc}"/>
+
+        <ComboBox x:Name="ComboBoxButton1" Grid.Row="1" Grid.Column="1" Margin="0,60,10,10" SelectedItem="0" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton1_SelectionChanged">
+            <ComboBoxItem>
+                <TextBlock Text="None" Foreground="White"/>
+            </ComboBoxItem>
+            
+            <ComboBoxItem>
+                <TextBlock Text="Home" Foreground="White"/>
+            </ComboBoxItem>
+        </ComboBox>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Button 2 function" 
+               VerticalAlignment="Center" HorizontalAlignment="Center"
+               Style="{StaticResource textBlockDesc}"/>
+
+        <ComboBox x:Name="ComboBoxButton2" Grid.Row="2" Grid.Column="1" Margin="0,60,10,10" SelectedItem="0" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton2_SelectionChanged">
+
+            <ComboBoxItem>
+                <TextBlock Text="None" Foreground="White"/>
+            </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Home" Foreground="White"/>
+            </ComboBoxItem>
+        </ComboBox>
+
+        <Button x:Name="SyncButton" Grid.Row="3" Grid.ColumnSpan="2" Width="auto" Height="auto" Margin="0,30,0,0"
+            HorizontalAlignment="Center" VerticalAlignment="Center" 
+            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" BorderThickness="1" Style="{StaticResource latoFontButton}"
+            Click="SyncButton_Click">
+            <Image Source="Media/syncButton.png"  Width="90" Height="90"/>
+        </Button>
+
+        <spinnercontroller:LoadingSpinner Name="LoadingSpinner" Grid.Row="3" Grid.ColumnSpan="2"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"   Margin="0,30,0,0"
+                                      Thickness="4" Diameter="90" Visibility="Visible"
+                                      IsLoading="True"/>
+
+        <TextBlock x:Name="statusText" Grid.Row="4" Grid.ColumnSpan="2" Text="Sync" Foreground="White" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
     </Grid>
 </UserControl>

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen"
+             xmlns:local="clr-namespace:VRS_Mouse_App_SplashScreen" xmlns:spinnercontroller="clr-namespace:SpinnerController;assembly=SpinnerController"
              mc:Ignorable="d" 
              d:DesignHeight="420" d:DesignWidth="580" Background="Transparent">
 
@@ -14,7 +14,7 @@
             <Setter Property="Margin" Value="0,60,0,10"/>
         </Style>
     </UserControl.Resources>
-    
+
     <Grid Width="580" Height="420">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -26,7 +26,7 @@
             <RowDefinition Height="auto"/>
 
         </Grid.RowDefinitions>
-        
+
         <TextBlock Grid.Row="0" Text="Mouse Settings" FontSize="30"
                     Width="420" Height="auto" 
                      VerticalAlignment="Top" HorizontalAlignment="Center"
@@ -43,18 +43,23 @@
 
         <TextBlock Grid.Row="3" Text="Current value:" FontSize="15" Foreground="White"
                    VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0"/>
-        
+
         <TextBlock x:Name="currentSliderValue" Text="0,122" Grid.Row="4" 
                    FontSize="15" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
         <Button x:Name="SyncButton" Grid.Row="5" Width="auto" Height="auto" Margin="0,20,0,0"
-                HorizontalAlignment="Center" VerticalAlignment="Center"
+                HorizontalAlignment="Center" VerticalAlignment="Center" 
                 Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" BorderThickness="1" Style="{StaticResource latoFontButton}"
                 Click="SyncButton_Click">
             <Image Source="Media/syncButton.png"  Width="90" Height="90"/>
         </Button>
 
-        <TextBlock Grid.Row="6"  Text="Sync" Foreground="White" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <spinnercontroller:LoadingSpinner Name="LoadingSpinner" Grid.Row="5"
+                                          HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,20,0,0"
+                                          Thickness="4" Diameter="90" Visibility="Collapsed"
+                                          IsLoading="True"/>
+
+        <TextBlock x:Name="statusText" Grid.Row="6"  Text="Sync" Foreground="White" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
     </Grid>
 </UserControl>
