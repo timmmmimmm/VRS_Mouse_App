@@ -274,5 +274,6 @@ class AutodeskWindowActionManager:
             
             if rotate_y_degrees < 0:
                 roty *=-1
-            
-            mouse.move(rotx, roty)
+            mouse.position = (self.windowManager.window[0].width/2+rotx, self.windowManager.window[0].height/2+roty)
+            mouse.press(Button.left)
+            # mouse.move(rotx, roty)
