@@ -1,6 +1,7 @@
 import pygetwindow
 import pyautogui
 from enum import Enum
+import itertools as it
 import time
 
 class AutodeskWindowManager:
@@ -70,6 +71,12 @@ class AutodeskWindowActionManager:
         ########################  ZOOM CHECK   ########################
         znn = False
         if zoom is not None: 
+            
+            if self.hotkeyStatus[self.ButtonActions.ROTATE]:
+                pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
+                self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+                pyautogui.mouseUp()
+            
             pyautogui.scroll(zoom*dpi*-1) #By default the Zoom axis is inverted soo *-1 it is
             znn = True
         
@@ -110,26 +117,19 @@ class AutodeskWindowActionManager:
             self.hotkeyStatus[self.ButtonActions.ROTATE] = True
             pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
             pyautogui.mouseDown()
-        pyautogui.moveRel(xOffset = rotate_x_degrees, yOffset = rotate_y_degrees)
-        # xRot = abs(rotate_x_degrees)
-        # yRot = abs(rotate_y_degrees)
-        # xMove = 1
-        # yMove = 1
-        # if rotate_x_degrees < 0:
-        #     xMove = -1
-        # if rotate_y_degrees < 0:
-        #     yMove = -1
-        # for i in range(1, abs(rotate_x_degrees)+abs(rotate_y_degrees)):
-        #     if xRot != 0 and yRot != 0:
-        #         xRot -= 1
-        #         yRot -= 1
-        #         pyautogui.moveRel(xOffset = xMove, yOffset = yMove)
-        #     elif xRot != 0:
-        #         xRot -= 1
-        #         pyautogui.moveRel(xOffset = xMove, yOffset = 0)
-        #     elif yRot != 0:
-        #         yRot -= 1   
-        #         pyautogui.moveRel(xOffset = 0, yOffset = yMove)
-        #     else:
-        #         pyautogui.moveRel(xOffset = 0, yOffset = 0) 
-        #     time.sleep(0.001)
+                
+        for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
+            
+            if rotx is None:
+                rotx = 0
+            
+            if roty is None:
+                roty = 0
+            
+            if rotate_x_degrees < 0:
+                rotx *= -1
+            
+            if rotate_y_degrees < 0:
+                roty *=-1
+            
+            pyautogui.moveRel(xOffset = rotx, yOffset = roty)

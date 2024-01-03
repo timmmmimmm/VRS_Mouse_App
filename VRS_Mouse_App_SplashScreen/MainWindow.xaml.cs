@@ -155,7 +155,7 @@ namespace VRS_Mouse_App_SplashScreen
 
             Dispatcher.Invoke(new Action(() =>
             {
-                var nextWindow = new MainMainWindow(MousePort);
+                var nextWindow = new MainMainWindow();
                 App.Current.MainWindow = nextWindow;
                 nextWindow.Show();
                 this.Close();
