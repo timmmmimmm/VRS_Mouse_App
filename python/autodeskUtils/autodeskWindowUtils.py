@@ -218,7 +218,10 @@ class AutodeskWindowActionManager:
             
             # pynput doesn't support scrolling, so we'll use the wheel button
             for i in range(int(zoom*dpi*-1)):
-                mouse.scroll(0, i)
+                if zoom < 0:
+                    mouse.scroll(0, -1)
+                else:
+                    mouse.scroll(0, 1)
             znn = True
         
         ########################  BUTTON CHECK   ########################
