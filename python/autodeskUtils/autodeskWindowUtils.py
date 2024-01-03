@@ -245,10 +245,10 @@ class AutodeskWindowActionManager:
         if znn and zoom == 0: 
             if rotX is not None and rotY is not None:
                 if rotX == 0 and rotY == 0 :
-                    if self.hotkeyStatus[self.ButtonActions.ROTATE] :
-                        keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
-                        self.hotkeyStatus[self.ButtonActions.ROTATE] = False
-                        mouse.release(Button.left)
+                    # if self.hotkeyStatus[self.ButtonActions.ROTATE] :
+                    #     keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
+                    #     self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+                    #     mouse.release(Button.left)
                     return
                 
                 ########################  PERFORM ACTIONS   ########################
@@ -278,6 +278,6 @@ class AutodeskWindowActionManager:
             if rotate_y_degrees < 0:
                 roty *= -1
             mouse.move(rotx, roty)
-        keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
-        self.hotkeyStatus[self.ButtonActions.ROTATE] = False
-        mouse.release(Button.left)
+        # keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
+        # self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+        # mouse.release(Button.left)
