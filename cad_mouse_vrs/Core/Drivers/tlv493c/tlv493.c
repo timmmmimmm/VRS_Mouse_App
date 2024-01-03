@@ -16,9 +16,8 @@ typedef enum
 	Z
 }AXIS;
 
-/**
+/**	
  * @brief function for write multiple bytes with i2c from sensor
- * @param reg_address address of register read from
  * @param data pointer to variable store data in
  * @param len number of bytes
  *
@@ -29,7 +28,6 @@ static void tlv493_write_bytes(uint8_t *data, uint8_t len){
 
 /**
  * @brief function for reading multiple bytes with i2c from sensor
- * @param reg_address address of register read from
  * @param data pointer to variable to store data in
  * @param len number of bytes
  *
