@@ -32,7 +32,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+unsigned long t1 = 0;
+unsigned long t2 = 0;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -321,14 +322,16 @@ void EXTI15_10_IRQHandler(void)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_10);
     /* USER CODE BEGIN LL_EXTI_LINE_10 */
-    set_button(0);
+    // set_button(0);
+    debouncing_function(LL_EXTI_LINE_10);
     /* USER CODE END LL_EXTI_LINE_10 */
   }
   if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_11) != RESET)
   {
     LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_11);
     /* USER CODE BEGIN LL_EXTI_LINE_11 */
-    set_button(1);
+    // set_button(1);
+    debouncing_function(LL_EXTI_LINE_11);
     /* USER CODE END LL_EXTI_LINE_11 */
   }
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
@@ -340,7 +343,31 @@ void EXTI15_10_IRQHandler(void)
 /*
 * @brief This function handles USART2 global interrupt / USART2 wake-up interrupt through EXT line 26.
 */
-
+void debouncing_function(uint32_t pin){
+	/* do something */
+	if(t1 != 0){
+		t2 = HAL_GetTick();
+		if((t2-t1) < 300)
+			return;
+	}
+	static uint8_t button_state = 1; //pull-up
+	static uint8_t button_counter = 0;
+	uint8_t button_state_new = LL_GPIO_IsInputPinSet(GPIOA, pin);
+	if(button_state_new != button_state){
+		for( button_counter = 0; button_counter < 10; button_counter++){
+		  if(button_state_new != LL_GPIO_IsInputPinSet(GPIOA, pin)){
+			button_counter = 0;
+		  }
+		}
+		if(button_counter > 5){
+			if(LL_EXTI_LINE_10 == pin)
+				set_button(0);
+			else
+				set_button(1);
+		}
+	}
+	t1 = HAL_GetTick();
+}
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */

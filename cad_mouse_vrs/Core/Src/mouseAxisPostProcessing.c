@@ -12,14 +12,20 @@
 #define NOISE_FILTER_DIFF_MARGIN 5
 #define Z_AXIS_POST_MULT 10
 
-static MouseAxisInfo axisInfo = {0}, prevAxisInfo = {0};
+static MouseAxisInfo axisInfo = {0}, prevAxisInfo = {0};//, fadeAxisInfo = {0};
 
 MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData)
 {
+
 	axisInfo.x = mouseData->x;
 	axisInfo.y = mouseData->y;
 	axisInfo.z = mouseData->z;
-
+	// if(axisInfo.x ==0 )
+	// 	fadeAxisInfo.x = 0;
+	// if(axisInfo.y ==0 )
+	// 	fadeAxisInfo.y = 0;
+	// if(axisInfo.z ==0 )
+	// 	fadeAxisInfo.z = 0;
 	if(abs(prevAxisInfo.x) < 5 && abs(mouseData->x) < NOISE_FILTER_DIFF_MARGIN)
 	{
 	  if(abs(mouseData->x - prevAxisInfo.x) <= NOISE_FILTER_MARGIN)
@@ -65,5 +71,10 @@ MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData)
 
 	prevAxisInfo = *mouseData;
 
-	return &axisInfo;
+	// fadeAxisInfo.x = fadeAxisInfo.x * 0.9 + axisInfo.x * 0.1;
+	// fadeAxisInfo.y = fadeAxisInfo.y * 0.9 + axisInfo.y * 0.1;
+	// fadeAxisInfo.z = fadeAxisInfo.z * 0.9 + axisInfo.z * 0.1;
+
+	// return &fadeAxisInfo;
+	return &axisInfo;	
 }

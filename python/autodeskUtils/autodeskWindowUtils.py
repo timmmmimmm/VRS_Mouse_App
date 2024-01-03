@@ -43,6 +43,7 @@ class AutodeskWindowManager:
         pass
     
 class AutodeskWindowActionManager:
+
     def __init__(self, autodeskWindowManager : AutodeskWindowManager) -> None:
         self.windowManager = autodeskWindowManager
         
@@ -104,11 +105,28 @@ class AutodeskWindowActionManager:
     def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:
         if(not self.windowManager.windowExists):
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
-        
-        if not self.hotkeyStatus[self.ButtonActions.ROTATE] :
+        xRot = abs(rotate_x_degrees)
+        yRot = abs(rotate_y_degrees)
+        xMove = 1
+        yMove = 1
+        if rotate_x_degrees < 0:
+            xMove = -1
+        if rotate_y_degrees < 0:
+            yMove = -1
+        for i in range(1, abs(rotate_x_degrees)+abs(rotate_y_degrees)):
             pyautogui.keyDown(self.hotkeys[self.ButtonActions.ROTATE])
-            self.hotkeyStatus[self.ButtonActions.ROTATE] = True
             pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-            pyautogui.mouseDown()
-        
-        pyautogui.moveRel(xOffset = rotate_x_degrees, yOffset = rotate_y_degrees)
+            if xRot != 0 and yRot != 0:
+                xRot -= 1
+                yRot -= 1
+                pyautogui.drag(xOffset=xMove, yOffset=yMove)
+            else if xRot != 0:
+                xRot -= 1
+                pyautogui.drag(xOffset=xMove, yOffset=0)
+            else if yRot != 0:
+                yRot -= 1   
+                pyautogui.drag(xOffset=0, yOffset=yMove)
+            else:
+                pyautogui.drag(xOffset=0, yOffset=0)       
+            pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])   
+            time.sleep(0.1)
