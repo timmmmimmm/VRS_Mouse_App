@@ -245,10 +245,10 @@ class AutodeskWindowActionManager:
         if znn and zoom == 0: 
             if rotX is not None and rotY is not None:
                 if rotX == 0 and rotY == 0 :
-                    # if self.hotkeyStatus[self.ButtonActions.ROTATE] :
-                    #     keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
-                    #     self.hotkeyStatus[self.ButtonActions.ROTATE] = False
-                    #     mouse.release(Button.left)
+                    if self.hotkeyStatus[self.ButtonActions.ROTATE] :
+                        keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
+                        self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+                        mouse.release(Button.left)
                     return
                 
                 ########################  PERFORM ACTIONS   ########################
@@ -259,7 +259,7 @@ class AutodeskWindowActionManager:
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
         
         if not self.hotkeyStatus[self.ButtonActions.ROTATE] :
-            keyboard.press(self.hotkeys[self.ButtonActions.ROTATE])
+            keyboard.pressed(self.hotkeys[self.ButtonActions.ROTATE])
             self.hotkeyStatus[self.ButtonActions.ROTATE] = True
             mouse.position = (self.windowManager.window[0].width/2, self.windowManager.window[0].height/2)
             mouse.press(Button.left)
@@ -278,6 +278,3 @@ class AutodeskWindowActionManager:
             if rotate_y_degrees < 0:
                 roty *= -1
             mouse.move(rotx, roty)
-        # keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
-        # self.hotkeyStatus[self.ButtonActions.ROTATE] = False
-        # mouse.release(Button.left)
