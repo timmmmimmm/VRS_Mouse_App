@@ -202,8 +202,23 @@ class AutodeskWindowActionManager:
         ROTATE = 2
         
     
-    def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, dpi : float = None , button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
-        # ... (no changes to DPI CHECK and ZOOM CHECK)
+   def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, dpi : float = None , button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
+        ########################  DPI CHECK   ########################
+        if dpi is None:
+            dpi = 3
+            
+            
+        ########################  ZOOM CHECK   ########################
+        znn = False
+        if zoom is not None: 
+            
+            if self.hotkeyStatus[self.ButtonActions.ROTATE]:
+                pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
+                self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+                pyautogui.mouseUp()
+            
+            pyautogui.scroll(zoom*dpi*-1) #By default the Zoom axis is inverted soo *-1 it is
+            znn = True
         
         ########################  BUTTON CHECK   ########################
         if button1 is not None: 
