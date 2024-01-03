@@ -132,4 +132,4 @@ class AutodeskWindowActionManager:
                 pyautogui.moveRel(xOffset = 0, yOffset = yMove)
             else:
                 pyautogui.moveRel(xOffset = 0, yOffset = 0) 
-            time.sleep(0.1)
+            time.sleep(0.001)
