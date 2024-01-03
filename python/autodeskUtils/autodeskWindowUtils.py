@@ -246,7 +246,7 @@ class AutodeskWindowActionManager:
             if rotX is not None and rotY is not None:
                 if rotX == 0 and rotY == 0 :
                     if self.hotkeyStatus[self.ButtonActions.ROTATE] :
-                        # keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
+                        keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
                         self.hotkeyStatus[self.ButtonActions.ROTATE] = False
                         mouse.release(Button.left)
                     return
