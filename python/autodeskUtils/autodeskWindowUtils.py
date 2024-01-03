@@ -217,11 +217,12 @@ class AutodeskWindowActionManager:
                 mouse.release(Button.left)
             
             # pynput doesn't support scrolling, so we'll use the wheel button
-            for i in range(int(zoom*dpi*-1)):
+            # for i in range(int(zoom*dpi*-1)):
+            if zoom != 0: 
                 if zoom < 0:
-                    mouse.scroll(0, -1)
+                    mouse.scroll(0, -0.01)
                 else:
-                    mouse.scroll(0, 1)
+                    mouse.scroll(0, 0.01)
             znn = True
         
         ########################  BUTTON CHECK   ########################
