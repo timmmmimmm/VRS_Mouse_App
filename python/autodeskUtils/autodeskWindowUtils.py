@@ -217,9 +217,8 @@ class AutodeskWindowActionManager:
                 mouse.release(Button.left)
             
             # pynput doesn't support scrolling, so we'll use the wheel button
-            for _ in range(int(zoom*dpi*-1)):
-                mouse.press(Button.middle)
-                mouse.release(Button.middle)
+            for i in range(int(zoom*dpi*-1)):
+                mouse.scroll(0, i)
             znn = True
         
         ########################  BUTTON CHECK   ########################
@@ -274,6 +273,4 @@ class AutodeskWindowActionManager:
             
             if rotate_y_degrees < 0:
                 roty *=-1
-            mouse.position = (self.windowManager.window[0].width/2+rotx, self.windowManager.window[0].height/2+roty)
-            mouse.press(Button.left)
-            # mouse.move(rotx, roty)
+            mouse.move(rotx, roty)
