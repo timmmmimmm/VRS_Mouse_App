@@ -264,18 +264,17 @@ class AutodeskWindowActionManager:
             mouse.position = (self.windowManager.window[0].width/2, self.windowManager.window[0].height/2)
             mouse.press(Button.left)
         with keyboard.pressed(self.hotkeys[self.ButtonActions.ROTATE]):
-            with mouse.pressed(Button.left):    
-                for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
-                    
-                    if rotx is None:
-                        rotx = 0
-                    
-                    if roty is None:
-                        roty = 0
-                    
-                    if rotate_x_degrees < 0:
-                        rotx *= -1
-                    
-                    if rotate_y_degrees < 0:
-                        roty *= -1
-                    mouse.move(rotx, roty)
+            for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
+                
+                if rotx is None:
+                    rotx = 0
+                
+                if roty is None:
+                    roty = 0
+                
+                if rotate_x_degrees < 0:
+                    rotx *= -1
+                
+                if rotate_y_degrees < 0:
+                    roty *= -1
+                mouse.move(rotx, roty)
