@@ -2,8 +2,8 @@ from serial import Serial
 from serial.tools import list_ports
 from serial.serialutil import SerialException
 import jsonUtils
-from autodeskWindowUtils import AutodeskWindowManager as AWM
-from autodeskWindowUtils import AutodeskWindowActionManager as AWAM
+from autodeskUtils.autodeskWindowUtils import AutodeskWindowManager as AWM
+from autodeskUtils.autodeskWindowUtils import AutodeskWindowActionManager as AWAM
 import time
 
 class PortParser:

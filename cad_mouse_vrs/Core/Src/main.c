@@ -219,36 +219,46 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 }
 void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z){
 	uint8_t but0 = 0, but1 = 0;
-//	if(get_button(0)){
-//		but0 = W25Q32_READ_ACTION_BUTTON_0();
-//		reset_button(0);
-//	}
-//	if(get_button(1)){
-//		but1 = W25Q32_READ_ACTION_BUTTON_1();
-//		reset_button(1);
-//	}
+	uint16_t dpi = 0;
 
-	but0 = get_button(0);
-	but1 = get_button(1);
-
-	if(but0 || but1)
-	{
-//		*len = (uint8_t)sprintf((char*)message,
-//				"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
-//				rot_x,rot_y,rot_z,but0,but1);
-
-		*len = (uint8_t)sprintf((char*)message,
-					"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\r\n",
-					rot_x,rot_y,rot_z,but0,but1);
-
+	if(get_button(0)){
+		but0 = W25Q32_READ_ACTION_BUTTON_0();
 		reset_button(0);
+	}
+	if(get_button(1)){
+		but1 = W25Q32_READ_ACTION_BUTTON_1();
 		reset_button(1);
-		return;
 	}
 
+	dpi = W25Q32_READ_DPI();
+
+
+//	but0 = get_button(0);
+//	but1 = get_button(1);
+
+//	if(but0 || but1)
+//	{
+//		///////////////////////////////////////////  ARDUINO DEBUG  ///////////////////////////////////////////
+////		*len = (uint8_t)sprintf((char*)message,
+////				"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
+////				rot_x,rot_y,rot_z,but0,but1);
+//
+//		///////////////////////////////////////////  Production  ///////////////////////////////////////////
+//		*len = (uint8_t)sprintf((char*)message,
+//					"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\r\n",
+//					rot_x,rot_y,rot_z,but0,but1);
+//
+//		reset_button(0);
+//		reset_button(1);
+//		return;
+//	}
+
+	///////////////////////////////////////////  ARDUINO DEBUG  ///////////////////////////////////////////
 //	*len = (uint8_t)sprintf((char*)message,
 //					"RotX:%d,RotY:%d,Zoom:%d,Btn1:%d,Btn2:%d\r\n",
 //					rot_x,rot_y,rot_z,0,0);
+
+	///////////////////////////////////////////  Production  ///////////////////////////////////////////
 	*len = (uint8_t)sprintf((char*)message,
 						"{\"RotX\":%d,\"RotY\":%d,\"Zoom\":%d,\"Button0\":%d,\"Button1\":%d}\r\n",
 						rot_x,rot_y,rot_z,but0,but1);

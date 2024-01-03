@@ -11,12 +11,10 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainWindow : Window
     {
-        private const string DEVICE_VERIFIER = "FFFF", APP_VERIFIER = "GGGG";
-        private SerialPort? MousePort { get; set; }
         private readonly AnimationHolder _animationHolder;
         private readonly DispatcherTimer timer;
         private readonly EventHandler timerHandler;
-        private Thread PortFinderThread;
+        private Thread ServerFinderThread;
         private int ticks;
         private short countdown;
         private bool shutdown;
@@ -29,7 +27,7 @@ namespace VRS_Mouse_App_SplashScreen
 
             timer = new DispatcherTimer();
             timerHandler = new EventHandler(OnTimerTick);
-            PortFinderThread = new(FindPort);
+            ServerFinderThread = new(FindServerGetData);
 
             ticks = 0;
             countdown = 5;
@@ -40,9 +38,9 @@ namespace VRS_Mouse_App_SplashScreen
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
             shutdown = true;
-            if (PortFinderThread.IsAlive)
+            if (ServerFinderThread.IsAlive)
             {
-                PortFinderThread.Join();
+                ServerFinderThread.Join();
             }
 
             System.Windows.Application.Current.Shutdown();
@@ -52,24 +50,24 @@ namespace VRS_Mouse_App_SplashScreen
         {
             AnimateLoadingSpinner();
             countdown = 5;
-            if (PortFinderThread.IsAlive)
+            if (ServerFinderThread.IsAlive)
             {
-                PortFinderThread.Join();
+                ServerFinderThread.Join();
             }
-            PortFinderThread = new Thread(FindPort);
-            PortFinderThread.Start();
+            ServerFinderThread = new Thread(FindServerGetData);
+            ServerFinderThread.Start();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             InitializeTimer();
-            PortFinderThread.Start();
+            ServerFinderThread.Start();
         }
 
         /// <summary>
         /// A method that searches all available ports to find a device that transits a specified verifier
         /// </summary>
-        private void FindPort()
+        private void FindServerGetData()
         {
             Thread.Sleep(2000);
             //bool portFound = false;
