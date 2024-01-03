@@ -1,6 +1,7 @@
 import pygetwindow
 import pyautogui
 from enum import Enum
+import time
 
 class AutodeskWindowManager:
     def __init__(self, windowTitle : str) -> None:
@@ -22,7 +23,7 @@ class AutodeskWindowManager:
                     return True
                 else:
                     return False
-                    
+                
             except pygetwindow.PyGetWindowException:
                 return False
             
@@ -55,7 +56,7 @@ class AutodeskWindowActionManager:
         ROTATE = 2
         
     
-    def performActions(self, rotX = None | int, rotY = None | int, zoom = None | int, dpi = None | float, button1 = None | ButtonActions, button2 = None | ButtonActions) -> None:
+    def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, dpi : float = None , button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
         ########################  DPI CHECK   ########################
         if dpi is None:
             dpi = 1
@@ -64,33 +65,32 @@ class AutodeskWindowActionManager:
         ########################  ZOOM CHECK   ########################
         znn = False
         if zoom is not None: 
-            pyautogui.scroll(zoom*dpi)
+            pyautogui.scroll(zoom*dpi*-1)
             znn = True
-        
         ########################  X,Y AXIS CHECK   ########################
-        if rotX is not None and rotY is not None:
+        # if rotX is not None and rotY is not None:
             
-            if rotX == 0 and rotY == 0 :
-                return
+        #     if rotX == 0 and rotY == 0 :
+        #         return
         
-            if znn and zoom == 0: 
-                ########################  BUTTON CHECK   ########################
-                if button1 is not None: 
-                    match button1:
+        #     if znn and zoom == 0: 
+        #         ########################  BUTTON CHECK   ########################
+        #         if button1 is not None: 
+        #             match button1:
                         
-                        case self.ButtonActions.HOME:
-                            pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME]) 
-                            return
+        #                 case self.ButtonActions.HOME:
+        #                     pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME]) 
+                            
                         
-                if button2 is not None:
-                    match button2:
+        #         if button2 is not None:
+        #             match button2:
                         
-                        case self.ButtonActions.HOME:
-                            pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME])
-                            return
+        #                 case self.ButtonActions.HOME:
+        #                     pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME])
+                          
                 
                 ########################  PERFORM ACTIONS   ########################
-                self.rotate(rotX*dpi, rotY*dpi)
+                #self.rotate(rotX*dpi, rotY*dpi)
                 # TODO: dokoncit ostatne funkcie
 
     def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:

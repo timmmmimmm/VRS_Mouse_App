@@ -37,5 +37,5 @@ if __name__ == "__main__":
     main_thread.start()
 
     # Create a thread to run the HTTP server concurrently
-    server_thread = threading.Thread(target=start_http_server)
-    server_thread.start()
+    # server_thread = threading.Thread(target=start_http_server)
+    # server_thread.start()

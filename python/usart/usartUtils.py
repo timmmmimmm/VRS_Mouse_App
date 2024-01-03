@@ -20,12 +20,14 @@ class PortParser:
         self.windowActionManager = AWAM(self.windowManager)
     
     def start(self) -> None: 
+        self.ser.reset_input_buffer()
         while True:
             while self.lock:
                 pass
         
             try:
-                data = jsonUtils.to_json(self.ser.readline())
+                db = self.ser.readline()
+                data = jsonUtils.to_json(db)
 
                 if data is not None:
                     if self.windowManager.isAutodeskWindowInFocus():
@@ -35,6 +37,7 @@ class PortParser:
                             pass
                         
                     print(data)
+                self.ser.reset_input_buffer()
             except SerialException:
                 self.reaquirePort()
                 continue
