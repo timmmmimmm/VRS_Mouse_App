@@ -276,5 +276,8 @@ class AutodeskWindowActionManager:
                 rotx *= -1
             
             if rotate_y_degrees < 0:
-                roty *=-1
+                roty *= -1
             mouse.move(rotx, roty)
+        keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
+        self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+        mouse.release(Button.left)
