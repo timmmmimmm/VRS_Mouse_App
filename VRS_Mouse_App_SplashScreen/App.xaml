@@ -22,8 +22,31 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="black" />
+                                <Setter TargetName="border" Property="BorderBrush" Value="white"/>
                                 <Setter TargetName="border" Property="Background" Value="black"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="exitButton" TargetType="Button">
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Name="border" 
+             BorderThickness="{TemplateBinding BorderThickness}"
+             Padding="{TemplateBinding Padding}" 
+             BorderBrush="{TemplateBinding BorderBrush}"  
+             Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="BorderBrush" Value="{x:Null}"/>
+                                <Setter TargetName="border" Property="Background" Value="red"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

@@ -17,6 +17,8 @@
     <None Remove="Media\minimize.png" />
     <None Remove="Media\mouse-32.png" />
     <None Remove="Media\retryArrow.png" />
+    <None Remove="Media\syncButton.png" />
+    <None Remove="Media\syncButton.svg" />
     <None Remove="Resources\xClose.bmp" />
   </ItemGroup>
 
@@ -70,6 +72,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Media\retryArrow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Media\syncButton.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\xClose.bmp">

@@ -45,10 +45,15 @@ class AutodeskWindowManager:
 class AutodeskWindowActionManager:
     def __init__(self, autodeskWindowManager : AutodeskWindowManager) -> None:
         self.windowManager = autodeskWindowManager
+        
         self.hotkeys = {
             self.ButtonActions.HOME : 'f6',
             self.ButtonActions.ROTATE : 'f4'
             }
+        self.hotkeyStatus = {
+            self.ButtonActions.HOME : False,
+            self.ButtonActions.ROTATE : False
+        }
         
     class ButtonActions(Enum):
         NONE = 0
@@ -65,39 +70,45 @@ class AutodeskWindowActionManager:
         ########################  ZOOM CHECK   ########################
         znn = False
         if zoom is not None: 
-            pyautogui.scroll(zoom*dpi*-1)
+            pyautogui.scroll(zoom*dpi*-1) #By default the Zoom axis is inverted soo *-1 it is
             znn = True
-        ########################  X,Y AXIS CHECK   ########################
-        # if rotX is not None and rotY is not None:
-            
-        #     if rotX == 0 and rotY == 0 :
-        #         return
         
-        #     if znn and zoom == 0: 
-        #         ########################  BUTTON CHECK   ########################
-        #         if button1 is not None: 
-        #             match button1:
+        
+        ########################  BUTTON CHECK   ########################
+        if button1 is not None: 
+            match button1:
+                
+                case self.ButtonActions.HOME:
+                    pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME]) 
+                    
+                
+        if button2 is not None:
+            match button2:
+                
+                case self.ButtonActions.HOME:
+                    pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME])
                         
-        #                 case self.ButtonActions.HOME:
-        #                     pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME]) 
-                            
-                        
-        #         if button2 is not None:
-        #             match button2:
-                        
-        #                 case self.ButtonActions.HOME:
-        #                     pyautogui.hotkey(self.hotkeys[self.ButtonActions.HOME])
-                          
+        ########################  X,Y AXIS CHECK   ########################
+        if znn and zoom == 0: 
+            if rotX is not None and rotY is not None:
+                if rotX == 0 and rotY == 0 :
+                    if self.hotkeyStatus[self.ButtonActions.ROTATE] :
+                        pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
+                        self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+                        pyautogui.mouseUp()
+                    return
                 
                 ########################  PERFORM ACTIONS   ########################
-                #self.rotate(rotX*dpi, rotY*dpi)
-                # TODO: dokoncit ostatne funkcie
+                self.rotate(rotX*dpi, rotY*dpi)
 
     def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:
         if(not self.windowManager.windowExists):
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
         
-        pyautogui.keyDown(self.hotkeys[self.ButtonActions.ROTATE])
-        pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-        pyautogui.drag(xOffset=rotate_x_degrees, yOffset=rotate_y_degrees)
-        pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])       
+        if not self.hotkeyStatus[self.ButtonActions.ROTATE] :
+            pyautogui.keyDown(self.hotkeys[self.ButtonActions.ROTATE])
+            self.hotkeyStatus[self.ButtonActions.ROTATE] = True
+            pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
+            pyautogui.mouseDown()
+        
+        pyautogui.moveRel(xOffset = rotate_x_degrees, yOffset = rotate_y_degrees)

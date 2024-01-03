@@ -39,7 +39,7 @@
         <Button Name="ExitButton"
         HorizontalAlignment="Right" VerticalAlignment="Top" 
         Width="30" Height="30" 
-        Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}" Click="ExitButton_Click">
+        Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource exitButton}" Click="ExitButton_Click">
             <Image Source="Media/exitButton.png"/>
         </Button>
 

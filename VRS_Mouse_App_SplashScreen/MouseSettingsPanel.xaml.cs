@@ -20,9 +20,22 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MouseSettingsPanel : UserControl
     {
+        private string ?currentSliderValueStr;
         public MouseSettingsPanel()
         {
+            currentSliderValueStr = (0.1).ToString(); 
             InitializeComponent();
+            currentSliderValue.Text = currentSliderValueStr;
+        }
+
+        private void SensitivitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if(currentSliderValue != null)
+            {
+                currentSliderValueStr = Math.Round(SensitivitySlider.Value / 10.0, 3).ToString();
+                currentSliderValue.Text = currentSliderValueStr;
+            }
+            
         }
     }
 }
