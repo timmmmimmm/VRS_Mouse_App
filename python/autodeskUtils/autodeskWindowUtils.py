@@ -145,10 +145,10 @@ keyboard = KeyboardController()
 mouse = MouseController()
 
 class AutodeskWindowManager:
-     def __init__(self, windowTitle : str) -> None:
-            self.windowTitle = windowTitle
-            self.window = pygetwindow.getWindowsWithTitle(windowTitle)
-        
+    def __init__(self, windowTitle : str) -> None:
+        self.windowTitle = windowTitle
+        self.window = pygetwindow.getWindowsWithTitle(windowTitle)
+      
     def focusAutodeskWindow(self):
         if len(self.window) > 0:
             try:
