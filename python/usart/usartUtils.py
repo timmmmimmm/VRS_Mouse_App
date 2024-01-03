@@ -36,7 +36,7 @@ class PortParser:
                         except(AWM.WindowDoesNotExistException):
                             pass
                         
-                    print(data)
+                    # print(data)
                 self.ser.reset_input_buffer()
             except SerialException:
                 self.reaquirePort()
