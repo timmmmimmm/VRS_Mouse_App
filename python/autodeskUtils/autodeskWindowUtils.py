@@ -120,10 +120,10 @@ class AutodeskWindowActionManager:
                 xRot -= 1
                 yRot -= 1
                 pyautogui.drag(xOffset=xMove, yOffset=yMove)
-            else if xRot != 0:
+            elif xRot != 0:
                 xRot -= 1
                 pyautogui.drag(xOffset=xMove, yOffset=0)
-            else if yRot != 0:
+            elif yRot != 0:
                 yRot -= 1   
                 pyautogui.drag(xOffset=0, yOffset=yMove)
             else:

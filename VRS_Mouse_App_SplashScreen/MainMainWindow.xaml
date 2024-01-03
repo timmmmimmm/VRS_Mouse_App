@@ -46,7 +46,7 @@
         <Button x:Name="MinimizeButton"
             HorizontalAlignment="Right" VerticalAlignment="Top" 
             Width="30" Height="30" 
-            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" Style="{StaticResource latoFontButton}"
+            Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" BorderThickness="1" Style="{StaticResource latoFontButton}"
             FontSize="18" Margin="0,0,30,0" Click="MinimizeButton_Click">
             <Image Source="Media/minimize.png"  Width="25" Height="29"/>
         </Button>

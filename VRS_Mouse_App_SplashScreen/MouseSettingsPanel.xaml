@@ -23,6 +23,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
 
         </Grid.RowDefinitions>
         
@@ -36,7 +37,7 @@
                    Style="{StaticResource textBlockDesc}"/>
 
         <Slider x:Name="SensitivitySlider" 
-                Grid.Row="2" Margin="20,15,20,0"
+                Grid.Row="2" Margin="60,15,50,0"
                 Minimum="1" Maximum="20" TickFrequency="1" SmallChange="0.5" LargeChange="5"
                 Cursor="Hand" ValueChanged="SensitivitySlider_ValueChanged"/>
 
@@ -48,9 +49,12 @@
 
         <Button x:Name="SyncButton" Grid.Row="5" Width="auto" Height="auto" Margin="0,20,0,0"
                 HorizontalAlignment="Center" VerticalAlignment="Center"
-                Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="Black" BorderThickness="1" Style="{StaticResource latoFontButton}">
+                Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" BorderThickness="1" Style="{StaticResource latoFontButton}"
+                Click="SyncButton_Click">
             <Image Source="Media/syncButton.png"  Width="90" Height="90"/>
         </Button>
-        
+
+        <TextBlock Grid.Row="6"  Text="Sync" Foreground="White" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
     </Grid>
 </UserControl>

@@ -15,22 +15,24 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainMainWindow : Window
     {
-        private readonly SerialPort? MousePort;
         private readonly Duration AnimationDuration;
         private bool animationFinished = true;
         private int lastIndex = 0;
+        private double mouseSensitivityValue;
+
 
         public MainMainWindow()
         {
             AnimationDuration = new Duration(TimeSpan.FromMilliseconds(300));
             InitializeComponent();
             ChangeContent(new MouseInfoPanel(), ScrollDirection.Up);
+            mouseSensitivityValue = 0.1;
         }
 
-        public MainMainWindow(SerialPort port) : this()
-        {
-            MousePort = port;
-        }
+        //public MainMainWindow(SerialPort port) : this()
+        //{
+
+        //}
 
         DoubleAnimation CreateAnimation(double from, double to, EventHandler? completedEventaHandler)
         {
@@ -161,7 +163,7 @@ namespace VRS_Mouse_App_SplashScreen
                     case (int)NavPanelNames.ButtonSettings:
                         if(Math.Abs(diff) > 1)
                         {
-                            ChangeContent(new MouseSettingsPanel(), currentScrollDir);
+                            ChangeContent(new MouseSettingsPanel(this), currentScrollDir);
     
                             new Thread(() => {
                                 while (!animationFinished) ;
@@ -197,6 +199,16 @@ namespace VRS_Mouse_App_SplashScreen
             NavPanel.SelectedIndex = 0;
         }
 
+        public double GetMouseSensitivityValue()
+        {
+            return mouseSensitivityValue;
+        }
+
+        public void SendSensitivity(double value)
+        {
+            mouseSensitivityValue = value;
+
+        }
       
     }
 }
