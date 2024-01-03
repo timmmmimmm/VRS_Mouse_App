@@ -262,7 +262,8 @@ class AutodeskWindowActionManager:
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
         
         # if not self.hotkeyStatus[self.ButtonActions.ROTATE] :
-        
+        mouse.release(Button.left)
+        mouse.position = (self.windowManager.window[0].width/2, self.windowManager.window[0].height/2)
         keyboard.press(self.hotkeys[self.ButtonActions.ROTATE])
             # self.hotkeyStatus[self.ButtonActions.ROTATE] = True
             # mouse.position = (self.windowManager.window[0].width/2, self.windowManager.window[0].height/2)
