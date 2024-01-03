@@ -64,7 +64,7 @@ class AutodeskWindowActionManager:
     def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, dpi : float = None , button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
         ########################  DPI CHECK   ########################
         if dpi is None:
-            dpi = 1
+            dpi = 3
             
             
         ########################  ZOOM CHECK   ########################
