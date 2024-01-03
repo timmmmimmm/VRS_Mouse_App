@@ -246,7 +246,7 @@ class AutodeskWindowActionManager:
             if rotX is not None and rotY is not None:
                 if rotX == 0 and rotY == 0 :
                     if self.hotkeyStatus[self.ButtonActions.ROTATE] :
-                        keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
+                        # keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
                         self.hotkeyStatus[self.ButtonActions.ROTATE] = False
                         mouse.release(Button.left)
                     return
@@ -264,6 +264,7 @@ class AutodeskWindowActionManager:
             mouse.position = (self.windowManager.window[0].width/2, self.windowManager.window[0].height/2)
             mouse.press(Button.left)
         with keyboard.pressed(self.hotkeys[self.ButtonActions.ROTATE]):
+            mouse.press(Button.left)
             for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
                 
                 if rotx is None:
