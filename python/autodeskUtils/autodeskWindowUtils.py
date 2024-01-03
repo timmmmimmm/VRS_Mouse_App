@@ -1,8 +1,13 @@
 import pygetwindow
 import pyautogui
+from pynput.keyboard import Key, Controller as KeyboardController
+from pynput.mouse import Button, Controller as MouseController
 from enum import Enum
 import itertools as it
 import time
+
+keyboard = KeyboardController()
+mouse = MouseController()
 
 class AutodeskWindowManager:
     def __init__(self, windowTitle : str) -> None:
@@ -71,14 +76,29 @@ class AutodeskWindowActionManager:
         ########################  ZOOM CHECK   ########################
         znn = False
         if zoom is not None: 
-            
             if self.hotkeyStatus[self.ButtonActions.ROTATE]:
-                pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
+                keyboard.release(self.hotkeys[self.ButtonActions.ROTATE])
                 self.hotkeyStatus[self.ButtonActions.ROTATE] = False
-                pyautogui.mouseUp()
+                mouse.release(Button.left)
             
-            pyautogui.scroll(zoom*dpi*-1) #By default the Zoom axis is inverted soo *-1 it is
+            # pynput doesn't support scrolling, so we'll use the wheel button
+            # for i in range(int(zoom*dpi*-1)):
+            if zoom != 0: 
+                if zoom < 0:
+                    mouse.scroll(0, -0.01)
+                else:
+                    mouse.scroll(0, 0.01)
             znn = True
+        znn = False
+        # if zoom is not None: 
+            
+        #     if self.hotkeyStatus[self.ButtonActions.ROTATE]:
+        #         pyautogui.keyUp(self.hotkeys[self.ButtonActions.ROTATE])
+        #         self.hotkeyStatus[self.ButtonActions.ROTATE] = False
+        #         pyautogui.mouseUp()
+            
+        #     pyautogui.scroll(zoom*dpi*-1) #By default the Zoom axis is inverted soo *-1 it is
+        #     znn = True
         
         
         ########################  BUTTON CHECK   ########################
