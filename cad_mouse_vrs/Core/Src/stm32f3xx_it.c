@@ -42,7 +42,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
+bool button0_pressed, button1_pressed;
 
+extern DMA_HandleTypeDef hdma_i2c1_rx;
+extern DMA_HandleTypeDef hdma_i2c1_tx;
+extern I2C_HandleTypeDef hi2c1;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -199,19 +203,6 @@ void SysTick_Handler(void)
 /* please refer to the startup file (startup_stm32f3xx.s).                    */
 /******************************************************************************/
 
-/**
-  * @brief This function handles DMA1 channel2 global interrupt.
-  */
-void DMA1_Channel2_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
-
-  /* USER CODE END DMA1_Channel2_IRQn 0 */
-
-  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
-
-  /* USER CODE END DMA1_Channel2_IRQn 1 */
-}
 
 /**
   * @brief This function handles DMA1 channel6 global interrupt.
@@ -236,25 +227,7 @@ void DMA1_Channel6_IRQHandler(void)
   /* USER CODE END DMA1_Channel6_IRQn 1 */
 }
 
-/**
-  * @brief This function handles DMA1 channel7 global interrupt.
-  */
-void DMA1_Channel7_IRQHandler(void)
-{
-  /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
 
-  /* USER CODE END DMA1_Channel7_IRQn 0 */
-
-  /* USER CODE BEGIN DMA1_Channel7_IRQn 1 */
-	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
-	{
-		LL_DMA_ClearFlag_TC7(DMA1);
-
-		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
-	}
-  /* USER CODE END DMA1_Channel7_IRQn 1 */
-}
 
 /**
   * @brief This function handles TIM1 break and TIM15 interrupts.
@@ -265,12 +238,12 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 	if (LL_TIM_IsActiveFlag_UPDATE(TIM15)) {
 			        // Clear the interrupt flag
 			        LL_TIM_ClearFlag_UPDATE(TIM15);
-			        char tx_buffer[256];
+			        //char tx_buffer[256];
 
 			        // Send data over USART2
-			        uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
+			        //uint16_t len = sprintf(tx_buffer, "KOKOT\r\n");
 
-			        USART2_PutBuffer((uint8_t*)tx_buffer, len);
+			        //USART2_PutBuffer((uint8_t*)tx_buffer, len);
 
 			    }
   /* USER CODE END TIM1_BRK_TIM15_IRQn 0 */
@@ -283,15 +256,84 @@ void TIM1_BRK_TIM15_IRQHandler(void)
 /**
   * @brief This function handles I2C1 event global interrupt / I2C1 wake-up interrupt through EXT line 23.
   */
+void DMA1_Channel2_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel2_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c1_tx);
+  /* USER CODE BEGIN DMA1_Channel2_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 channel3 global interrupt.
+  */
+void DMA1_Channel3_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel3_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel3_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_i2c1_rx);
+  /* USER CODE BEGIN DMA1_Channel3_IRQn 1 */
+
+  /* USER CODE END DMA1_Channel3_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 event global interrupt / I2C1 wake-up interrupt through EXT line 23.
+  */
 void I2C1_EV_IRQHandler(void)
 {
   /* USER CODE BEGIN I2C1_EV_IRQn 0 */
-  I2C1_IRQHandler();
-  /* USER CODE END I2C1_EV_IRQn 0 */
 
+  /* USER CODE END I2C1_EV_IRQn 0 */
+  HAL_I2C_EV_IRQHandler(&hi2c1);
   /* USER CODE BEGIN I2C1_EV_IRQn 1 */
 
   /* USER CODE END I2C1_EV_IRQn 1 */
+}
+
+/**
+  * @brief This function handles I2C1 error interrupt.
+  */
+void I2C1_ER_IRQHandler(void)
+{
+  /* USER CODE BEGIN I2C1_ER_IRQn 0 */
+
+  /* USER CODE END I2C1_ER_IRQn 0 */
+  HAL_I2C_ER_IRQHandler(&hi2c1);
+  /* USER CODE BEGIN I2C1_ER_IRQn 1 */
+
+  /* USER CODE END I2C1_ER_IRQn 1 */
+}
+
+/**
+  * @brief This function handles EXTI line[15:10] interrupts.
+  */
+void EXTI15_10_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI15_10_IRQn 0 */
+
+  /* USER CODE END EXTI15_10_IRQn 0 */
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_10) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_10);
+    /* USER CODE BEGIN LL_EXTI_LINE_10 */
+    set_button(0);
+    /* USER CODE END LL_EXTI_LINE_10 */
+  }
+  if (LL_EXTI_IsActiveFlag_0_31(LL_EXTI_LINE_11) != RESET)
+  {
+    LL_EXTI_ClearFlag_0_31(LL_EXTI_LINE_11);
+    /* USER CODE BEGIN LL_EXTI_LINE_11 */
+    set_button(1);
+    /* USER CODE END LL_EXTI_LINE_11 */
+  }
+  /* USER CODE BEGIN EXTI15_10_IRQn 1 */
+
+  /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
@@ -315,4 +357,22 @@ void USART2_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+void set_button(uint8_t button){
+	if(button)
+		button1_pressed = true;
+	else
+		button0_pressed = true;
+}
+uint8_t get_button(uint8_t button){
+	if(button)
+		return button1_pressed;
+	else
+		return button0_pressed;
+}
+void reset_button(uint8_t button){
+	if(button)
+		button1_pressed = false;
+	else
+		button0_pressed = false;
+}
 /* USER CODE END 1 */

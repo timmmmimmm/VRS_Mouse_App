@@ -23,8 +23,10 @@
 /* USER CODE BEGIN 0 */
 uint8_t bufferUSART2dma[DMA_USART2_BUFFER_SIZE];
 uint16_t buf_read_pos = 0;
+uint8_t MAX_MESSAGE_SIZE =128;
+static uint8_t sending = 0;
 /* Declaration and initialization of callback function */
-static void (* USART2_ProcessData)(uint8_t data) = 0;
+static void (* USART2_ProcessData)(const uint8_t* data, uint16_t len) = 0;
 
 void USART2_RegisterCallback(void *callback)
 {
@@ -166,43 +168,70 @@ void USART2_PutBuffer(uint8_t *buffer, uint8_t length)
 	LL_DMA_EnableIT_TC(DMA1, LL_DMA_CHANNEL_7);
 
 	LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_7);
+
+	sending = 1;
+	while(sending){}
 }
+
+
+/**
+  * @brief This function handles DMA1 channel7 global interrupt.
+  */
+void DMA1_Channel7_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 0 */
+
+  /* USER CODE END DMA1_Channel7_IRQn 0 */
+
+  /* USER CODE BEGIN DMA1_Channel7_IRQn 1 */
+	if(LL_DMA_IsActiveFlag_TC7(DMA1) == SET)
+	{
+		LL_DMA_ClearFlag_TC7(DMA1);
+
+		while(LL_USART_IsActiveFlag_TC(USART2) == RESET);
+		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_7);
+
+		sending = 0;
+	}
+  /* USER CODE END DMA1_Channel7_IRQn 1 */
+}
+
+
 void USART2_CheckDmaReception(void)
 {
-	uint16_t pos = DMA_USART2_BUFFER_SIZE - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+	if(USART2_ProcessData == 0) return;
 
-	if (pos >= DMA_USART2_BUFFER_SIZE)
-	{
-		// set the DMA address pointer back to the beginning of the buffer
-		LL_DMA_DisableChannel(DMA1, LL_DMA_CHANNEL_6);
-		LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_6, (uint32_t)bufferUSART2dma);
-		LL_DMA_SetDataLength(DMA1, LL_DMA_CHANNEL_6, DMA_USART2_BUFFER_SIZE);
-		LL_DMA_EnableChannel(DMA1, LL_DMA_CHANNEL_6);
+		static uint16_t old_pos = 0;
 
-		// process all data until the end of the buffer
-		while(buf_read_pos < DMA_USART2_BUFFER_SIZE)
-		{
-			if(USART2_ProcessData != 0)
+		uint16_t pos = DMA_USART2_BUFFER_SIZE - LL_DMA_GetDataLength(DMA1, LL_DMA_CHANNEL_6);
+		if (pos != old_pos && ((pos-old_pos)<=MAX_MESSAGE_SIZE))
 			{
-				USART2_ProcessData(bufferUSART2dma[buf_read_pos]);
-			}
-			buf_read_pos++;
-		}
+				if (pos > old_pos)
+				{
+					USART2_ProcessData(&bufferUSART2dma[old_pos],pos - old_pos);
+				}
+				else
+				{
+					USART2_ProcessData(&bufferUSART2dma[old_pos],DMA_USART2_BUFFER_SIZE - old_pos);
 
-		buf_read_pos = 0;
-	}
-	else
-	{
-		// process new data
-		while(buf_read_pos < pos)
-		{
-			if(USART2_ProcessData != 0)
-			{
-				USART2_ProcessData(bufferUSART2dma[buf_read_pos]);
+					if (pos > 0)
+					{
+						USART2_ProcessData(&bufferUSART2dma[0],pos);
+					}
+				}
 			}
-			buf_read_pos++;
+
+			old_pos = pos;
+
+			if (old_pos >= (DMA_USART2_BUFFER_SIZE-MAX_MESSAGE_SIZE))
+			{
+				old_pos = 0;
+				LL_DMA_DisableChannel(DMA1,LL_DMA_CHANNEL_6);
+				memset(bufferUSART2dma,0,DMA_USART2_BUFFER_SIZE);
+				LL_DMA_SetMemoryAddress(DMA1, LL_DMA_CHANNEL_6, (uint32_t)&bufferUSART2dma[0]);
+				LL_DMA_SetDataLength(DMA1,LL_DMA_CHANNEL_6,DMA_USART2_BUFFER_SIZE);
+				LL_DMA_EnableChannel(DMA1,LL_DMA_CHANNEL_6);
 		}
-	}
 }
 
 

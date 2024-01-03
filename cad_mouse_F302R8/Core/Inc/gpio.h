@@ -29,11 +29,14 @@ extern "C" {
 #include "main.h"
 
 /* USER CODE BEGIN Includes */
-
+void SPI_Send(uint8_t* send_data, uint32_t size);
+void SPI_Receive(uint8_t* receive_data, uint32_t size);
+void SPI_Delay(uint16_t delay);
 /* USER CODE END Includes */
 
-/* USER CODE BEGIN Private defines */
+extern SPI_HandleTypeDef hspi1;
 
+/* USER CODE BEGIN Private defines */
 /* USER CODE END Private defines */
 
 void MX_GPIO_Init(void);

@@ -41,6 +41,8 @@ extern "C" {
 #include "stm32f3xx_ll_tim.h"
 #include "stm32f3xx_ll_usart.h"
 #include "stm32f3xx_ll_gpio.h"
+#include <string.h>
+#include <stdio.h>
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -74,6 +76,14 @@ void Error_Handler(void);
 #define MCO_GPIO_Port GPIOF
 #define VCP_TX_Pin LL_GPIO_PIN_2
 #define VCP_TX_GPIO_Port GPIOA
+#define SPI1_CS_Pin LL_GPIO_PIN_8
+#define SPI1_CS_GPIO_Port GPIOA
+#define Button0_Pin LL_GPIO_PIN_10
+#define Button0_GPIO_Port GPIOA
+#define Button0_EXTI_IRQn EXTI15_10_IRQn
+#define Button1_Pin LL_GPIO_PIN_11
+#define Button1_GPIO_Port GPIOA
+#define Button1_EXTI_IRQn EXTI15_10_IRQn
 #define SWDIO_Pin LL_GPIO_PIN_13
 #define SWDIO_GPIO_Port GPIOA
 #define SWCLK_Pin LL_GPIO_PIN_14
@@ -82,7 +92,7 @@ void Error_Handler(void);
 #define VCP_RX_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
-
+void proccesDmaData(const uint8_t* data, uint8_t len);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
