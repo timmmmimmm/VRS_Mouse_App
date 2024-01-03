@@ -149,39 +149,39 @@ class AutodeskWindowManager:
             self.windowTitle = windowTitle
             self.window = pygetwindow.getWindowsWithTitle(windowTitle)
         
-        def focusAutodeskWindow(self):
-            if len(self.window) > 0:
-                try:
-                    if not self.isAutodeskWindowInFocus():
-                        self.window[0].activate()
-                except pygetwindow.PyGetWindowException:
-                    pass
-        
-        def isAutodeskWindowInFocus(self) -> bool:
-            if len(self.window) > 0:
-                try:
-                    if self.window[0].isActive and not self.window[0].isMinimized and self.window[0].visible:
-                        return True
-                    else:
-                        return False
-                    
-                except pygetwindow.PyGetWindowException:
+    def focusAutodeskWindow(self):
+        if len(self.window) > 0:
+            try:
+                if not self.isAutodeskWindowInFocus():
+                    self.window[0].activate()
+            except pygetwindow.PyGetWindowException:
+                pass
+    
+    def isAutodeskWindowInFocus(self) -> bool:
+        if len(self.window) > 0:
+            try:
+                if self.window[0].isActive and not self.window[0].isMinimized and self.window[0].visible:
+                    return True
+                else:
                     return False
                 
-            else:
+            except pygetwindow.PyGetWindowException:
                 return False
-        
-        def windowExists(self) -> bool:
-            return self.window.count > 0
-        
-        def aquireWindow(self) -> None:
-            self.window = pygetwindow.getWindowsWithTitle(self.windowTitle)
-        
-        def setWindowTitle(self, windowTitle : str) -> None:
-            self.windowTitle = windowTitle
-        
-        class WindowDoesNotExistException (Exception):
-            pass
+            
+        else:
+            return False
+    
+    def windowExists(self) -> bool:
+        return self.window.count > 0
+    
+    def aquireWindow(self) -> None:
+        self.window = pygetwindow.getWindowsWithTitle(self.windowTitle)
+    
+    def setWindowTitle(self, windowTitle : str) -> None:
+        self.windowTitle = windowTitle
+    
+    class WindowDoesNotExistException (Exception):
+        pass
 
 class AutodeskWindowActionManager:
     def __init__(self, autodeskWindowManager : AutodeskWindowManager) -> None:
