@@ -139,11 +139,17 @@ class AutodeskWindowActionManager:
             if roty is None:
                 roty = 0
             
-            if rotate_x_degrees < 0:
-                rotx *= -1
+            if rotate_x_degrees != 0:
+                if rotate_x_degrees < 0:
+                    rotx = -10
+                else:
+                    rotx = 10
             
-            if rotate_y_degrees < 0:
-                roty *=-1
+            if rotate_y_degrees != 0:
+                if rotate_y_degrees < 0:
+                    roty = -10
+                else:
+                    roty = 10
             
             pyautogui.moveRel(xOffset = rotx, yOffset = roty)
             # time.sleep(0.001)
