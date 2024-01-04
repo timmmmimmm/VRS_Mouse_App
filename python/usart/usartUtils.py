@@ -3,8 +3,6 @@ from multiprocessing import Lock
 from serial.tools import list_ports
 from serial.serialutil import SerialException
 import jsonUtils
-from autodeskUtils.autodeskWindowUtils import AutodeskWindowManager as AWM
-from autodeskUtils.autodeskWindowUtils import AutodeskWindowActionManager as AWAM
 import time
 
 class PortParser:
@@ -14,10 +12,8 @@ class PortParser:
         self.BAUD_RATE = 115200
         self.portTimeout = 5
         self.ser = Serial(self.port,self.BAUD_RATE, timeout=self.portTimeout)
-        self.windowManager = AWM(windowTitle)
-        self.windowActionManager = AWAM(self.windowManager)
         self.mutex = Lock()
-        self.data
+        self.data = b''
     def start(self) -> None: 
         self.ser.reset_input_buffer()
         while True:
@@ -25,15 +21,6 @@ class PortParser:
                 
                 db = self.commSerial()
                 self.data = jsonUtils.to_json(db)
-
-                # if data is not None:
-                #     if self.windowManager.isAutodeskWindowInFocus():
-                #         try:
-                #             self.windowActionManager.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')), button1=AWAM.ButtonActions(int(data.get('Button1'))), button2=AWAM.ButtonActions(int(data.get('Button2'))) )
-                #         except(AWM.WindowDoesNotExistException):
-                #             pass
-                        
-                    #print(data)
                 
             except SerialException:
                 self.reaquirePort()

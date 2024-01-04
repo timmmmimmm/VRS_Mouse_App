@@ -54,7 +54,7 @@ class AutodeskWindowActionManager:
     def __init__(self, autodeskWindowManager : AutodeskWindowManager, portParser : PortParser) -> None:
         self.windowManager = autodeskWindowManager
         self.portParser = portParser
-        self.data 
+        self.data = b''
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
             self.ButtonActions.ROTATE : Key.f4
