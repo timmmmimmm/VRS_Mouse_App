@@ -81,19 +81,19 @@ Since the app uses WPF it is only available on Windows 10 or higher.
 
 ## Features
 
- - Provides basic mouse information
+  ### Provides basic mouse information
 
  <p align="center">
     <img src="img/app2.png" width="" title="GPIO pin block scheme">
 </p>
 
- - Button mapping
+  ### Button mapping
 
  <p align="center">
     <img src="img/app4.png" width="" title="GPIO pin block scheme">
 </p>
 
- - Mouse axis sensitivity settings
+  ### Mouse axis sensitivity settings
 
  <p align="center">
     <img src="img/app3.png" width="" title="GPIO pin block scheme">
