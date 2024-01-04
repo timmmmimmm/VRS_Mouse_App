@@ -54,7 +54,7 @@ class AutodeskWindowActionManager:
     def __init__(self, autodeskWindowManager : AutodeskWindowManager, portParser : PortParser) -> None:
         self.windowManager = autodeskWindowManager
         self.portParser = portParser
-        
+        self.data 
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
             self.ButtonActions.ROTATE : Key.f4
@@ -76,9 +76,9 @@ class AutodeskWindowActionManager:
     def start(self) -> None:
         while True:
             if self.windowManager.isAutodeskWindowInFocus():
-                data = self.portParser.getData()
-                if data is not None:
-                    self.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')), button1=self.ButtonActions(int(data.get('Button0'))), button2=self.ButtonActions(int(data.get('Button1'))))
+                self.data = self.portParser.getData()
+                if self.data is not None:
+                    self.performActions(rotX=int(self.data.get('RotX')), rotY=int(self.data.get('RotY')), zoom=int(self.data.get('Zoom')), button1=self.ButtonActions(int(self.data.get('Button0'))), button2=self.ButtonActions(int(self.data.get('Button1'))))
             else:
                 time.sleep(0.5)
             
@@ -141,25 +141,23 @@ class AutodeskWindowActionManager:
             pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
             pyautogui.mouseDown()
            
-        # for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
+        for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
             
-        if rotx is None:
-            rotx = 0
+            if rotx is None:
+                rotx = 0
+            
+            if roty is None:
+                roty = 0
+            
+            if rotate_x_degrees > 0:
+                rotx *= -1
         
-        if roty is None:
-            roty = 0
-        
-        if rotate_x_degrees != 0:
-            if rotate_x_degrees < 0:
-                rotx = -10
-            else:
-                rotx = 10
-        
-        if rotate_y_degrees != 0:
             if rotate_y_degrees < 0:
-                roty = -10
-            else:
-                roty = 10
+                roty *= -1
         
-        pyautogui.moveRel(xOffset = rotx, yOffset = roty)
+            pyautogui.moveRel(xOffset = rotx, yOffset = roty)
+            self.data = self.portParser.getData()
+            if self.data is not None:
+                if int(self.data.get('RotX')) == 0 and int(self.data.get('RotY')) == 0:
+                    break
      
