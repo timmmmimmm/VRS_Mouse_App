@@ -140,9 +140,15 @@ class AutodeskWindowActionManager:
             self.hotkeyStatus[self.ButtonActions.ROTATE] = True
             pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
             pyautogui.mouseDown()
-           
-        for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
-            
+
+        while True:
+            jsonData = self.portParser.getData()
+            rotx = int(jsonData.get('RotX'))
+            roty = int(jsonData.get('RotY'))
+            if jsonData is not None:
+                if rotx == 0 and roty == 0 or jsonData.get('Button0') != 0 or jsonData.get('Button1') != 0:
+                    self.data = jsonData 
+                    break
             if rotx is None:
                 rotx = 0
             
@@ -156,8 +162,13 @@ class AutodeskWindowActionManager:
                 roty *= -1
         
             pyautogui.moveRel(xOffset = rotx, yOffset = roty)
-            self.data = self.portParser.getData()
-            if self.data is not None:
-                if int(self.data.get('RotX')) == 0 and int(self.data.get('RotY')) == 0:
-                    break
+            
+
+
+        # for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
+            
+        #     self.data = self.portParser.getData()
+        #     if self.data is not None:
+        #         if int(self.data.get('RotX')) == 0 and int(self.data.get('RotY')) == 0:
+        #             break
      
