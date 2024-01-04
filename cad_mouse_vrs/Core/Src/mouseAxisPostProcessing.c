@@ -71,11 +71,11 @@ MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData, uint16_t DPI)
 
 	axisInfo.x *= DPI;
 	axisInfo.y *= DPI;
-	if(axisInfo.z > 300)
-		axisInfo.z = 300;
-	else if(axisInfo.z < -300)
-		axisInfo.z = -300;
-	axisInfo.z = MAP(axisInfo.z, -300, 300, -15, 15);
+	if(axisInfo.z > 50)
+		axisInfo.z = 50;
+	else if(axisInfo.z < -50)
+		axisInfo.z = -50;
+	axisInfo.z = MAP(axisInfo.z, -50, 50, -15, 15);
 
 	return &axisInfo;	
 }

@@ -106,7 +106,7 @@ int main(void)
 
 //  W25Q32_WRITE_ACTION_BUTTON_0(5);
 //  W25Q32_WRITE_ACTION_BUTTON_1(2);
-  W25Q32_WRITE_DPI(20);
+  W25Q32_WRITE_DPI(1);
   (void)tlv493_init(i2c_master_read, i2c_master_write, HAL_Delay);
   initFilter(tlv493_getX, tlv493_getY, tlv493_getZ, tlv493_update_data, HAL_Delay);
   uint16_t dpi = 1;
