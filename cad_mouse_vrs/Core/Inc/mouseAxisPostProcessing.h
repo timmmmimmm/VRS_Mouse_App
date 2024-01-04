@@ -10,6 +10,6 @@
 
 #include "movingAverageFIlter.h"
 
-MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData);
+MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData, uint16_t DPI);
 
 #endif /* INC_MOUSEAXISPOSTPROCESSING_H_ */

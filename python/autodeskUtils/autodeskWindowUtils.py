@@ -71,11 +71,8 @@ class AutodeskWindowActionManager:
         ROTATE = 2
         
     
-    def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, dpi : float = None , button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
+    def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
         ########################  DPI CHECK   ########################
-        if dpi is None:
-            dpi = 3
-            
             
         ########################  ZOOM CHECK   ########################
         znn = False
@@ -86,9 +83,7 @@ class AutodeskWindowActionManager:
                 mouse.release(Button.left)
             
             # pynput doesn't support scrolling, so we'll use the wheel button
-            # for i in range(int(zoom*dpi*-1)):
             if zoom != 0: 
-                # dpi_scroll = dpi*2 #asi tak dajak mozno aj *5 by som dal resp +2
                 if zoom < 0:
                     mouse.scroll(0, -0.01)   #here implemnt DPI dajak
                 else:
@@ -123,7 +118,7 @@ class AutodeskWindowActionManager:
 
                 ########################  PERFORM ACTIONS   ########################
             
-                self.rotate(rotX*dpi, rotY*dpi)
+                self.rotate(rotX, rotY)
 
     def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:
         t1 = time.time()

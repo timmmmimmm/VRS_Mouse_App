@@ -32,7 +32,7 @@ class PortParser:
                 if data is not None:
                     if self.windowManager.isAutodeskWindowInFocus():
                         try:
-                            self.windowActionManager.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')))
+                            self.windowActionManager.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')), button1=AWAM.ButtonActions(int(data.get('Button1'))), button2=AWAM.ButtonActions(int(data.get('Button2'))) )
                         except(AWM.WindowDoesNotExistException):
                             pass
                         

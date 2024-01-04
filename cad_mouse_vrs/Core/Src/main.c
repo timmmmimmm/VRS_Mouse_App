@@ -52,7 +52,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+bool change_in_conf = false;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,9 +106,15 @@ int main(void)
 
 //  W25Q32_WRITE_ACTION_BUTTON_0(5);
 //  W25Q32_WRITE_ACTION_BUTTON_1(2);
+  W25Q32_WRITE_DPI(20);
   (void)tlv493_init(i2c_master_read, i2c_master_write, HAL_Delay);
   initFilter(tlv493_getX, tlv493_getY, tlv493_getZ, tlv493_update_data, HAL_Delay);
-
+  uint16_t dpi = 1;
+	dpi = W25Q32_READ_DPI();
+	if(dpi > 20 || dpi < 0)
+		dpi = 1;
+	dpi *= 50;
+	dpi = (uint16_t)(1000/(1050-dpi)); //spytat sa tima ci bude problem nastavit sesitivitu 1-20
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -126,9 +132,17 @@ int main(void)
 	  //idk mozme dat discusion
 	  //vo funkci si zavolaj najprv tlv493_update_data(); a potom getX()...
 //	  calc_rot(&rotX,&rotY,&rotZ,&zoom);
+	  if(change_in_conf){
+		    dpi = W25Q32_READ_DPI();
+			if(dpi > 20 || dpi < 0)
+				dpi = 1;
+			dpi *= 50;
+			dpi = (uint16_t)(1000/(1050-dpi));
+			change_in_conf = false;
+	  }
 	  mouseAxisInfo = MA_filterData();
 
-	  mouseAxisInfo = PP_ProcessData(mouseAxisInfo);
+	  mouseAxisInfo = PP_ProcessData(mouseAxisInfo,dpi);
 
 	  create_message(message, &length, mouseAxisInfo->x, mouseAxisInfo->y, mouseAxisInfo->z);
 	  USART2_PutBuffer(message, length);
@@ -210,6 +224,7 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 		}
 	}
 	if (k>=2){  //if there were 3 numbers sent
+		change_in_conf = true;
 		W25Q32_WRITE_DPI(numbers[0]);
 		W25Q32_WRITE_ACTION_BUTTON_0(numbers[1]);
 		W25Q32_WRITE_ACTION_BUTTON_1(numbers[2]);
@@ -219,7 +234,15 @@ void proccesDmaData(const uint8_t* data, uint8_t len)
 }
 void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y, int16_t rot_z){
 	uint8_t but0 = 0, but1 = 0;
-//	uint16_t dpi = 0;
+  /**
+   * @brief button actions
+   * 0 - nothing
+   * 1 - HOME (F6)
+   * 2 - Cancel (ESC) 
+   * 3 - Previous (F5)  
+   * 4 - Zoom ALL (HOME)
+   *
+  */
 //
 //	if(get_button(0)){
 //		but0 = W25Q32_READ_ACTION_BUTTON_0();
@@ -230,7 +253,6 @@ void create_message(uint8_t *message, uint8_t *len, int16_t rot_x, int16_t rot_y
 //		reset_button(1);
 //	}
 //
-//	dpi = W25Q32_READ_DPI();
 
 
 	but0 = get_button(0);
