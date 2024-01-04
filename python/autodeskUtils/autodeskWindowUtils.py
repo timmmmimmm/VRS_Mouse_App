@@ -67,6 +67,9 @@ class AutodeskWindowActionManager:
             self.ButtonActions.HOME : False,
             self.ButtonActions.ROTATE : False
         }
+        self.bordersX = [50, self.windowManager.window[0].width-30]
+        self.bordersY = [50, self.windowManager.window[0].height-40]
+
         
     class ButtonActions(Enum):
         NONE = 0
@@ -150,18 +153,12 @@ class AutodeskWindowActionManager:
                 if rotx == 0 and roty == 0 or jsonData.get('Button0') != 0 or jsonData.get('Button1') != 0:
                     self.data = jsonData 
                     break
-            # if self.windowManager.window[0].width/2 == rotx+20 or self.windowManager.window[0].height/2 == roty+20:
-            #     pyautogui.keyUp(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-            #     pyautogui.mouseUp()
-            #     pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-            #     pyautogui.keyDown(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-            #     pyautogui.mouseDown()
-            # if self.windowManager.window[0].width/8 - rotx == 20 or self.windowManager.window[0].height/2 -roty == self.windowManager.window[0].height/4:
-            #     pyautogui.keyUp(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-            #     pyautogui.mouseUp()
-            #     pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-            #     pyautogui.keyDown(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-            #     pyautogui.mouseDown()
+            currentMouseX, currentMouseY = pyautogui.position()
+            if currentMouseX < self.bordersX[0] or currentMouseX > self.bordersX[1] or currentMouseY < self.bordersY[0] or currentMouseY > self.bordersY[1]:
+                pyautogui.mouseUp()
+                pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
+                pyautogui.mouseDown()
+                continue
             if rotx is None:
                 rotx = 0
             
@@ -176,11 +173,3 @@ class AutodeskWindowActionManager:
             pyautogui.moveRel(xOffset = rotx, yOffset = roty)
             
 
-
-        # for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
-            
-        #     self.data = self.portParser.getData()
-        #     if self.data is not None:
-        #         if int(self.data.get('RotX')) == 0 and int(self.data.get('RotY')) == 0:
-        #             break
-     
