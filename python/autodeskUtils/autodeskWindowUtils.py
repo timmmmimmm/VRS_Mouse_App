@@ -94,12 +94,13 @@ class AutodeskWindowActionManager:
                 mouse.release(Button.left)
             
             # pynput doesn't support scrolling, so we'll use the wheel button
-            if zoom != 0: 
-                mouse.scroll(0, zoom/1000)
-                # if zoom < 0:
-                #     mouse.scroll(0, -zoom/100)
-                # else:
             znn = True
+            if zoom != 0:
+                if zoom < 0:
+                    mouse.scroll(0, 1)
+                else:
+                    mouse.scroll(0, -1)
+                time.sleep(0.10)
         
         ########################  BUTTON CHECK   ########################
         if button1 is not None: 
@@ -149,18 +150,18 @@ class AutodeskWindowActionManager:
                 if rotx == 0 and roty == 0 or jsonData.get('Button0') != 0 or jsonData.get('Button1') != 0:
                     self.data = jsonData 
                     break
-            if self.windowManager.window[0].width/2 == rotx+20 or self.windowManager.window[0].height/2 == roty+20:
-                pyautogui.keyUp(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-                pyautogui.mouseUp()
-                pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-                pyautogui.keyDown(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-                pyautogui.mouseDown()
-            if self.windowManager.window[0].width/8 - rotx == 20 or self.windowManager.window[0].height/2 -roty == self.windowManager.window[0].height/4:
-                pyautogui.keyUp(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-                pyautogui.mouseUp()
-                pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-                pyautogui.keyDown(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
-                pyautogui.mouseDown()
+            # if self.windowManager.window[0].width/2 == rotx+20 or self.windowManager.window[0].height/2 == roty+20:
+            #     pyautogui.keyUp(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
+            #     pyautogui.mouseUp()
+            #     pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
+            #     pyautogui.keyDown(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
+            #     pyautogui.mouseDown()
+            # if self.windowManager.window[0].width/8 - rotx == 20 or self.windowManager.window[0].height/2 -roty == self.windowManager.window[0].height/4:
+            #     pyautogui.keyUp(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
+            #     pyautogui.mouseUp()
+            #     pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
+            #     pyautogui.keyDown(self.hotkeysPyGUI[self.ButtonActions.ROTATE])
+            #     pyautogui.mouseDown()
             if rotx is None:
                 rotx = 0
             
@@ -172,7 +173,6 @@ class AutodeskWindowActionManager:
         
             if rotate_y_degrees < 0:
                 roty *= -1
-
             pyautogui.moveRel(xOffset = rotx, yOffset = roty)
             
 
