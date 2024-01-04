@@ -2,6 +2,7 @@ import pyautogui
 import pygetwindow
 from pynput.keyboard import Key, Controller as KeyboardController
 from pynput.mouse import Button, Controller as MouseController
+from usart.usartUtils import PortParser
 from enum import Enum
 import itertools as it
 import time
@@ -13,6 +14,7 @@ class AutodeskWindowManager:
     def __init__(self, windowTitle : str) -> None:
         self.windowTitle = windowTitle
         self.window = pygetwindow.getWindowsWithTitle(windowTitle)
+
       
     def focusAutodeskWindow(self):
         if len(self.window) > 0:
@@ -49,9 +51,10 @@ class AutodeskWindowManager:
         pass
 
 class AutodeskWindowActionManager:
-    def __init__(self, autodeskWindowManager : AutodeskWindowManager) -> None:
+    def __init__(self, autodeskWindowManager : AutodeskWindowManager, portParser : PortParser) -> None:
         self.windowManager = autodeskWindowManager
-        
+        self.portParser = portParser
+        self.data 
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
             self.ButtonActions.ROTATE : Key.f4
@@ -70,7 +73,15 @@ class AutodeskWindowActionManager:
         HOME = 1
         ROTATE = 2
         
-    
+    def start(self) -> None:
+        while True:
+            if self.windowManager.isAutodeskWindowInFocus():
+                self.data = self.portParser.getData()
+                if self.data is not None:
+                    self.performActions(rotX=int(self.data.get('RotX')), rotY=int(self.data.get('RotY')), zoom=int(self.data.get('Zoom')), button1=self.ButtonActions(int(self.data.get('Button0'))), button2=self.ButtonActions(int(self.data.get('Button1'))))
+            else:
+                time.sleep(0.5)
+            
     def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
         ########################  DPI CHECK   ########################
             
@@ -85,9 +96,9 @@ class AutodeskWindowActionManager:
             # pynput doesn't support scrolling, so we'll use the wheel button
             if zoom != 0: 
                 if zoom < 0:
-                    mouse.scroll(0, -0.01)   #here implemnt DPI dajak
+                    mouse.scroll(0, -zoom)
                 else:
-                    mouse.scroll(0, 0.01)
+                    mouse.scroll(0, zoom)
             znn = True
         
         ########################  BUTTON CHECK   ########################
@@ -121,7 +132,6 @@ class AutodeskWindowActionManager:
                 self.rotate(rotX, rotY)
 
     def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:
-        t1 = time.time()
         if(not self.windowManager.windowExists):
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
         
@@ -130,23 +140,35 @@ class AutodeskWindowActionManager:
             self.hotkeyStatus[self.ButtonActions.ROTATE] = True
             pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
             pyautogui.mouseDown()
-           
-        for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
-            
+
+        while True:
+            jsonData = self.portParser.getData()
+            rotx = int(jsonData.get('RotX'))
+            roty = int(jsonData.get('RotY'))
+            if jsonData is not None:
+                if rotx == 0 and roty == 0 or jsonData.get('Button0') != 0 or jsonData.get('Button1') != 0:
+                    self.data = jsonData 
+                    break
             if rotx is None:
                 rotx = 0
             
             if roty is None:
                 roty = 0
             
-            if rotate_x_degrees < 0:
+            if rotate_x_degrees > 0:
                 rotx *= -1
-            
+        
             if rotate_y_degrees < 0:
-                roty *=-1
-            
+                roty *= -1
+        
             pyautogui.moveRel(xOffset = rotx, yOffset = roty)
-            # time.sleep(0.001)
-            t2 = time.time()
-            if t2 - t1 > 1.5:
-                break
+            
+
+
+        # for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
+            
+        #     self.data = self.portParser.getData()
+        #     if self.data is not None:
+        #         if int(self.data.get('RotX')) == 0 and int(self.data.get('RotY')) == 0:
+        #             break
+     
