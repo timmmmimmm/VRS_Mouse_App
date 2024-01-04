@@ -33,7 +33,7 @@ if __name__ == "__main__":
     # Create a thread to run the HTTP server concurrently
     server_thread = Thread(target=start_http_server, args=[pp])
     server_thread.start()
-
+    
     performActions_thread = Thread(target=autodeskStart, args=[windowTitle, pp])
     performActions_thread.start()
     

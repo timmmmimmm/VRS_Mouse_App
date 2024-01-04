@@ -21,7 +21,7 @@ class PortParser:
                 
                 db = self.commSerial()
                 self.data = jsonUtils.to_json(db)
-                
+                # print(self.data)
             except SerialException:
                 self.reaquirePort()
                 continue
