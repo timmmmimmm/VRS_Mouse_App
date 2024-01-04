@@ -131,28 +131,28 @@ class AutodeskWindowActionManager:
             pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
             pyautogui.mouseDown()
            
-        for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
+        # for rotx, roty in it.zip_longest(range(1, abs(rotate_x_degrees)), range(1, abs(rotate_y_degrees))):
             
-            if rotx is None:
-                rotx = 0
-            
-            if roty is None:
-                roty = 0
-            
-            if rotate_x_degrees != 0:
-                if rotate_x_degrees < 0:
-                    rotx = -10
-                else:
-                    rotx = 10
-            
-            if rotate_y_degrees != 0:
-                if rotate_y_degrees < 0:
-                    roty = -10
-                else:
-                    roty = 10
-            
-            pyautogui.moveRel(xOffset = rotx, yOffset = roty)
-            # time.sleep(0.001)
-            t2 = time.time()
-            if t2 - t1 > 1.5:
-                break
+        if rotx is None:
+            rotx = 0
+        
+        if roty is None:
+            roty = 0
+        
+        if rotate_x_degrees != 0:
+            if rotate_x_degrees < 0:
+                rotx = -10
+            else:
+                rotx = 10
+        
+        if rotate_y_degrees != 0:
+            if rotate_y_degrees < 0:
+                roty = -10
+            else:
+                roty = 10
+        
+        pyautogui.moveRel(xOffset = rotx, yOffset = roty)
+        # time.sleep(0.001)
+        t2 = time.time()
+        if t2 - t1 > 1.5:
+            break
