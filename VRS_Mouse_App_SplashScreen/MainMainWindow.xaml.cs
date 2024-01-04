@@ -2,12 +2,12 @@
 using System;
 using System.Diagnostics;
 using System.IO.Ports;
+using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
-using VRS_Mouse_App_SplashScreen.MouseAPIClient;
 
 namespace VRS_Mouse_App_SplashScreen
 {
@@ -16,11 +16,11 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainMainWindow : Window
     {
-        private readonly MouseService mouseService;
+        private readonly HttpClient ?mouseService;
         private readonly Duration AnimationDuration;
         private bool animationFinished = true;
         private int lastIndex = 0;
-        public double MouseSensitivityValue {  get; set; }
+        public int MouseSensitivityValue {  get; set; }
         public int Btn1Mode { get; set; }
         public int Btn2Mode { get; set; }
 
@@ -29,15 +29,19 @@ namespace VRS_Mouse_App_SplashScreen
         {
             AnimationDuration = new Duration(TimeSpan.FromMilliseconds(300));
             InitializeComponent();
-            MouseSensitivityValue = 0.1;
+            MouseSensitivityValue = 1;
             Btn1Mode = 0;
             Btn2Mode = 0;
-            ChangeContent(new MouseInfoPanel(this), ScrollDirection.Up);
+           
         }
 
-        public MainMainWindow(MouseService mouseService) : this()
+        public MainMainWindow(HttpClient mouseService, int sensitivity, int btn1Mode, int btn2Mode) : this()
         {
             this.mouseService = mouseService;
+            MouseSensitivityValue = sensitivity;
+            Btn1Mode = btn1Mode;
+            Btn2Mode = btn2Mode;
+            ChangeContent(new MouseInfoPanel(this), ScrollDirection.Up);
         }
 
         DoubleAnimation CreateAnimation(double from, double to, EventHandler? completedEventaHandler)
@@ -206,7 +210,7 @@ namespace VRS_Mouse_App_SplashScreen
         }
 
 
-        public void SendSensitivity(double value)
+        public void SendSensitivity(int value)
         {
             MouseSensitivityValue = value;
 

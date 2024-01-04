@@ -9,4 +9,4 @@ class MouseSettings:
 
 class MouseSettingsEncoder(jEncoder):
     def default(self, settingObj:MouseSettings) -> Any:
-        return "{\"dpi\":" + f"{settingObj.dpi}," + "\"btn1:\"" + f"{settingObj.btn1}," + "\"btn2:\"" + f"{settingObj.btn2}" + "}"
+        return f"{{\"dpi\":{settingObj.dpi},\"btn1\":{settingObj.btn1},\"btn2\":{settingObj.btn2}}}"

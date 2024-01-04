@@ -22,12 +22,12 @@ namespace VRS_Mouse_App_SplashScreen
     public partial class MouseSettingsPanel : UserControl
     {
         private string? currentSliderValueStr;
-        private double sliderVal;
+        private int sliderVal;
         private readonly MainMainWindow? mainWindow;
 
         public MouseSettingsPanel()
         {
-            sliderVal = 0.1;
+            sliderVal = 1;
             currentSliderValueStr = sliderVal.ToString();
             InitializeComponent();
             currentSliderValue.Text = currentSliderValueStr;
@@ -37,7 +37,7 @@ namespace VRS_Mouse_App_SplashScreen
         public MouseSettingsPanel(MainMainWindow mainMainWindow) : this()
         {
             mainWindow = mainMainWindow;
-            sliderVal = Math.Round(mainMainWindow.MouseSensitivityValue, 3);
+            sliderVal = mainMainWindow.MouseSensitivityValue;
             SensitivitySlider.Value = sliderVal * 10;
             currentSliderValueStr = (sliderVal).ToString();
             currentSliderValue.Text = currentSliderValueStr;
@@ -47,7 +47,7 @@ namespace VRS_Mouse_App_SplashScreen
         {
             if (currentSliderValue != null)
             {
-                sliderVal = Math.Round(SensitivitySlider.Value / 10.0, 3);
+                sliderVal = (int) Math.Round(SensitivitySlider.Value);
                 currentSliderValueStr = sliderVal.ToString();
                 currentSliderValue.Text = currentSliderValueStr;
             }

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.IO.Ports;
+using System.Net.Http;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
-using VRS_Mouse_App_SplashScreen.MouseAPIClient;
 
 namespace VRS_Mouse_App_SplashScreen
 {
@@ -15,7 +14,8 @@ namespace VRS_Mouse_App_SplashScreen
         private readonly AnimationHolder _animationHolder;
         private readonly DispatcherTimer _timer;
         private readonly EventHandler _timerHandler;
-        private readonly MouseService _mouseService;
+        private readonly HttpClient _mouseClient;
+        private const string MOUSE_CLIENT_URI = "http://localhost:12345/ma/api/all";
         private Thread ServerFinderThread;
         private int ticks;
         private short countdown;
@@ -26,7 +26,7 @@ namespace VRS_Mouse_App_SplashScreen
             InitializeComponent();
             _animationHolder = new AnimationHolder(this);
 
-            _mouseService = new(App.GetMouseClient());
+            _mouseClient = App.GetMouseClient();
 
             _timer = new DispatcherTimer();
             _timerHandler = new EventHandler(OnTimerTick);
@@ -55,7 +55,7 @@ namespace VRS_Mouse_App_SplashScreen
             countdown = 5;
             if (ServerFinderThread.IsAlive)
             {
-                ServerFinderThread.Join();
+                _mouseClient.CancelPendingRequests();
             }
             ServerFinderThread = new Thread(FindServerGetData);
             ServerFinderThread.Start();
@@ -70,17 +70,33 @@ namespace VRS_Mouse_App_SplashScreen
         /// <summary>
         /// A method that searches all available ports to find a device that transits a specified verifier
         /// </summary>
-        private async void FindServerGetData()
+        private  async void FindServerGetData()
         {
-            //Thread.Sleep(2000);
+            int sensitivity = 1, btn1Mode = 0, btn2Mode = 0;
+            try
+            {
+                var response = await _mouseClient.GetStringAsync(MOUSE_CLIENT_URI);
 
-            var response = await _mouseService.GetMouseInfoAsync();
+                var roughValues = response.Split(',');
 
-           
+                var roughDPI = roughValues[0].Split(":");
+                var roughBtn1 = roughValues[1].Split(":");
+                var roughBtn2 = roughValues[2].Split(":");
+
+                roughBtn2 = roughBtn2[1].Split("}");
+
+                sensitivity = int.Parse(roughDPI[1]);
+                btn1Mode = int.Parse(roughBtn1[1]);
+                btn1Mode = int.Parse(roughBtn2[0]);
+            }
+            catch(HttpRequestException)
+            {
+                return;
+            }
 
             Dispatcher.Invoke(new Action(() =>
             {
-                var nextWindow = new MainMainWindow(_mouseService);
+                var nextWindow = new MainMainWindow(_mouseClient, sensitivity, btn1Mode, btn2Mode);
                 App.Current.MainWindow = nextWindow;
                 nextWindow.Show();
                 this.Close();

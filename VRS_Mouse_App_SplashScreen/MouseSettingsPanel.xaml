@@ -39,7 +39,7 @@
         <Slider x:Name="SensitivitySlider" 
                 Grid.Row="2" Margin="60,15,50,0"
                 Minimum="1" Maximum="20" TickFrequency="1" SmallChange="0.5" LargeChange="5"
-                Cursor="Hand" ValueChanged="SensitivitySlider_ValueChanged"/>
+                Cursor="Hand" ValueChanged="SensitivitySlider_ValueChanged" IsSnapToTickEnabled="True"/>
 
         <TextBlock Grid.Row="3" Text="Current value:" FontSize="15" Foreground="White"
                    VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,10,0,0"/>

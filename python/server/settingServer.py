@@ -32,6 +32,7 @@ class SettingServerHandler(BaseHTTPRequestHandler):
             self.end_headers()
             
             json_str = json.dumps(mouseSettings,cls=MSencoder)
+            json_str = json_str.replace('\\', "")
             self.wfile.write(json_str.encode('utf-8'))
         else:
             self.send_response(404)
