@@ -94,7 +94,7 @@
                VerticalAlignment="Center" HorizontalAlignment="Center"
                Style="{StaticResource textBlockDesc}"/>
 
-        <ComboBox x:Name="ComboBoxButton1" Grid.Row="1" Grid.Column="1" Margin="0,60,10,10" SelectedItem="0" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton1_SelectionChanged">
+        <ComboBox x:Name="ComboBoxButton1" Grid.Row="1" Grid.Column="1" Margin="0,60,10,10" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton1_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem>
                 <TextBlock Text="None" Foreground="White"/>
             </ComboBoxItem>
@@ -108,7 +108,7 @@
                VerticalAlignment="Center" HorizontalAlignment="Center"
                Style="{StaticResource textBlockDesc}"/>
 
-        <ComboBox x:Name="ComboBoxButton2" Grid.Row="2" Grid.Column="1" Margin="0,60,10,10" SelectedItem="0" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton2_SelectionChanged">
+        <ComboBox x:Name="ComboBoxButton2" Grid.Row="2" Grid.Column="1" Margin="0,60,10,10" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton2_SelectionChanged" SelectedIndex="0">
 
             <ComboBoxItem>
                 <TextBlock Text="None" Foreground="White"/>
@@ -128,7 +128,7 @@
 
         <spinnercontroller:LoadingSpinner Name="LoadingSpinner" Grid.Row="3" Grid.ColumnSpan="2"
                                       HorizontalAlignment="Center" VerticalAlignment="Center"   Margin="0,30,0,0"
-                                      Thickness="4" Diameter="90" Visibility="Visible"
+                                      Thickness="4" Diameter="90" Visibility="Collapsed"
                                       IsLoading="True"/>
 
         <TextBlock x:Name="statusText" Grid.Row="4" Grid.ColumnSpan="2" Text="Sync" Foreground="White" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"/>

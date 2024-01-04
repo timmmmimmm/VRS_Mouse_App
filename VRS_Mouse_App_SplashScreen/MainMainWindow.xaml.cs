@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
+using VRS_Mouse_App_SplashScreen.MouseAPIClient;
 
 namespace VRS_Mouse_App_SplashScreen
 {
@@ -15,24 +16,29 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainMainWindow : Window
     {
+        private readonly MouseService mouseService;
         private readonly Duration AnimationDuration;
         private bool animationFinished = true;
         private int lastIndex = 0;
-        private double mouseSensitivityValue;
+        public double MouseSensitivityValue {  get; set; }
+        public int Btn1Mode { get; set; }
+        public int Btn2Mode { get; set; }
 
 
         public MainMainWindow()
         {
             AnimationDuration = new Duration(TimeSpan.FromMilliseconds(300));
             InitializeComponent();
-            mouseSensitivityValue = 0.1;
+            MouseSensitivityValue = 0.1;
+            Btn1Mode = 0;
+            Btn2Mode = 0;
             ChangeContent(new MouseInfoPanel(this), ScrollDirection.Up);
         }
 
-        //public MainMainWindow(SerialPort port) : this()
-        //{
-
-        //}
+        public MainMainWindow(MouseService mouseService) : this()
+        {
+            this.mouseService = mouseService;
+        }
 
         DoubleAnimation CreateAnimation(double from, double to, EventHandler? completedEventaHandler)
         {
@@ -169,14 +175,14 @@ namespace VRS_Mouse_App_SplashScreen
                                 while (!animationFinished) ;
                                 Dispatcher.Invoke(() =>
                             {
-                                ChangeContent(new ButtonSettingsPanel(), currentScrollDir);
+                                ChangeContent(new ButtonSettingsPanel(this), currentScrollDir);
                             });
                             }).Start();
                             
                             break;
                         }
                         
-                        ChangeContent(new ButtonSettingsPanel(), currentScrollDir);
+                        ChangeContent(new ButtonSettingsPanel(this), currentScrollDir);
                         
                         break;
                }
@@ -199,15 +205,17 @@ namespace VRS_Mouse_App_SplashScreen
             NavPanel.SelectedIndex = 0;
         }
 
-        public double GetMouseSensitivityValue()
-        {
-            return mouseSensitivityValue;
-        }
 
         public void SendSensitivity(double value)
         {
-            mouseSensitivityValue = value;
+            MouseSensitivityValue = value;
 
+        }
+
+        public void SendButtonModes(int btn1Value, int btn2Value) 
+        {
+            Btn1Mode = btn1Value;
+            Btn2Mode = btn2Value;
         }
       
     }

@@ -24,7 +24,7 @@
 uint8_t bufferUSART2dma[DMA_USART2_BUFFER_SIZE];
 uint16_t buf_read_pos = 0;
 uint8_t MAX_MESSAGE_SIZE =128;
-static uint8_t sending = 0;
+static uint8_t sending = 0, mouseSettingTransmit = 0;
 /* Declaration and initialization of callback function */
 static void (* USART2_ProcessData)(const uint8_t* data, uint16_t len) = 0;
 
@@ -137,7 +137,7 @@ void MX_USART2_UART_Init(void)
     LL_DMA_EnableIT_TE(DMA1, LL_DMA_CHANNEL_7);
 
     /* USART2 interrupt Init */
-    NVIC_SetPriority(USART2_IRQn, 0);
+    NVIC_SetPriority(USART2_IRQn, 1);
     NVIC_EnableIRQ(USART2_IRQn);
 
   /* USER CODE END USART2_Init 1 */
@@ -208,14 +208,17 @@ void USART2_CheckDmaReception(void)
 			{
 				if (pos > old_pos)
 				{
+
 					USART2_ProcessData(&bufferUSART2dma[old_pos],pos - old_pos);
 				}
 				else
 				{
+
 					USART2_ProcessData(&bufferUSART2dma[old_pos],DMA_USART2_BUFFER_SIZE - old_pos);
 
 					if (pos > 0)
 					{
+
 						USART2_ProcessData(&bufferUSART2dma[0],pos);
 					}
 				}

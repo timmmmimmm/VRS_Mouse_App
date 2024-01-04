@@ -37,7 +37,7 @@ namespace VRS_Mouse_App_SplashScreen
         public MouseSettingsPanel(MainMainWindow mainMainWindow) : this()
         {
             mainWindow = mainMainWindow;
-            sliderVal = Math.Round(mainMainWindow.GetMouseSensitivityValue(), 3);
+            sliderVal = Math.Round(mainMainWindow.MouseSensitivityValue, 3);
             SensitivitySlider.Value = sliderVal * 10;
             currentSliderValueStr = (sliderVal).ToString();
             currentSliderValue.Text = currentSliderValueStr;
@@ -58,12 +58,12 @@ namespace VRS_Mouse_App_SplashScreen
         {
             
             mainWindow?.SendSensitivity(sliderVal);
-            new Thread(aa).Start();
+            new Thread(SendData).Start();
 
            
         }
 
-        private void aa()
+        private void SendData()
         {
             Dispatcher.Invoke(new Action(() =>
             {

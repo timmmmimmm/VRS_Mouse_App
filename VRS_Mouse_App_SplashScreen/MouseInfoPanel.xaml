@@ -118,14 +118,14 @@
                     <TextBlock Grid.Row="0" Grid.Column="0"
                            Text="Button 1:"
                            Style="{StaticResource descTextBox}"/>
-                    <TextBlock Grid.Row="0" Grid.Column="1"
+                    <TextBlock Name="TextBoxButton1Mode" Grid.Row="0" Grid.Column="1"
                            Text="Home" 
                            Style="{StaticResource descContentTextBox}"/>
 
                     <TextBlock Grid.Row="1" Grid.Column="0"
                            Text="Button 2:" 
                            Style="{StaticResource descTextBox}"/>
-                    <TextBlock Grid.Row="1" Grid.Column="1"
+                    <TextBlock Name="TextBoxButton2Mode" Grid.Row="1" Grid.Column="1"
                            Text="Idk" 
                            Style="{StaticResource descContentTextBox}"/>
 

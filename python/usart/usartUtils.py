@@ -1,4 +1,5 @@
 from serial import Serial
+from multiprocessing import Lock
 from serial.tools import list_ports
 from serial.serialutil import SerialException
 import jsonUtils
@@ -12,21 +13,17 @@ class PortParser:
         self.port = port
         self.BAUD_RATE = 115200
         self.portTimeout = 5
-        self.payload = ""
-        self.lock = False
-        self.response = b''
         self.ser = Serial(self.port,self.BAUD_RATE, timeout=self.portTimeout)
         self.windowManager = AWM(windowTitle)
         self.windowActionManager = AWAM(self.windowManager)
+        self.mutex = Lock()
     
     def start(self) -> None: 
         self.ser.reset_input_buffer()
         while True:
-            while self.lock:
-                pass
-        
             try:
-                db = self.ser.readline()
+                
+                db = self.commSerial()
                 data = jsonUtils.to_json(db)
 
                 if data is not None:
@@ -36,22 +33,36 @@ class PortParser:
                         except(AWM.WindowDoesNotExistException):
                             pass
                         
-                    # print(data)
-                self.ser.reset_input_buffer()
+                    #print(data)
+                
             except SerialException:
                 self.reaquirePort()
                 continue
 
     
-    def addPayload(self, payload,response=True)-> bytes:
-        self.lock = True
-        self.payload = payload
+    def commSerial(self, message : bytes = None) -> bytes | str:
+        self.mutex.acquire() 
+        if message is not None:
+            a = None
+            self.ser.reset_input_buffer()
+            self.ser.write(message)
+
+            newSetupData = self.ser.read(5000)
+            
+            newSetupDataStr = str(newSetupData)
+            newSetupDataStr = newSetupDataStr[newSetupDataStr.find("{\"dpi") : ]
+            newSetupDataStr = newSetupDataStr[:newSetupDataStr.find("}")+1]
+            return newSetupDataStr
+
+            
+            
+        serialData = self.ser.readline()
+
+        self.ser.reset_input_buffer()
         
-        self.ser.write(payload)
-        if response:
-            self.response = self.ser.readline()
-        self.lock = False
-        return self.response
+        self.mutex.release()    
+        return serialData
+        
     
     def reaquirePort(self) -> None:
         print('Reaquireing port')
@@ -62,6 +73,7 @@ class PortParser:
         
         time.sleep(5)
         self.ser = Serial(self.port, self.BAUD_RATE, timeout=self.portTimeout)
+        
     
                
 def detect_stm32_port() -> str:

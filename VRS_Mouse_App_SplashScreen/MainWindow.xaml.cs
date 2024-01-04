@@ -3,6 +3,7 @@ using System.IO.Ports;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
+using VRS_Mouse_App_SplashScreen.MouseAPIClient;
 
 namespace VRS_Mouse_App_SplashScreen
 {
@@ -12,8 +13,9 @@ namespace VRS_Mouse_App_SplashScreen
     public partial class MainWindow : Window
     {
         private readonly AnimationHolder _animationHolder;
-        private readonly DispatcherTimer timer;
-        private readonly EventHandler timerHandler;
+        private readonly DispatcherTimer _timer;
+        private readonly EventHandler _timerHandler;
+        private readonly MouseService _mouseService;
         private Thread ServerFinderThread;
         private int ticks;
         private short countdown;
@@ -24,9 +26,10 @@ namespace VRS_Mouse_App_SplashScreen
             InitializeComponent();
             _animationHolder = new AnimationHolder(this);
 
+            _mouseService = new(App.GetMouseClient());
 
-            timer = new DispatcherTimer();
-            timerHandler = new EventHandler(OnTimerTick);
+            _timer = new DispatcherTimer();
+            _timerHandler = new EventHandler(OnTimerTick);
             ServerFinderThread = new(FindServerGetData);
 
             ticks = 0;
@@ -67,95 +70,17 @@ namespace VRS_Mouse_App_SplashScreen
         /// <summary>
         /// A method that searches all available ports to find a device that transits a specified verifier
         /// </summary>
-        private void FindServerGetData()
+        private async void FindServerGetData()
         {
-            Thread.Sleep(2000);
-            //bool portFound = false;
+            //Thread.Sleep(2000);
 
+            var response = await _mouseService.GetMouseInfoAsync();
 
-            //while (!portFound)
-            //{
-            //    if(shutdown || countdown == 0)
-            //    {
-            //        return;
-            //    }
-
-            //    var portNames = SerialPort.GetPortNames();
-
-            //    if (portNames.Length == 0)
-            //    {
-            //        this.Dispatcher.Invoke(new Action(() => {
-            //            AnimateRetryButton(ResourceNames.SplashScreen.InfoBoxStrings.NO_DEVICES);
-            //        }));
-            //        return;
-            //    }
-
-
-            //    foreach (var port in portNames)
-            //    {
-            //        if (countdown == 0 || shutdown)
-            //            return;
-
-            //        try
-            //        {
-            //            MousePort = new(port)
-            //            {
-            //                ReadTimeout = 100,
-            //                BaudRate = 115200
-
-            //            };
-            //            MousePort.Open();
-            //            Thread.Sleep(200);
-
-            //            if(MousePort.IsOpen)
-            //            {
-            //                string verificator = MousePort.ReadLine();
-            //                if (verificator.Equals(DEVICE_VERIFIER))
-            //                {
-            //                    portFound = true;
-
-            //                    Dispatcher.Invoke(new Action(() =>
-            //                    {
-            //                        timer.Stop();
-            //                        InfoTextBlock.Text = FindResource(ResourceNames.SplashScreen.InfoBoxStrings.DEVICE_FOUND) as string;
-            //                    }));
-
-            //                    MousePort.ReadTimeout = -1;
-
-            //                    for (short j = 0; j < 20; j++)
-            //                    {
-            //                        MousePort.WriteLine(APP_VERIFIER);
-            //                    }
-            //                    //TODO: Fetch current mouse state
-            //                    break;
-            //                }
-
-            //                MousePort.Close();
-            //            }
-
-            //        }
-            //        catch (IOException)
-            //        {
-            //            continue;
-            //        }
-            //        catch (UnauthorizedAccessException)
-            //        {
-            //            continue;
-            //        }
-            //        catch (ArgumentOutOfRangeException)
-            //        {
-            //            continue;
-            //        }
-            //        catch (TimeoutException)
-            //        {
-            //            continue;
-            //        }
-            //    }
-            //}
+           
 
             Dispatcher.Invoke(new Action(() =>
             {
-                var nextWindow = new MainMainWindow();
+                var nextWindow = new MainMainWindow(_mouseService);
                 App.Current.MainWindow = nextWindow;
                 nextWindow.Show();
                 this.Close();
@@ -165,9 +90,9 @@ namespace VRS_Mouse_App_SplashScreen
 
         private void InitializeTimer()
         {
-            timer.Tick += timerHandler;
-            timer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
-            timer.Start();
+            _timer.Tick += _timerHandler;
+            _timer.Interval = new TimeSpan(0, 0, 0, 0, 1000);
+            _timer.Start();
         }
 
         private void OnTimerTick(object? sender, EventArgs e)
@@ -196,7 +121,7 @@ namespace VRS_Mouse_App_SplashScreen
         {
             _animationHolder.HideLoadingSpinnerSpinRetryButtonThreeTimes();
             InfoTextBlock.Text = (this.FindResource(resourceName) as string);
-            timer.Stop();
+            _timer.Stop();
             ticks = 0;
         }
 
@@ -204,7 +129,7 @@ namespace VRS_Mouse_App_SplashScreen
         {
             _animationHolder.HideRetryButtonFadeOutLoadnigSpinner();
             InfoTextBlock.Text = (this.FindResource(ResourceNames.SplashScreen.InfoBoxStrings.DEFAULT) as string);
-            timer.Start();
+            _timer.Start();
         }
 
     }
