@@ -14,7 +14,7 @@
 
 static MouseAxisInfo axisInfo = {0}, prevAxisInfo = {0};//, fadeAxisInfo = {0};
 
-MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData)
+MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData, uint16_t DPI)
 {
 
 	axisInfo.x = mouseData->x;
@@ -76,5 +76,12 @@ MouseAxisInfo *PP_ProcessData(MouseAxisInfo *mouseData)
 	// fadeAxisInfo.z = fadeAxisInfo.z * 0.9 + axisInfo.z * 0.1;
 
 	// return &fadeAxisInfo;
+	axisInfo.x *= DPI;
+	axisInfo.y *= DPI;
+	if(DPI > 10)
+		axisInfo.z *= 10;
+	else
+		axisInfo.z *= DPI;
+
 	return &axisInfo;	
 }

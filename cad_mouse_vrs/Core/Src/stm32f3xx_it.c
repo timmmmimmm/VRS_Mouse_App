@@ -32,8 +32,6 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-unsigned long t1 = 0;
-unsigned long t2 = 0;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,11 +46,13 @@ bool button0_pressed, button1_pressed;
 extern DMA_HandleTypeDef hdma_i2c1_rx;
 extern DMA_HandleTypeDef hdma_i2c1_tx;
 extern I2C_HandleTypeDef hi2c1;
+unsigned long t1 = 0;
+unsigned long t2 = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
-
+void debouncing_function(uint32_t pin);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/

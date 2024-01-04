@@ -44,7 +44,11 @@ It is organized 16384 programmable pages of 256-bytes each.
 The W25Q32 supports SPI which will be used for communication with the STM32F303K8.
 
 ## Sending commands to PC
-
+### Python script
+For the proper function of 3D mouse it is necessery to enable python script, which will handle communication with STM32 and application.
+STM32 is sending JSON message which consist rotation of 3 axis and if button was pressed with pre-bind action, which can be set in application with sensitivity of mouse movements.
+#### Server
+Script is creating server which communicated with application via localhost on port 12345 
 # Models
 
 Folder models contains .stl model files which are 3D representation of 3D mouse.
