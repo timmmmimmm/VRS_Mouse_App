@@ -2,6 +2,7 @@ import pyautogui
 import pygetwindow
 from pynput.keyboard import Key, Controller as KeyboardController
 from pynput.mouse import Button, Controller as MouseController
+from usart.usartUtils import PortParser
 from enum import Enum
 import itertools as it
 import time
@@ -13,6 +14,7 @@ class AutodeskWindowManager:
     def __init__(self, windowTitle : str) -> None:
         self.windowTitle = windowTitle
         self.window = pygetwindow.getWindowsWithTitle(windowTitle)
+
       
     def focusAutodeskWindow(self):
         if len(self.window) > 0:
@@ -49,8 +51,9 @@ class AutodeskWindowManager:
         pass
 
 class AutodeskWindowActionManager:
-    def __init__(self, autodeskWindowManager : AutodeskWindowManager) -> None:
+    def __init__(self, autodeskWindowManager : AutodeskWindowManager, portParser : PortParser) -> None:
         self.windowManager = autodeskWindowManager
+        self.portParser = portParser
         
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
@@ -70,7 +73,15 @@ class AutodeskWindowActionManager:
         HOME = 1
         ROTATE = 2
         
-    
+    def start(self) -> None:
+        while True:
+            if self.windowManager.isAutodeskWindowInFocus():
+                data = self.portParser.getData()
+                if data is not None:
+                    self.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')), button1=self.ButtonActions(int(data.get('Button0'))), button2=self.ButtonActions(int(data.get('Button1'))))
+            else:
+                time.sleep(0.5)
+            
     def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
         ########################  DPI CHECK   ########################
             
@@ -85,9 +96,9 @@ class AutodeskWindowActionManager:
             # pynput doesn't support scrolling, so we'll use the wheel button
             if zoom != 0: 
                 if zoom < 0:
-                    mouse.scroll(0, -0.01)   #here implemnt DPI dajak
+                    mouse.scroll(0, -zoom)
                 else:
-                    mouse.scroll(0, 0.01)
+                    mouse.scroll(0, zoom)
             znn = True
         
         ########################  BUTTON CHECK   ########################
@@ -121,7 +132,6 @@ class AutodeskWindowActionManager:
                 self.rotate(rotX, rotY)
 
     def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:
-        t1 = time.time()
         if(not self.windowManager.windowExists):
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
         
@@ -152,7 +162,4 @@ class AutodeskWindowActionManager:
                 roty = 10
         
         pyautogui.moveRel(xOffset = rotx, yOffset = roty)
-        # time.sleep(0.001)
-        t2 = time.time()
-        if t2 - t1 > 1.5:
-            break
+     

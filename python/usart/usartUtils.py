@@ -17,28 +17,29 @@ class PortParser:
         self.windowManager = AWM(windowTitle)
         self.windowActionManager = AWAM(self.windowManager)
         self.mutex = Lock()
-    
+        self.data
     def start(self) -> None: 
         self.ser.reset_input_buffer()
         while True:
             try:
                 
                 db = self.commSerial()
-                data = jsonUtils.to_json(db)
+                self.data = jsonUtils.to_json(db)
 
-                if data is not None:
-                    if self.windowManager.isAutodeskWindowInFocus():
-                        try:
-                            self.windowActionManager.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')), button1=AWAM.ButtonActions(int(data.get('Button1'))), button2=AWAM.ButtonActions(int(data.get('Button2'))) )
-                        except(AWM.WindowDoesNotExistException):
-                            pass
+                # if data is not None:
+                #     if self.windowManager.isAutodeskWindowInFocus():
+                #         try:
+                #             self.windowActionManager.performActions(rotX=int(data.get('RotX')), rotY=int(data.get('RotY')), zoom=int(data.get('Zoom')), button1=AWAM.ButtonActions(int(data.get('Button1'))), button2=AWAM.ButtonActions(int(data.get('Button2'))) )
+                #         except(AWM.WindowDoesNotExistException):
+                #             pass
                         
                     #print(data)
                 
             except SerialException:
                 self.reaquirePort()
                 continue
-
+    def getData(self):
+        return self.data
     
     def commSerial(self, message : bytes = None) -> bytes | str:
         self.mutex.acquire() 
