@@ -57,27 +57,36 @@ class AutodeskWindowActionManager:
         self.data = b''
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
-            self.ButtonActions.ROTATE : Key.f4
             self.ButtonActions.CANCEL : Key.esc
             self.ButtonActions.PREVIOUS : Key.f5
             self.ButtonActions.ZOOM_ALL : Key.home
+            self.ButtonActions.ROTATE : Key.f4
             }
         self.hotkeysPyGUI = {
             self.ButtonActions.HOME : 'f6',
+            self.ButtonActions.CANCEL : 'esc'
+            self.ButtonActions.PREVIOUS : 'f5'
+            self.ButtonActions.ZOOM_ALL : 'home'
             self.ButtonActions.ROTATE : 'f4'
             }
         self.hotkeyStatus = {
             self.ButtonActions.HOME : False,
+            self.ButtonActions.CANCEL : False,
+            self.ButtonActions.PREVIOUS : False,
+            self.ButtonActions.ZOOM_ALL : False,
             self.ButtonActions.ROTATE : False
         }
-        self.bordersX = [50, self.windowManager.window[0].width-30]
+        self.bordersX = [100, self.windowManager.window[0].width-30]
         self.bordersY = [50, self.windowManager.window[0].height-40]
 
         
     class ButtonActions(Enum):
         NONE = 0
         HOME = 1
-        ROTATE = 2
+        CANCEL = 2
+        PREVIOUS = 3
+        ZOOM_ALL = 4
+        ROTATE = 5
         
     def start(self) -> None:
         while True:
