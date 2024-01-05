@@ -102,6 +102,18 @@
             <ComboBoxItem>
                 <TextBlock Text="Home" Foreground="White"/>
             </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Cancel" Foreground="White"/>
+            </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Previous View" Foreground="White"/>
+            </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Zoom All" Foreground="White"/>
+            </ComboBoxItem>
         </ComboBox>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Text="Button 2 function" 
@@ -116,6 +128,18 @@
 
             <ComboBoxItem>
                 <TextBlock Text="Home" Foreground="White"/>
+            </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Cancel" Foreground="White"/>
+            </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Previous View" Foreground="White"/>
+            </ComboBoxItem>
+
+            <ComboBoxItem>
+                <TextBlock Text="Zoom All" Foreground="White"/>
             </ComboBoxItem>
         </ComboBox>
 

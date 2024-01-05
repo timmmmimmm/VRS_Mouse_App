@@ -33,8 +33,8 @@ namespace VRS_Mouse_App_SplashScreen
         {
             mainWindow = mainMainWindow;
 
-            ComboBoxButton1.SelectedIndex = mainWindow.Btn1Mode;
-            ComboBoxButton2.SelectedIndex = mainWindow.Btn2Mode;
+            ComboBoxButton1.SelectedIndex = (mainWindow.Btn1Mode > 4 ? 0 : mainWindow.Btn1Mode);
+            ComboBoxButton2.SelectedIndex = (mainWindow.Btn2Mode > 4 ? 0 : mainWindow.Btn2Mode);
         }
 
        
@@ -43,13 +43,26 @@ namespace VRS_Mouse_App_SplashScreen
         {
            switch (ComboBoxButton1.SelectedIndex)
             {
-                case (int) ButtonActions.None:
+                case (int)ButtonActions.None:
                     btn1ModeSelected = (int)ButtonActions.None;
                     break;
 
-                case (int) ButtonActions.Home: 
+                case (int)ButtonActions.Home:
                     btn1ModeSelected = (int)ButtonActions.Home;
                     break;
+
+                case (int)ButtonActions.Cancel:
+                    btn1ModeSelected = (int)ButtonActions.Cancel;
+                    break;
+
+                case (int)ButtonActions.PreviousView:
+                    btn1ModeSelected = (int)ButtonActions.PreviousView;
+                    break;
+
+                case (int)ButtonActions.ZoomAll:
+                    btn1ModeSelected = (int)ButtonActions.ZoomAll;
+                    break;
+
             }
         }
 
@@ -64,12 +77,24 @@ namespace VRS_Mouse_App_SplashScreen
                 case (int)ButtonActions.Home:
                     btn2ModeSelected = (int)ButtonActions.Home;
                     break;
+
+                case (int)ButtonActions.Cancel:
+                    btn2ModeSelected = (int)ButtonActions.Cancel;
+                    break;
+
+                case (int)ButtonActions.PreviousView:
+                    btn2ModeSelected = (int)ButtonActions.PreviousView;
+                    break;
+
+                case (int)ButtonActions.ZoomAll:
+                    btn2ModeSelected = (int)ButtonActions.ZoomAll;
+                    break;
+
             }
         }
 
         private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow?.SendButtonModes(btn1ModeSelected, btn2ModeSelected);
             new Thread(SendData).Start();
         }
 
@@ -82,8 +107,9 @@ namespace VRS_Mouse_App_SplashScreen
                 statusText.Text = "Syncing with mouse";
             }));
 
+            mainWindow?.SendButtonModes(btn1ModeSelected, btn2ModeSelected);
+
             Thread.Sleep(1000);
-            //TODO: Server comms
 
             Dispatcher.Invoke(new Action(() =>
             {

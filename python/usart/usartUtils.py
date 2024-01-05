@@ -37,7 +37,6 @@ class PortParser:
     def commSerial(self, message : bytes = None) -> bytes | str:
         self.mutex.acquire() 
         if message is not None:
-            a = None
             self.ser.reset_input_buffer()
             self.ser.write(message)
 
@@ -46,12 +45,13 @@ class PortParser:
             newSetupDataStr = str(newSetupData)
             newSetupDataStr = newSetupDataStr[newSetupDataStr.find("{\"dpi") : ]
             newSetupDataStr = newSetupDataStr[:newSetupDataStr.find("}")+1]
+            self.ser.reset_input_buffer()
+            
+            self.mutex.release()
             return newSetupDataStr
 
-            
-            
+        
         serialData = self.ser.readline()
-
         self.ser.reset_input_buffer()
         
         self.mutex.release()    

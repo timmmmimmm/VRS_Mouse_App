@@ -1,6 +1,6 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-
+from threading import Thread
 import jsonUtils as JU
 from usart.usartUtils import PortParser
 from server.entities.mouse import MouseSettings
@@ -10,8 +10,6 @@ from server.entities.mouse import MouseSettingsEncoder as MSencoder
 
 
 class SettingServerHandler(BaseHTTPRequestHandler):
-    
-        
     def do_GET(self):
         if self.path == '/ma/api/all':
             send_data = "$"
@@ -34,15 +32,17 @@ class SettingServerHandler(BaseHTTPRequestHandler):
             json_str = json.dumps(mouseSettings,cls=MSencoder)
             json_str = json_str.replace('\\', "")
             self.wfile.write(json_str.encode('utf-8'))
+            return
+            
         else:
             self.send_response(404)
             self.end_headers()
             self.wfile.write(b'Not Found')
 
+
     def do_POST(self):
         if self.path == '/ma/api/all':
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
+            post_data = self.rfile.readline()
             mouseSettings = JU.parseJsonMouseData(post_data)
 
             # if not all(isinstance(value,int) and value >= 0 for value in [dpi_value, button0_value, button1_value]):
@@ -59,7 +59,7 @@ class SettingServerHandler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b'Success')
             send_data= f"{mouseSettings.dpi},{mouseSettings.btn1},{mouseSettings.btn2}," #same as yours Edko but speeeeed 
-            portParser.commSerial(send_data.encode('utf-8'),response=False)
+            portParser.commSerial(send_data.encode('utf-8'))
 
         else:
             self.send_response(404)

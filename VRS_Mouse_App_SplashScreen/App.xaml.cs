@@ -13,7 +13,6 @@ namespace VRS_Mouse_App_SplashScreen
     {
         private static readonly HttpClient MouseClient = new(new SocketsHttpHandler());
 
-
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);

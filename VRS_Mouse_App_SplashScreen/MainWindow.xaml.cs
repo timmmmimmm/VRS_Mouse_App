@@ -19,7 +19,6 @@ namespace VRS_Mouse_App_SplashScreen
         private Thread ServerFinderThread;
         private int ticks;
         private short countdown;
-        private bool shutdown;
 
         public MainWindow()
         {
@@ -34,13 +33,11 @@ namespace VRS_Mouse_App_SplashScreen
 
             ticks = 0;
             countdown = 5;
-            shutdown = false;
 
         }
 
         private void ExitButton_Click(object sender, RoutedEventArgs e)
         {
-            shutdown = true;
             if (ServerFinderThread.IsAlive)
             {
                 ServerFinderThread.Join();
@@ -75,6 +72,7 @@ namespace VRS_Mouse_App_SplashScreen
             int sensitivity = 1, btn1Mode = 0, btn2Mode = 0;
             try
             {
+                
                 var response = await _mouseClient.GetStringAsync(MOUSE_CLIENT_URI);
 
                 var roughValues = response.Split(',');
@@ -87,7 +85,7 @@ namespace VRS_Mouse_App_SplashScreen
 
                 sensitivity = int.Parse(roughDPI[1]);
                 btn1Mode = int.Parse(roughBtn1[1]);
-                btn1Mode = int.Parse(roughBtn2[0]);
+                btn2Mode = int.Parse(roughBtn2[0]);
             }
             catch(HttpRequestException)
             {

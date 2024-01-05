@@ -38,7 +38,7 @@ namespace VRS_Mouse_App_SplashScreen
         {
             mainWindow = mainMainWindow;
             sliderVal = mainMainWindow.MouseSensitivityValue;
-            SensitivitySlider.Value = sliderVal * 10;
+            SensitivitySlider.Value = sliderVal;
             currentSliderValueStr = (sliderVal).ToString();
             currentSliderValue.Text = currentSliderValueStr;
         }
@@ -56,11 +56,7 @@ namespace VRS_Mouse_App_SplashScreen
 
         private void SyncButton_Click(object sender, RoutedEventArgs e)
         {
-            
-            mainWindow?.SendSensitivity(sliderVal);
-            new Thread(SendData).Start();
-
-           
+            new Thread(SendData).Start();  
         }
 
         private void SendData()
@@ -72,9 +68,8 @@ namespace VRS_Mouse_App_SplashScreen
                 statusText.Text = "Syncing with mouse";
             }));
 
+            mainWindow?.SendSensitivity(sliderVal);
             Thread.Sleep(1000);
-            //TODO: Server comms
-
             Dispatcher.Invoke(new Action(() =>
             {
                 LoadingSpinner.Visibility= Visibility.Collapsed;

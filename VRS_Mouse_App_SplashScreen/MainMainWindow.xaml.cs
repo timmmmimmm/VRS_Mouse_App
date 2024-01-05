@@ -3,7 +3,10 @@ using System;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Net.Http;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,7 +19,9 @@ namespace VRS_Mouse_App_SplashScreen
     /// </summary>
     public partial class MainMainWindow : Window
     {
-        private readonly HttpClient ?mouseService;
+        private readonly HttpClient ?_mouseClient;
+        private const string MOUSE_CLIENT_URI = "http://localhost:12345/ma/api/all";
+        private readonly JsonSerializerOptions MOUSE_JSON_SER_OPTS = new() { PropertyNameCaseInsensitive = true };
         private readonly Duration AnimationDuration;
         private bool animationFinished = true;
         private int lastIndex = 0;
@@ -37,7 +42,7 @@ namespace VRS_Mouse_App_SplashScreen
 
         public MainMainWindow(HttpClient mouseService, int sensitivity, int btn1Mode, int btn2Mode) : this()
         {
-            this.mouseService = mouseService;
+            _mouseClient = mouseService;
             MouseSensitivityValue = sensitivity;
             Btn1Mode = btn1Mode;
             Btn2Mode = btn2Mode;
@@ -210,16 +215,36 @@ namespace VRS_Mouse_App_SplashScreen
         }
 
 
-        public void SendSensitivity(int value)
+        public async void SendSensitivity(int value)
         {
             MouseSensitivityValue = value;
 
+            await SendData();
         }
 
-        public void SendButtonModes(int btn1Value, int btn2Value) 
+        public async void SendButtonModes(int btn1Value, int btn2Value) 
         {
             Btn1Mode = btn1Value;
             Btn2Mode = btn2Value;
+
+            await SendData();
+        }
+
+        private async Task<HttpResponseMessage?> SendData()
+        {
+            if(_mouseClient != null)
+            {
+                var outContent = new MouseBody() { dpi = MouseSensitivityValue, btn1 = Btn1Mode, btn2 = Btn2Mode };
+
+                var outContentJsonStr = JsonSerializer.Serialize(outContent, MOUSE_JSON_SER_OPTS);
+
+                outContentJsonStr += "\r\n";
+
+                var strContent = new StringContent(outContentJsonStr, System.Text.Encoding.UTF8, "application/json");
+
+                return await _mouseClient.PostAsync(MOUSE_CLIENT_URI, strContent);
+            }
+            return null;
         }
       
     }
