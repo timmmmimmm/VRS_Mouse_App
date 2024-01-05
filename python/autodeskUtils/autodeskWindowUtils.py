@@ -25,6 +25,7 @@ class AutodeskWindowManager:
                 pass
     
     def isAutodeskWindowInFocus(self) -> bool:
+        self.aquireWindow()
         if len(self.window) > 0:
             try:
                 if self.window[0].isActive and not self.window[0].isMinimized and self.window[0].visible:
@@ -36,7 +37,7 @@ class AutodeskWindowManager:
                 return False
             
         else:
-            return False
+           raise AutodeskWindowManager.WindowDoesNotExistException
     
     def windowExists(self) -> bool:
         return self.window.count > 0
@@ -57,16 +58,16 @@ class AutodeskWindowActionManager:
         self.data = b''
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
-            self.ButtonActions.CANCEL : Key.esc
-            self.ButtonActions.PREVIOUS : Key.f5
-            self.ButtonActions.ZOOM_ALL : Key.home
+            self.ButtonActions.CANCEL : Key.esc,
+            self.ButtonActions.PREVIOUS : Key.f5,
+            self.ButtonActions.ZOOM_ALL : Key.home,
             self.ButtonActions.ROTATE : Key.f4
             }
         self.hotkeysPyGUI = {
             self.ButtonActions.HOME : 'f6',
-            self.ButtonActions.CANCEL : 'esc'
-            self.ButtonActions.PREVIOUS : 'f5'
-            self.ButtonActions.ZOOM_ALL : 'home'
+            self.ButtonActions.CANCEL : 'esc',
+            self.ButtonActions.PREVIOUS : 'f5',
+            self.ButtonActions.ZOOM_ALL : 'home',
             self.ButtonActions.ROTATE : 'f4'
             }
         self.hotkeyStatus = {
@@ -76,8 +77,6 @@ class AutodeskWindowActionManager:
             self.ButtonActions.ZOOM_ALL : False,
             self.ButtonActions.ROTATE : False
         }
-        self.bordersX = [100, self.windowManager.window[0].width-30]
-        self.bordersY = [50, self.windowManager.window[0].height-40]
 
         
     class ButtonActions(Enum):
@@ -90,12 +89,17 @@ class AutodeskWindowActionManager:
         
     def start(self) -> None:
         while True:
-            if self.windowManager.isAutodeskWindowInFocus():
-                self.data = self.portParser.getData()
-                if self.data is not None:
-                    self.performActions(rotX=int(self.data.get('RotX')), rotY=int(self.data.get('RotY')), zoom=int(self.data.get('Zoom')), button1=self.ButtonActions(int(self.data.get('Button0'))), button2=self.ButtonActions(int(self.data.get('Button1'))))
-            else:
+            try:
+                if self.windowManager.isAutodeskWindowInFocus():
+                    self.data = self.portParser.getData()
+                    if self.data is not None:
+                        self.performActions(rotX=int(self.data.get('RotX')), rotY=int(self.data.get('RotY')), zoom=int(self.data.get('Zoom')), button1=self.ButtonActions(int(self.data.get('Button0'))), button2=self.ButtonActions(int(self.data.get('Button1'))))
+                else:
+                    time.sleep(0.5)
+            except AutodeskWindowManager.WindowDoesNotExistException:
+                self.windowManager.aquireWindow()
                 time.sleep(0.5)
+
             
     def performActions(self, rotX : int = None, rotY : int = None, zoom : int = None, button1 : ButtonActions = None , button2 : ButtonActions = None) -> None:
         ########################  DPI CHECK   ########################
@@ -163,10 +167,13 @@ class AutodeskWindowActionManager:
                     return
 
                 ########################  PERFORM ACTIONS   ########################
-            
-                self.rotate(rotX, rotY)
+                try:
+                    self.rotate()
+                except AutodeskWindowManager.WindowDoesNotExistException:
+                    self.windowManager.aquireWindow()
+                    return
 
-    def rotate(self, rotate_x_degrees : int, rotate_y_degrees : int) -> None:
+    def rotate(self) -> None:
         if(not self.windowManager.windowExists):
             raise AutodeskWindowManager.WindowDoesNotExistException(f"\"{self.windowManager.windowTitle}\" window does not exist")
         
@@ -185,22 +192,30 @@ class AutodeskWindowActionManager:
                     self.data = jsonData 
                     break
             currentMouseX, currentMouseY = pyautogui.position()
-            if currentMouseX < self.bordersX[0] or currentMouseX > self.bordersX[1] or currentMouseY < self.bordersY[0] or currentMouseY > self.bordersY[1]:
-                pyautogui.mouseUp()
-                pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
-                pyautogui.mouseDown()
-                continue
-            if rotx is None:
-                rotx = 0
-            
-            if roty is None:
-                roty = 0
-            
-            # if rotate_x_degrees > 0:
-            #     rotx *= -1
-        
-            # if rotate_y_degrees < 0:
-            #     roty *= -1
-            pyautogui.moveRel(xOffset = rotx, yOffset = roty)
+            try:
+                bordersX = self.getWindowBorderX()
+                bordersY = self.getWindowBorderY()
+                
+                if currentMouseX < bordersX[0] or currentMouseX > bordersX[1] or currentMouseY < bordersY[0] or currentMouseY > bordersY[1]:
+                    pyautogui.mouseUp()
+                    pyautogui.moveTo(x=self.windowManager.window[0].width/2, y=self.windowManager.window[0].height/2)
+                    pyautogui.mouseDown()
+                    continue
+                if rotx is None:
+                    rotx = 0
+                
+                if roty is None:
+                    roty = 0
+
+                pyautogui.moveRel(xOffset = rotx, yOffset = roty)
+                
+            except IndexError:
+                break
+    
+    def getWindowBorderX(self) -> []:
+        return [100, self.windowManager.window[0].width-30]
+    
+    def getWindowBorderY(self) -> []:
+        return [50, self.windowManager.window[0].height-40]
             
 

@@ -1,7 +1,7 @@
 from serial import Serial
 from multiprocessing import Lock
 from serial.tools import list_ports
-from serial.serialutil import SerialException
+from serial.serialutil import SerialException, PortNotOpenError
 import jsonUtils
 import time
 
@@ -15,16 +15,22 @@ class PortParser:
         self.mutex = Lock()
         self.data = b''
     def start(self) -> None: 
-        self.ser.reset_input_buffer()
-        while True:
-            try:
-                
-                db = self.commSerial()
-                self.data = jsonUtils.to_json(db)
-                # print(self.data)
-            except SerialException:
-                self.reaquirePort()
-                continue
+        try:
+            self.ser.reset_input_buffer()
+            while True:
+                try:
+                    
+                    db = self.commSerial()
+                    self.data = jsonUtils.to_json(db)
+                    # print(self.data)
+                except SerialException:
+                    self.reaquirePort()
+                    continue
+        except PortNotOpenError:
+            self.reaquirePort()
+            self.start()
+            return
+        
     def getData(self):
         return self.data
     
