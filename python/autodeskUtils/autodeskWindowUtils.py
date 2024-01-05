@@ -58,6 +58,9 @@ class AutodeskWindowActionManager:
         self.hotkeys = {
             self.ButtonActions.HOME : Key.f6,
             self.ButtonActions.ROTATE : Key.f4
+            self.ButtonActions.CANCEL : Key.esc
+            self.ButtonActions.PREVIOUS : Key.f5
+            self.ButtonActions.ZOOM_ALL : Key.home
             }
         self.hotkeysPyGUI = {
             self.ButtonActions.HOME : 'f6',
@@ -112,7 +115,16 @@ class AutodeskWindowActionManager:
                 case self.ButtonActions.HOME:
                     keyboard.press(self.hotkeys[self.ButtonActions.HOME])
                     keyboard.release(self.hotkeys[self.ButtonActions.HOME])
-                    
+                case self.ButtonActions.CANCEL:
+                    keyboard.press(self.hotkeys[self.ButtonActions.CANCEL])
+                    keyboard.release(self.hotkeys[self.ButtonActions.CANCEL])
+                case self.ButtonActions.PREVIOUS:
+                    keyboard.press(self.hotkeys[self.ButtonActions.PREVIOUS])
+                    keyboard.release(self.hotkeys[self.ButtonActions.PREVIOUS])
+                case self.ButtonActions.ZOOM_ALL:
+                    keyboard.press(self.hotkeys[self.ButtonActions.ZOOM_ALL])
+                    keyboard.release(self.hotkeys[self.ButtonActions.ZOOM_ALL])
+
                 
         if button2 is not None:
             match button2:
@@ -120,7 +132,17 @@ class AutodeskWindowActionManager:
                 case self.ButtonActions.HOME:
                     keyboard.press(self.hotkeys[self.ButtonActions.HOME])
                     keyboard.release(self.hotkeys[self.ButtonActions.HOME])
-                        
+                case self.ButtonActions.CANCEL:
+                    keyboard.press(self.hotkeys[self.ButtonActions.CANCEL])
+                    keyboard.release(self.hotkeys[self.ButtonActions.CANCEL])
+                case self.ButtonActions.PREVIOUS:
+                    keyboard.press(self.hotkeys[self.ButtonActions.PREVIOUS])
+                    keyboard.release(self.hotkeys[self.ButtonActions.PREVIOUS])
+                case self.ButtonActions.ZOOM_ALL:
+                    keyboard.press(self.hotkeys[self.ButtonActions.ZOOM_ALL])
+                    keyboard.release(self.hotkeys[self.ButtonActions.ZOOM_ALL])
+                    
+                
         ########################  X,Y AXIS CHECK   ########################
         if znn and zoom == 0: 
             if rotX is not None and rotY is not None:
