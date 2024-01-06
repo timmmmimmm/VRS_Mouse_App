@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <StartupObject>VRS_Mouse_App_SplashScreen.App</StartupObject>
+    <ApplicationIcon>Media\joystick.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Include="Media\joystick.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.IO.Ports" Version="7.0.0" />
     <PackageReference Include="XamlRadialProgressBar" Version="1.0.3" />
   </ItemGroup>
@@ -37,6 +42,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -49,6 +59,10 @@
   <ItemGroup>
     <None Update="Media\spashScreen.mp4">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

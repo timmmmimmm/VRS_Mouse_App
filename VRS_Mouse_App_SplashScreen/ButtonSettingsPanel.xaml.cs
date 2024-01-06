@@ -105,6 +105,12 @@ namespace VRS_Mouse_App_SplashScreen
                 SyncButton.Visibility = Visibility.Collapsed;
                 LoadingSpinner.Visibility = Visibility.Visible;
                 statusText.Text = "Syncing with mouse";
+
+                if (mainWindow != null)
+                {
+                    mainWindow.ExitButton.IsEnabled = false;
+                    mainWindow.NavPanel.IsHitTestVisible = false;
+                }
             }));
 
             mainWindow?.SendButtonModes(btn1ModeSelected, btn2ModeSelected);
@@ -116,6 +122,12 @@ namespace VRS_Mouse_App_SplashScreen
                 LoadingSpinner.Visibility = Visibility.Collapsed;
                 SyncButton.Visibility = Visibility.Visible;
                 statusText.Text = "Sync";
+
+                if (mainWindow != null)
+                {
+                    mainWindow.ExitButton.IsEnabled = true;
+                    mainWindow.NavPanel.IsHitTestVisible = true;
+                }
             }));
         }
     }

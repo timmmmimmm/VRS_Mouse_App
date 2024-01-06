@@ -11,10 +11,29 @@ class PortParser:
         self.port = port
         self.BAUD_RATE = 115200
         self.portTimeout = 5
-        self.ser = Serial(self.port,self.BAUD_RATE, timeout=self.portTimeout)
         self.mutex = Lock()
+        self.mutexIsLocked = False
         self.data = b''
+        
     def start(self) -> None: 
+        try:
+            self.ser = Serial(self.port,self.BAUD_RATE, timeout=self.portTimeout)
+            self.ser.reset_input_buffer()
+            while True:
+                try:
+                    
+                    db = self.commSerial()
+                    self.data = jsonUtils.to_json(db)
+                    # print(self.data)
+                except SerialException:
+                    self.reaquirePort()
+                    continue
+        except (PortNotOpenError, SerialException):
+            self.reaquirePort()
+            self.start_protected()
+            return
+
+    def start_protected(self):
         try:
             self.ser.reset_input_buffer()
             while True:
@@ -26,9 +45,9 @@ class PortParser:
                 except SerialException:
                     self.reaquirePort()
                     continue
-        except PortNotOpenError:
+        except (PortNotOpenError, SerialException):
             self.reaquirePort()
-            self.start()
+            self.start_protected()
             return
         
     def getData(self):
@@ -36,6 +55,7 @@ class PortParser:
     
     def commSerial(self, message : bytes = None) -> bytes | str:
         self.mutex.acquire() 
+        self.mutexIsLocked = True
         if message is not None:
             self.ser.reset_input_buffer()
             self.ser.write(message)
@@ -54,7 +74,8 @@ class PortParser:
         serialData = self.ser.readline()
         self.ser.reset_input_buffer()
         
-        self.mutex.release()    
+        self.mutex.release()  
+        self.mutexIsLocked = False  
         return serialData
         
     
@@ -66,8 +87,22 @@ class PortParser:
             self.port = detect_stm32_port()
         
         time.sleep(5)
-        self.ser = Serial(self.port, self.BAUD_RATE, timeout=self.portTimeout)
-        self.mutex.release()
+        
+        isPrinted = False
+        while True:
+            try:
+                self.ser = Serial(self.port,self.BAUD_RATE, timeout=self.portTimeout)
+                break
+            except SerialException:
+                if not isPrinted:
+                    print("The STM port is taken up by a serial monitor, please disconnect it!")
+                    isPrinted = True
+                    
+                time.sleep(1)
+                continue
+            
+        if self.mutexIsLocked:
+            self.mutex.release()
         
     
                

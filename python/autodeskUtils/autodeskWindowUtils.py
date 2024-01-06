@@ -91,8 +91,12 @@ class AutodeskWindowActionManager:
         while True:
             try:
                 if self.windowManager.isAutodeskWindowInFocus():
+                    if self.portParser is None:
+                        self.performActions()
+                        continue
+                    
                     self.data = self.portParser.getData()
-                    if self.data is not None:
+                    if self.data is not None or self.data != b'':
                         self.performActions(rotX=int(self.data.get('RotX')), rotY=int(self.data.get('RotY')), zoom=int(self.data.get('Zoom')), button1=self.ButtonActions(int(self.data.get('Button0'))), button2=self.ButtonActions(int(self.data.get('Button1'))))
                 else:
                     time.sleep(0.5)
@@ -201,12 +205,17 @@ class AutodeskWindowActionManager:
 
         while True:
             jsonData = self.portParser.getData()
+            
+            if jsonData is None:
+                rotx = 0
+                roty = 0
+                continue
+            
             rotx = int(jsonData.get('RotX'))
             roty = int(jsonData.get('RotY'))
-            if jsonData is not None:
-                if rotx == 0 and roty == 0 or jsonData.get('Button0') != 0 or jsonData.get('Button1') != 0:
-                    self.data = jsonData 
-                    break
+            if rotx == 0 and roty == 0 or jsonData.get('Button0') != 0 or jsonData.get('Button1') != 0:
+                self.data = jsonData 
+                break
             currentMouseX, currentMouseY = pyautogui.position()
             try:
                 bordersX = self.getWindowBorderX()
