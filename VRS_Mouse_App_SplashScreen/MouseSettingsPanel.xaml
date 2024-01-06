@@ -47,7 +47,7 @@
         <TextBlock x:Name="currentSliderValue" Text="0,122" Grid.Row="4" 
                    FontSize="15" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center"/>
 
-        <Button x:Name="SyncButton" Grid.Row="5" Width="auto" Height="auto" Margin="0,20,0,0"
+        <Button x:Name="SyncButton" Grid.Row="5" Width="auto" Height="auto" Margin="0,20,0,5"
                 HorizontalAlignment="Center" VerticalAlignment="Center" 
                 Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" BorderThickness="1" Style="{StaticResource latoFontButton}"
                 Click="SyncButton_Click">
@@ -55,7 +55,7 @@
         </Button>
 
         <spinnercontroller:LoadingSpinner Name="LoadingSpinner" Grid.Row="5"
-                                          HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,20,0,0"
+                                          HorizontalAlignment="Center" VerticalAlignment="Top"   Margin="0,20,0,5"
                                           Thickness="4" Diameter="90" Visibility="Collapsed"
                                           IsLoading="True"/>
 

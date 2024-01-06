@@ -116,10 +116,10 @@ class AutodeskWindowActionManager:
             znn = True
             if zoom != 0:
                 if zoom < 0:
-                    mouse.scroll(0, 1)
+                    mouse.scroll(0, 0.3)
                 else:
-                    mouse.scroll(0, -1)
-                time.sleep(0.10)
+                    mouse.scroll(0, -0.3)
+                time.sleep(0.08)
         
         ########################  BUTTON CHECK   ########################
         if button1 is not None: 
@@ -128,15 +128,23 @@ class AutodeskWindowActionManager:
                 case self.ButtonActions.HOME:
                     keyboard.press(self.hotkeys[self.ButtonActions.HOME])
                     keyboard.release(self.hotkeys[self.ButtonActions.HOME])
+                    time.sleep(0.5)
+                    return
                 case self.ButtonActions.CANCEL:
                     keyboard.press(self.hotkeys[self.ButtonActions.CANCEL])
                     keyboard.release(self.hotkeys[self.ButtonActions.CANCEL])
+                    return
                 case self.ButtonActions.PREVIOUS:
                     keyboard.press(self.hotkeys[self.ButtonActions.PREVIOUS])
                     keyboard.release(self.hotkeys[self.ButtonActions.PREVIOUS])
+                    time.sleep(0.5)
+                    return
                 case self.ButtonActions.ZOOM_ALL:
                     keyboard.press(self.hotkeys[self.ButtonActions.ZOOM_ALL])
                     keyboard.release(self.hotkeys[self.ButtonActions.ZOOM_ALL])
+                    time.sleep(0.5)
+                    return
+
 
                 
         if button2 is not None:
@@ -145,15 +153,23 @@ class AutodeskWindowActionManager:
                 case self.ButtonActions.HOME:
                     keyboard.press(self.hotkeys[self.ButtonActions.HOME])
                     keyboard.release(self.hotkeys[self.ButtonActions.HOME])
+                    time.sleep(0.5)
+                    return
                 case self.ButtonActions.CANCEL:
                     keyboard.press(self.hotkeys[self.ButtonActions.CANCEL])
                     keyboard.release(self.hotkeys[self.ButtonActions.CANCEL])
+                    return
                 case self.ButtonActions.PREVIOUS:
                     keyboard.press(self.hotkeys[self.ButtonActions.PREVIOUS])
                     keyboard.release(self.hotkeys[self.ButtonActions.PREVIOUS])
+                    time.sleep(0.5)
+                    return
                 case self.ButtonActions.ZOOM_ALL:
                     keyboard.press(self.hotkeys[self.ButtonActions.ZOOM_ALL])
                     keyboard.release(self.hotkeys[self.ButtonActions.ZOOM_ALL])
+                    time.sleep(0.5)
+                    return
+
                     
                 
         ########################  X,Y AXIS CHECK   ########################

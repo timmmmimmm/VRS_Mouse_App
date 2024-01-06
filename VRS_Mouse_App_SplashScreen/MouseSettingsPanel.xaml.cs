@@ -69,7 +69,7 @@ namespace VRS_Mouse_App_SplashScreen
             }));
 
             mainWindow?.SendSensitivity(sliderVal);
-            Thread.Sleep(1000);
+            Thread.Sleep(5000);
             Dispatcher.Invoke(new Action(() =>
             {
                 LoadingSpinner.Visibility= Visibility.Collapsed;

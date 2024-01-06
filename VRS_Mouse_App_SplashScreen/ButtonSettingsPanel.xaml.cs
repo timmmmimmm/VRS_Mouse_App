@@ -109,7 +109,7 @@ namespace VRS_Mouse_App_SplashScreen
 
             mainWindow?.SendButtonModes(btn1ModeSelected, btn2ModeSelected);
 
-            Thread.Sleep(1000);
+            Thread.Sleep(5000);
 
             Dispatcher.Invoke(new Action(() =>
             {

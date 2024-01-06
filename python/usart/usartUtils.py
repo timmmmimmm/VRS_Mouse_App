@@ -67,6 +67,7 @@ class PortParser:
         
         time.sleep(5)
         self.ser = Serial(self.port, self.BAUD_RATE, timeout=self.portTimeout)
+        self.mutex.release()
         
     
                

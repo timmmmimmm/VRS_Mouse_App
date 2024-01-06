@@ -14,10 +14,7 @@
         </Style>
         <Style TargetType="TextBlock" x:Key="comboBoxDesc">
             <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" Value="Black"/>
-            <Setter Property="FontSize" Value="10"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontSize" Value="14"/>
         </Style>
 
         <Style x:Key="ComboBoxTest2" TargetType="{x:Type ComboBox}">
@@ -94,56 +91,56 @@
                VerticalAlignment="Center" HorizontalAlignment="Center"
                Style="{StaticResource textBlockDesc}"/>
 
-        <ComboBox x:Name="ComboBoxButton1" Grid.Row="1" Grid.Column="1" Margin="0,60,10,10" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton1_SelectionChanged" SelectedIndex="0">
+        <ComboBox x:Name="ComboBoxButton1" Grid.Row="2" Grid.Column="0" Margin="30,10,30,40" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton1_SelectionChanged" SelectedIndex="0">
             <ComboBoxItem>
-                <TextBlock Text="None" Foreground="White"/>
+                <TextBlock Text="None" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
             
             <ComboBoxItem>
-                <TextBlock Text="Home" Foreground="White"/>
+                <TextBlock Text="Home" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Cancel" Foreground="White"/>
+                <TextBlock Text="Cancel" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Previous View" Foreground="White"/>
+                <TextBlock Text="Previous View" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Zoom All" Foreground="White"/>
+                <TextBlock Text="Zoom All" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
         </ComboBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="Button 2 function" 
+        <TextBlock Grid.Row="1" Grid.Column="1" Text="Button 2 function" 
                VerticalAlignment="Center" HorizontalAlignment="Center"
                Style="{StaticResource textBlockDesc}"/>
 
-        <ComboBox x:Name="ComboBoxButton2" Grid.Row="2" Grid.Column="1" Margin="0,60,10,10" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton2_SelectionChanged" SelectedIndex="0">
+        <ComboBox x:Name="ComboBoxButton2" Grid.Row="2" Grid.Column="1" Margin="30,10,30,40" Style="{StaticResource ComboBoxTest2}" SelectionChanged="ComboBoxButton2_SelectionChanged" SelectedIndex="0">
 
             <ComboBoxItem>
-                <TextBlock Text="None" Foreground="White"/>
+                <TextBlock Text="None" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Home" Foreground="White"/>
+                <TextBlock Text="Home" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Cancel" Foreground="White"/>
+                <TextBlock Text="Cancel" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Previous View" Foreground="White"/>
+                <TextBlock Text="Previous View" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
 
             <ComboBoxItem>
-                <TextBlock Text="Zoom All" Foreground="White"/>
+                <TextBlock Text="Zoom All" Style="{StaticResource comboBoxDesc}"/>
             </ComboBoxItem>
         </ComboBox>
 
-        <Button x:Name="SyncButton" Grid.Row="3" Grid.ColumnSpan="2" Width="auto" Height="auto" Margin="0,30,0,0"
+        <Button x:Name="SyncButton" Grid.Row="3" Grid.ColumnSpan="2" Width="auto" Height="auto" Margin="0,30,0,5"
             HorizontalAlignment="Center" VerticalAlignment="Center" 
             Background="{x:Null}" Foreground="#FFFFF5F5" BorderBrush="{x:Null}" BorderThickness="1" Style="{StaticResource latoFontButton}"
             Click="SyncButton_Click">
@@ -151,7 +148,7 @@
         </Button>
 
         <spinnercontroller:LoadingSpinner Name="LoadingSpinner" Grid.Row="3" Grid.ColumnSpan="2"
-                                      HorizontalAlignment="Center" VerticalAlignment="Center"   Margin="0,30,0,0"
+                                      HorizontalAlignment="Center" VerticalAlignment="Center"   Margin="0,30,0,5"
                                       Thickness="4" Diameter="90" Visibility="Collapsed"
                                       IsLoading="True"/>
 
